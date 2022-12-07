@@ -1,0 +1,121 @@
+---
+title: "Pasos para instalar cmdstanr"
+subtitle: "CEPAL - División de Estadísticas Sociales"
+author: "Andrés Gutiérrez - Stalyn Guerrero"
+format: html
+---
+
+```{r setup, include=FALSE, message=FALSE, error=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      message = FALSE,
+                      warning = FALSE,
+                      cache = TRUE)
+
+```
+
+## Paso 1: Instalando software
+
+A continuación listamos los software necesario para el desarrollo adecuado del entrenamiento, se recomienda realizar la instalación de estos paquetes antes de iniciar con el desarrollo práctico.
+
+1.  Descargar e instalar **Rbase** (<https://cran.r-project.org/bin/windows/base/>)
+2.  Descargar e instalar **Rtools** (<https://cran.r-project.org/bin/windows/Rtools/>)
+3.  Descargar e instalar **Rstudio** (<https://posit.co/download/rstudio-desktop/>)
+4.  Descargar e instalar **Quarto** (<https://quarto.org/docs/get-started/>)
+5.  Descargar e instalar **Anaconda** (<https://www.anaconda.com/products/individual>)
+
+## Paso 2: Instalar las siguientes librerías en *R.*
+
+```{r, eval=FALSE}
+install.packages("patchwork")
+install.packages("lme4")
+install.packages("tidyverse")
+install.packages("rstan")
+install.packages("rstanarm")
+install.packages("magrittr")
+install.packages("reticulate") 
+install.packages("rgee") 
+install.packages("sf")
+install.packages("tmap")
+install.packages("trafo")
+install.packages("scales")
+install.packages("srvyr")
+install.packages("survey")
+install.packages("haven")
+install.packages("sampling")
+install.packages("sp")
+install.packages("RColorBrewer")
+install.packages("maptools")
+install.packages("data.table")
+install.packages("forcats")
+install.packages("tidyr")
+install.packages("reshape2")
+install.packages("bayesplot")
+install.packages("posterior")
+install.packages("gridExtra")
+install.packages("ggalt")
+install.packages("usmap")
+install.packages("kableExtra")
+install.packages("formatR")
+install.packages("printr")
+install.packages("remotes") 
+remotes::install_github("stan-dev/cmdstanr")
+```
+
+## Paso 3: Descargando e instalando **STAN**
+
+Los siguientes pasos son tomados de la pagina del autor de **cmdstanr** (<https://mc-stan.org/cmdstanr/index.html>)
+
+1.  Cargar la librería `cmdstanr`
+
+```{r, eval=TRUE,message=TRUE,warning=TRUE}
+library(cmdstanr)
+```
+
+2.  Instalar `STAN`, este proceso puede tardar unos minutos.
+
+```{r, eval=FALSE,message=TRUE,warning=TRUE}
+cmdstanr::install_cmdstan() 
+```
+
+3.  Validar instalación, si `STAN` quedo instalado de forma correcta el siguiente código debe ejecutar sin problema.
+
+```{r,eval=TRUE}
+library(cmdstanr)
+library(posterior)
+library(bayesplot)
+
+# ?cmdstan_model
+file <- file.path(cmdstan_path(), "examples/bernoulli/bernoulli.stan")
+mod <- cmdstan_model(file)
+
+stan_data <- list(N = 10, y = c(0,1,0,0,0,0,0,0,0,1))
+
+
+fit_mcmc <- mod$sample(
+  data = stan_data,
+  seed = 123,
+  chains = 2,
+  parallel_chains = 2,
+  refresh = 1000
+)
+
+fit_mcmc$summary(variables = "theta")
+
+```
+
+### Error durante la instalación de `STAN`
+
+`Error: RtoolsXX installation found but the toolchain was not installed. Run cmdstanr::check_cmdstan_toolchain(fix = TRUE) to fix the issue.`
+
+    **Solución 1**    
+
+    Ejecutar: `cmdstanr::check_cmdstan_toolchain(fix = TRUE)` y hacer la instalción de nuevo. 
+    
+    **Solución 2** 
+    
+    Actualizar R, Rtools y realizar el proceso de instalción de nuevo. 
+    
+    **Solución 3** 
+    
+    Consultar en la pagina oficial de stan (<https://discourse.mc-stan.org/>)
+    
