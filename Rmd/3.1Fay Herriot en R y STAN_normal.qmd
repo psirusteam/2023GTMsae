@@ -1,6 +1,6 @@
 ---
 title: "Modelo de Fay Herriot (Normal)"
-subtitle: "CEPAL - División de Estadísticas Sociales"
+subtitle: "CEPAL - Unidad de Estadísticas Sociales"
 author: "Andrés Gutiérrez - Stalyn Guerrero"
 format: html
 project:
@@ -14,8 +14,8 @@ knitr::opts_chunk$set(
   message = FALSE,
   warning = FALSE,
   cache = TRUE,
-  cache.path = "0Recursos/3.2normal/",
-  fig.path = "0Recursos/3.2normal_fig/"
+  cache.path = "0Recursos/3.1normal/",
+  fig.path = "0Recursos/3.1normal/"
 )
 library(printr)
 library(kableExtra)
@@ -145,28 +145,29 @@ Lectura de la base de datos que resultó en el paso anterior y selección de las
 library(tidyverse)
 library(magrittr)
 
-base_FH <- readRDS("../Data/base_FH_2021.rds") %>% 
-  select(provi, pobreza, vardir, hat_var)
+base_FH <- readRDS("../Data/base_FH_2014.rds") %>% 
+  select(dam2, pobreza, vardir, hat_var)
 ```
 
 Lectura de las covariables, las cuales son obtenidas previamente. Dado la diferencia entre las escalas de las variables  es necesario hacer un ajuste a estas. 
 
 ```{r}
-statelevel_predictors_df <- readRDS("../Data/statelevel_predictors_df_provi.rds") %>% 
-    mutate_at(.vars = c("F182013_stable_lights",
-                      "X2016_crops.coverfraction",
-                      "X2016_urban.coverfraction",
-                      "X2016_gHM",
-                      "accessibility",
-                      "accessibility_walking_only"),
+#00118  00720    Lagos 
+statelevel_predictors_df <- readRDS("../Data/statelevel_predictors_df_dam2.rds") %>% 
+    mutate_at(.vars = c("luces_nocturnas",
+                      "suelo_cultivos",
+                      "suelo_urbanos",
+                      "modifica_humana",
+                      "tiempo_hospital",
+                      "tiempo_hospital_no_motor"),
             function(x) scale(x)*2+5)
 ```
 
 Uniendo las dos bases de datos. 
 
 ```{r}
-base_FH <- full_join(base_FH, statelevel_predictors_df, by = "provi" )
-tba(base_FH[,1:8] %>% head(10))
+base_FH <- full_join(base_FH, statelevel_predictors_df, by = "dam2" )
+tba(base_FH[1:10,1:8] %>% head(10))
 ```
 
 # Preparando los insumos para `STAN`
@@ -181,8 +182,8 @@ data_dir <- base_FH %>% filter(!is.na(pobreza))
 ### Dominios NO observados.
 ```{r}
 data_syn <-
-  base_FH %>% anti_join(data_dir %>% select(provi))
-tba(data_syn[,1:8])
+  base_FH %>% anti_join(data_dir %>% select(dam2))
+tba(data_syn[1:10,1:8])
 ```
 
 ### Matrix de covariables (Efectos fijos) 
@@ -199,8 +200,8 @@ formula_mod  <- formula(~ sexo2 +
                          etnia1 +
                          etnia2 +
                          tasa_desocupacion +
-                         F182013_stable_lights +
-                         X2016_urban.coverfraction +
+                         luces_nocturnas +
+                         suelo_cultivos +
                          rezago_escolar + alfabeta)
 ## Dominios observados
 Xdat <- model.matrix(formula_mod, data = data_dir)
@@ -255,7 +256,7 @@ model_FH_normal <-
     iter_warmup = 2000,
     iter_sampling = 1000,
     seed = 1234,
-    refresh = 500
+    refresh = 1000
   )
 
 ```
@@ -299,7 +300,8 @@ data_syn <- data_syn %>%
          Cv_pred = pred_EE/pred)
 
 tba(data_syn %>% 
-      select(provi, pobreza, pred, pred_EE, Cv_pred ))
+      select(dam2, pobreza, pred, pred_EE, Cv_pred ) %>%
+      slice(1:10))
 
 ```
 
@@ -310,21 +312,33 @@ library(sp)
 library(sf)
 library(tmap)
 
-data_syn %<>% mutate(
-  pred = ifelse(pred < 0, 0,pred),
-  Cv_pred = ifelse(Cv_pred < 0, 0,Cv_pred)) 
-
 data_map <- rbind(data_dir, data_syn) %>% 
-  select(provi, pobreza, pred, pred_EE, Cv_pred ) 
+  select(dam2, pobreza, pred, pred_EE, Cv_pred )
+```
+
+Validando valores menores que cero o mayores a uno
+
+```{r}
+filter(data_map,pred<0 | pred >1) 
+```
+
+realizando el truncado de las predicciones 
+```{r}
+data_map <- data_map %>% mutate(pred = ifelse(pred<0,0,pred),
+                                pred = ifelse(pred>1,1,pred))
+```
 
 
+```{r, out.height= "120%"}
 ## Leer Shapefile del país
-ShapeSAE <- read_sf("../Shape/PROVINCIAS.shp")%>% 
-            mutate(provi = str_pad(IDPROV, pad = "0", width = 4))
-
+ShapeSAE <- read_sf("../Shape/Guatemala_adm2_uscb_2020.shp") %>% 
+  mutate(temp = gsub(pattern = "\\D", replacement = "",x = GEO_MATCH),
+         dam = substr(temp, 1,2),
+         dam2 = paste0(dam,str_pad(str_sub(temp,3,4), width = 3,pad = "0"))
+         )
 
 mapa <- tm_shape(ShapeSAE %>%
-                   left_join(data_map,  by = "provi"))
+                   left_join(data_map,  by = "dam2"))
 
 brks_lp <- c(0,0.025,0.05, 0.1, 0.15, 0.2,0.4, 1)
 tmap_options(check.and.fix = TRUE)
@@ -340,19 +354,5 @@ Mapa_lp <-
 Mapa_lp
 ```
 
-Coeficiente de variación.  
-
-```{r, out.height= "120%"}
-Mapa_cv <-
-  mapa + tm_polygons(
-    c("Cv_pred"),
-     title = "Mapa de pobreza(cv)",
-    palette = "YlOrRd",
-    colorNA = "white"
-  ) + tm_layout(asp = 2.5)
-
-Mapa_cv
-
-```
-
+Los valores en blanco en el gráfico de la derecha son lagos. 
 

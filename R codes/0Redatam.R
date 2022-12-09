@@ -5,7 +5,11 @@
 # Autor: Stalyn Guerrero & Andrés Gutiérrez             #
 #########################################################
 
-rm(list = ls())
+### Cleaning R environment ###
+
+rm(list =ls())
+cat("\f")
+
 library(Rcpp)
 library(RcppProgress)
 library(redatam)
@@ -14,132 +18,87 @@ library(tidyverse)
 library(haven)
 library(DataExplorer)
 
-peru <- redatam.open("R codes/cpv2017per-cde.dicx")
+## leer base desde el repositorio CEPAL
+guatemala <- redatam.open("V:/DAT/SAECEPAL/MrPMunicipal/GTM/1.Ingreso/Data/cpv2018gtm-cde.dicx")
 
-redatam.entities(peru)
-redatam.variables(peru, "PROVINCI")
-redatam.variables(peru, "PERSONA")
-
-CONTEOS <- redatam.query(peru, "freq PROVINCI.REDCODEN
-                                  by VIVIENDA.VAREA
-                                  by PERSONA.C5P041
-                                  by PERSONA.C5P02
-                                  by PERSONA.ANEST
-                                  by PERSONA.P09DISC
-                                  by PERSONA.PBLOPER",
-                         tot.omit = FALSE)
-saveRDS(CONTEOS, file = "R codes/CONTEOS.RDS")
+CONTEOS <- redatam.query(
+  guatemala, "freq MUPIO.MPIO
+             by VIVIENDA.PLG11
+             by  PERSONA.PCP7
+             by PERSONA.PCP6
+             by PERSONA.ANEDUCA
+             by PERSONA.PBLOPER
+  ",  tot.omit = FALSE
+)
+saveRDS(CONTEOS, "R codes/CONTEOS.RDS")
 rm("$table1")
-# CONTEOS <- readRDS(file = "R codes/CONTEOS.RDS")
-
+# CONTEOS <- readRDS(file =  "GTM/2021/1.Ingreso/Data/CONTEOS.RDS")
+#   revisando valores unicos.
 # Eliminando totales de la tabla
-CONTEOS2 <- CONTEOS %>% filter_at(vars(matches("_label")),all_vars(. !=  "__tot__"))
-
-## sumas por variables de agregación, coincidir con el total nacional.
-map(grep(pattern = "_value", x = names(CONTEOS2),value = TRUE),
-    function(by){
-      CONTEOS2 %>% group_by_at(by) %>%
-        summarise(n = sum(value)) %>%
-        mutate(Prop = n / sum(n), N = sum(n))
-    })
-map(grep(pattern = "_label", x = names(CONTEOS2),value = TRUE),
-    function(by){
-      CONTEOS2 %>% group_by_at(by) %>%
-        summarise(n = sum(value)) %>%
-        mutate(Prop = n / sum(n), N = sum(n))
-    })
+CONTEOS2 <-
+  CONTEOS %>% filter_at(vars(matches("_label")), all_vars(. !=  "__tot__"))
 
 
-CONTEOS2 %>% group_by(ANEST5_label, ANEST5_value) %>%
-  summarise(n = sum(value))  %>%
-  mutate(N = sum(n)) %>%
-  data.frame()
+censo_mrp <- CONTEOS2 %>% transmute(
+  dam2 = str_pad(
+    string = MPIO1_value,
+    width = 5,
+    pad = "0"
+  ),
+  area = case_when(PLG112_value == 1 ~ "1", # 1 = Urbana
+                   TRUE ~ "0"),
+  # 0 = Rural
+  sexo = as.character(PCP64_value),
 
-CONTEOS2 %>% group_by(PBLOPER7_label, PBLOPER7_value) %>%
-  summarise(n = sum(value))  %>%
-  mutate(N = sum(n)) %>%
-  data.frame()
+  edad = case_when(
+    PCP73_value %in% 0:14 ~ "1",       # 5 a 14
+    PCP73_value %in% 15:29 ~ "2",      # 15 a 29
+    PCP73_value %in% 30:44 ~ "3",      # 30 a 44
+    PCP73_value %in% 45:64 ~ "4",      # 45 a 64
+    TRUE ~ "5"
+  ),     # 65 o mas
 
+  anoest = case_when(
 
-censo_mrp <- CONTEOS2 %>%
-  transmute(provi = str_pad(
-              string = REDCODEN1_value,
-              width = 4,
-              pad = "0"
-            ),
-            area = case_when(VAREA2_value == 1 ~ "1", # 1 = Urbana
-                             TRUE ~ "0"),    # 0 = Rural
-            sexo = as.character(C5P024_value),
-
-          edad = case_when(
-              C5P0413_value  %in% 0:14 ~ "1", # 5 a 14
-              C5P0413_value  %in% 15:29 ~ "2", # 15 a 29
-              C5P0413_value  %in% 30:44 ~ "3", # 30 a 44
-              C5P0413_value  %in% 45:64 ~ "4", # 45 a 64
-              TRUE ~ "5"), # 65 o mas
-
-          anoest = case_when(
-            C5P0413_value < 4| is.na(ANEST5_value) ~ "98",     # No aplica
-            ANEST5_value == 99 ~ "99", #NS/NR
-            ANEST5_value %in% 0 ~ "1",  # Sin educacion
-            ANEST5_value %in% c(1:6) ~ "2",  # 1-6
-            ANEST5_value %in% c(7:11) ~ "3",  # 7-12 (caso particular  de perú)
-            ANEST5_value > 11 ~ "4" ,  # 12 o mas
-            TRUE ~ "Error"
-          ),
-          etnia = case_when(
-            PBLOPER7_value == 1 ~ "1", # Indigena
-            PBLOPER7_value == 2 ~ "2", # Afro
-            TRUE ~ "3"), # Otro
-
-          discapacidad = case_when(
-            P09DISC6_value == 63 ~ "0", # No discapacitado
-            TRUE ~ "1"), # Discapacitado
-            value) %>%
-  group_by(provi, area, sexo, edad, etnia, discapacidad, anoest) %>%
+    is.na(ANEDUCA5_value) | PCP73_value < 7 ~ "98",     # No aplica
+    ANEDUCA5_value == 99 ~ "99", #NS/NR
+    ANEDUCA5_value %in% 0 ~ "1",  # Sin educacion
+    ANEDUCA5_value %in% c(1:6) ~ "2",  # 1-6
+    ANEDUCA5_value %in% c(7:12) ~ "3",  # 7-12
+    ANEDUCA5_value > 12 ~ "4" ,  # 12 o mas
+    TRUE ~ "Error"
+  ),    
+  etnia = case_when(
+    PBLOPER6_value %in% 2:3 ~ "2",    # Afro
+    PBLOPER6_value == 1  ~ "1", # Indigena,
+    TRUE ~ "3" # Otro
+  ),
+  value
+) %>% group_by(dam2, area, etnia, sexo, edad, anoest) %>%
   summarise(n = sum(value), .groups = "drop")
 
 # Suma del total nacional
 sum(censo_mrp$n)
 
-# agregados por nuevas variables
-map(c(
-  "provi",
-  "area",
-  "discapacidad",
-  "sexo",
-  "edad",
-  "etnia",
-  "anoest"
-),
-function(x) {
-  censo_mrp %>% group_by_at(x) %>%
-    summarise(n = sum(n)) %>%
-    mutate(Prop = n / sum(n), N = sum(n))
-})
+saveRDS(censo_mrp, "Data/censo_dam2.rds")
 
-plot_intro(censo_mrp)
-plot_missing(censo_mrp)
-plot_bar(censo_mrp, with = "n")
-
-saveRDS(object = censo_mrp , file = "R codes/censo_provi.rds")
 ## Variables agregadas.
-#prop.table(table(censo_mrp$depto,censo_mrp$etnia),margin = 1)
+#prop.table(table(censo_mrp$dam2,censo_mrp$etnia),margin = 1)
 
-tasa_censo <- model.matrix(provi ~ -1 +.,
+tasa_censo <- model.matrix(dam2 ~ -1 +.,
                            data = censo_mrp %>% select(-n)) %>% 
   data.frame() %>%
-  mutate(provi = censo_mrp$provi, 
+  mutate(dam2 = censo_mrp$dam2, 
          n = censo_mrp$n) %>% 
-  group_by(provi) %>%
+  group_by(dam2) %>%
   summarise_all(~weighted.mean(x = .,w = n)) %>%
   mutate(etnia1 = 1-etnia3-etnia2) %>% 
   select(-area0, -anoest98,-etnia3,-n) 
 
 # Alcantarillado  -----------------------------------------------------------
-CONTEOS <- redatam.query(peru,
-                         "freq PROVINCI.REDCODEN
-                          by VIVIENDA.C2P10",
+CONTEOS <- redatam.query(guatemala,
+                         "freq MUPIO.MPIO
+                          by HOGAR.PCH5",
                          tot.omit = FALSE)
 
 ALCANTARILLADO <- CONTEOS %>% 
@@ -147,24 +106,24 @@ ALCANTARILLADO <- CONTEOS %>%
             all_vars(!. %in%  c("__tot__","__mv__") ))
 
 tasa_alcantarillado <- ALCANTARILLADO %>%
-  mutate(Pobx = ifelse(!C2P102_value %in% c(1,2), value, 0),
+  mutate(Pobx = ifelse(!PCH52_value %in% c(1), value, 0),
          PobT = value) %>%
   group_by(
-    provi = str_pad(
-      string = REDCODEN1_value,
-      width = 4,
+    dam2 = str_pad(
+      string = MPIO1_value,
+      width = 5,
       pad = "0"
     )
   ) %>%
   summarise(PobT = sum(PobT),
             Pobx = sum(Pobx)) %>% 
-  transmute(provi,
-            tiene_alcantarillado = Pobx/PobT) 
+  transmute(dam2,
+            tiene_alcantarillado = Pobx/PobT)
 # carencia de sanitario   -----------------------------------------------------------
 # Energía eléctrica ----------------------------------------------------
-CONTEOS <- redatam.query(peru,
-                         "freq PROVINCI.REDCODEN
-                          by VIVIENDA.C2P11",
+CONTEOS <- redatam.query(guatemala,
+                         "freq MUPIO.MPIO
+                          by HOGAR.PCH8",
                          tot.omit = FALSE)
 
 ELECTRICIDAD_RED <- CONTEOS %>% 
@@ -172,24 +131,23 @@ ELECTRICIDAD_RED <- CONTEOS %>%
             all_vars(!. %in%  c("__tot__","__mv__") ))
 
 tasa_electricidad <- ELECTRICIDAD_RED %>%
-  mutate(Pobx = ifelse(!C2P112_value %in% c(1), value, 0),
+  mutate(Pobx = ifelse(!PCH82_value %in% c(1,2), value, 0),
          PobT = value) %>%
   group_by(
-    provi = str_pad(
-      string = REDCODEN1_value,
-      width = 4,
+    dam2 = str_pad(
+      string = MPIO1_value,
+      width = 5,
       pad = "0"
     )
   ) %>%
   summarise(PobT = sum(PobT),
             Pobx = sum(Pobx)) %>% 
-  transmute(provi,
-            tiene_electricidad = Pobx/PobT) 
-
+  transmute(dam2,
+            tiene_electricidad = Pobx/PobT)
 # Agua cocinar ---------------------------------------------------------------
-CONTEOS <- redatam.query(peru,
-                         "freq PROVINCI.REDCODEN
-                          by VIVIENDA.C2P06",
+CONTEOS <- redatam.query(guatemala,
+                         "freq MUPIO.MPIO
+                          by HOGAR.PCH4",
                          tot.omit = FALSE)
 
 ACUEDUCTO <- CONTEOS %>% 
@@ -197,23 +155,23 @@ ACUEDUCTO <- CONTEOS %>%
             all_vars(!. %in%  c("__tot__","__mv__") ))
 
 tasa_agua <- ACUEDUCTO %>%
-  mutate(Pobx = ifelse(!C2P062_value %in% c(1,2), value, 0),
+  mutate(Pobx = ifelse(!PCH42_value %in% c(1,2), value, 0),
          PobT = value) %>%
   group_by(
-    provi = str_pad(
-      string = REDCODEN1_value,
-      width = 4,
+    dam2 = str_pad(
+      string = MPIO1_value,
+      width = 5,
       pad = "0"
     )
   ) %>%
   summarise(PobT = sum(PobT),
             Pobx = sum(Pobx)) %>% 
-  transmute(provi,
-            tiene_acueducto = Pobx/PobT) 
+  transmute(dam2,
+            tiene_acueducto = Pobx/PobT)
 # Gas natural ----------------------------------------------------
-CONTEOS <- redatam.query(peru,
-                         "freq PROVINCI.REDCODEN
-                          by HOGAR.C3P12",
+CONTEOS <- redatam.query(guatemala,
+                         "freq MUPIO.MPIO
+                          by HOGAR.PCH14",
                          tot.omit = FALSE)
 
 GAS_RED <- CONTEOS %>% 
@@ -221,24 +179,47 @@ GAS_RED <- CONTEOS %>%
             all_vars(!. %in%  c("__tot__","__mv__") ))
 
 tasa_gas <- GAS_RED %>%
-  mutate(Pobx = ifelse(!C3P122_value %in% c(1), value, 0),
+  mutate(Pobx = ifelse(!PCH142_value %in% c(1,5), value, 0),
          PobT = value) %>%
   group_by(
-    provi = str_pad(
-      string = REDCODEN1_value,
-      width = 4,
+    dam2 = str_pad(
+      string = MPIO1_value,
+      width = 5,
       pad = "0"
     )
   ) %>%
   summarise(PobT = sum(PobT),
             Pobx = sum(Pobx)) %>% 
-  transmute(provi,
-            tiene_gas = Pobx/PobT) 
+  transmute(dam2,
+            tiene_gas = Pobx/PobT)
 # Eliminación de basura ----------------------------------------------------
+CONTEOS <- redatam.query(guatemala,
+                         "freq MUPIO.MPIO
+                          by HOGAR.PCH10",
+                         tot.omit = FALSE)
+
+RECOLECTOR_BASURAS <- CONTEOS %>% 
+  filter_at(vars(matches("_label")),
+            all_vars(!. %in%  c("__tot__","__mv__") ))
+
+tasa_basuras <- RECOLECTOR_BASURAS %>%
+  mutate(Pobx = ifelse(!PCH102_value %in% c(1,2), value, 0),
+         PobT = value) %>%
+  group_by(
+    dam2 = str_pad(
+      string = MPIO1_value,
+      width = 5,
+      pad = "0"
+    )
+  ) %>%
+  summarise(PobT = sum(PobT),
+            Pobx = sum(Pobx)) %>% 
+  transmute(dam2,
+            eliminar_basura = Pobx/PobT)
 # Tasa de acceso a Internet  ----------------------------------------------
-CONTEOS <- redatam.query(peru,
-                         "freq PROVINCI.REDCODEN
-                          by HOGAR.C3P213",
+CONTEOS <- redatam.query(guatemala,
+                         "freq MUPIO.MPIO
+                          by HOGAR.PCH9_I",
                          tot.omit = FALSE)
 
 INTERNET <- CONTEOS %>% 
@@ -246,23 +227,23 @@ INTERNET <- CONTEOS %>%
             all_vars(!. %in%  c("__tot__","__mv__") ))
 
 tasa_internet <- INTERNET %>%
-  mutate(Pobx = ifelse(!C3P2132_value %in% c(1), value, 0),
+  mutate(Pobx = ifelse(!PCH9_I2_value %in% c(1), value, 0),
          PobT = value) %>%
   group_by(
-    provi = str_pad(
-      string = REDCODEN1_value,
-      width = 4,
+    dam2 = str_pad(
+      string = MPIO1_value,
+      width = 5,
       pad = "0"
     )
   ) %>%
   summarise(PobT = sum(PobT),
             Pobx = sum(Pobx)) %>% 
-  transmute(provi,
-            tiene_internet = Pobx/PobT) 
+  transmute(dam2,
+            tiene_internet = Pobx/PobT)
 # Piso de tierra ----------------------------------------------------------
-CONTEOS <- redatam.query(peru,
-                         "freq PROVINCI.REDCODEN
-                          by VIVIENDA.C2P05",
+CONTEOS <- redatam.query(guatemala,
+                         "freq MUPIO.MPIO
+                          by VIVIENDA.PCV5",
                          tot.omit = FALSE)
 
 PISO <- CONTEOS %>% 
@@ -270,23 +251,23 @@ PISO <- CONTEOS %>%
             all_vars(!. %in%  c("__tot__","__mv__") ))
 
 tasa_piso <- PISO %>%
-  mutate(Pobx = ifelse(C2P052_value %in% c(6), value, 0),
+  mutate(Pobx = ifelse(PCV52_value %in% c(7), value, 0),
          PobT = value) %>%
   group_by(
-    provi = str_pad(
-      string = REDCODEN1_value,
-      width = 4,
+    dam2 = str_pad(
+      string = MPIO1_value,
+      width = 5,
       pad = "0"
     )
   ) %>%
   summarise(PobT = sum(PobT),
             Pobx = sum(Pobx)) %>% 
-  transmute(provi,
-            piso_tierra = Pobx/PobT) 
+  transmute(dam2,
+            piso_tierra = Pobx/PobT)
 # Material de paredes ----------------------------------------------------
-CONTEOS <- redatam.query(peru,
-                         "freq PROVINCI.REDCODEN
-                          by VIVIENDA.C2P03",
+CONTEOS <- redatam.query(guatemala,
+                         "freq MUPIO.MPIO
+                          by VIVIENDA.PCV2",
                          tot.omit = FALSE)
 
 PAREDES <- CONTEOS %>% 
@@ -294,23 +275,23 @@ PAREDES <- CONTEOS %>%
             all_vars(!. %in%  c("__tot__","__mv__") ))
 
 tasa_paredes <- PAREDES %>%
-  mutate(Pobx = ifelse(!C2P032_value %in% c(1,2), value, 0),
+  mutate(Pobx = ifelse(!PCV22_value %in% c(1:5), value, 0),
          PobT = value) %>%
   group_by(
-    provi = str_pad(
-      string = REDCODEN1_value,
-      width = 4,
+    dam2 = str_pad(
+      string = MPIO1_value,
+      width = 5,
       pad = "0"
     )
   ) %>%
   summarise(PobT = sum(PobT),
             Pobx = sum(Pobx)) %>% 
-  transmute(provi,
-            material_paredes = Pobx/PobT) 
+  transmute(dam2,
+            material_paredes = Pobx/PobT)
 # Material de techo ----------------------------------------------------
-CONTEOS <- redatam.query(peru,
-                         "freq PROVINCI.REDCODEN
-                          by VIVIENDA.C2P04",
+CONTEOS <- redatam.query(guatemala,
+                         "freq MUPIO.MPIO
+                          by VIVIENDA.PCV3",
                          tot.omit = FALSE)
 
 TECHO <- CONTEOS %>% 
@@ -318,102 +299,121 @@ TECHO <- CONTEOS %>%
             all_vars(!. %in%  c("__tot__","__mv__") ))
 
 tasa_techo <- TECHO %>%
-  mutate(Pobx = ifelse(!C2P042_value %in% c(1:4), value, 0),
+  mutate(Pobx = ifelse(!PCV32_value %in% c(1:4), value, 0),
          PobT = value) %>%
   group_by(
-    provi = str_pad(
-      string = REDCODEN1_value,
-      width = 4,
+    dam2 = str_pad(
+      string = MPIO1_value,
+      width = 5,
       pad = "0"
     )
   ) %>%
   summarise(PobT = sum(PobT),
             Pobx = sum(Pobx)) %>% 
-  transmute(provi,
-            material_techo = Pobx/PobT) 
+  transmute(dam2,
+            material_techo = Pobx/PobT)
 # Tasa de personas con más 12 años de educación  y > 20 años. -------------
-CONTEOS <- redatam.query(peru,
-                         "freq PROVINCI.REDCODEN
-                      by PERSONA.C5P041
-                      by PERSONA.ANEST",
+
+CONTEOS <- redatam.query(guatemala,
+                         "freq MUPIO.MPIO
+                      by PERSONA.PCP7
+                      by PERSONA.ANEDUCA",
                          tot.omit = FALSE)
 EDUCACION <- CONTEOS %>%
   filter_at(vars(matches("_label")),
             all_vars(!. %in%  c("__tot__","__mv__" ) ))
 
 tasa_edu_sup <- EDUCACION %>%
-  mutate(Pobx = ifelse(C5P0412_value > 20 & ANEST3_value > 12,
+  mutate(Pobx = ifelse(PCP72_value > 20 & ANEDUCA3_value > 12,
                        value, 0),
-         PobT = ifelse(C5P0412_value > 20, value, 0)) %>%
+         PobT = ifelse(PCP72_value > 20, value, 0)) %>%
   group_by(
-    provi = str_pad(
-      string = REDCODEN1_value,
-      width = 4,
+    dam2 = str_pad(
+      string = MPIO1_value,
+      width = 5,
       pad = "0"
     )
   ) %>%
   summarise(PobT = sum(PobT),
             Pobx = sum(Pobx)) %>% 
-  transmute(provi,
+  transmute(dam2,
             rezago_escolar = Pobx/PobT)
-
 # Tasa de personas analfabeta. ------------------------------------------
 # Población de 15 años y más que no sabe leer y escribir dividido por la 
 # población de 15 años y más, multiplicado por 100.
-CONTEOS <- redatam.query(peru,
-                         "freq PROVINCI.REDCODEN
-                      by PERSONA.C5P041
-                      by PERSONA.C5P12",
+CONTEOS <- redatam.query(guatemala,
+                         "freq MUPIO.MPIO
+                      by PERSONA.PCP7
+                      by PERSONA.PCP22",
                          tot.omit = FALSE)
 ALFABETA <- CONTEOS %>%
   filter_at(vars(matches("_label")),
-            all_vars(!. %in%  c("__tot__","__mv__" , "__na__") ))
+            all_vars(!. %in%  c("__tot__","__mv__" ) ))
 
-tasa_alfabeta  <- ALFABETA %>%
-  mutate(Pobx = ifelse(C5P0412_value > 15 & C5P123_value == 2,
+tasa_alfabeta <- ALFABETA %>%
+  mutate(Pobx = ifelse(PCP72_value > 15 & PCP223_value == 2,
                        value, 0),
-         PobT = ifelse(C5P0412_value > 15, value, 0)) %>%
+         PobT = ifelse(PCP72_value > 15, value, 0)) %>%
   group_by(
-    provi = str_pad(
-      string = REDCODEN1_value,
-      width = 4,
+    dam2 = str_pad(
+      string = MPIO1_value,
+      width = 5,
       pad = "0"
     )
   ) %>%
   summarise(PobT = sum(PobT),
             Pobx = sum(Pobx)) %>% 
-  transmute(provi,
+  transmute(dam2,
             alfabeta = Pobx/PobT)
-
-
-####################################################
-OCUPACION <- redatam.query(peru, "freq PROVINCI.REDCODEN
-                           by PERSONA.PET
-                           ", tot.omit = FALSE)
-
-OCUPACION2 <- OCUPACION %>%
+# Hacinamiento ----------------------------------------------------
+CONTEOS <- redatam.query(guatemala,
+                         "freq MUPIO.MPIO
+                      by HOGAR.PCH12
+                      by HOGAR.TOTAL_PERS",
+                         tot.omit = FALSE)
+HACINAMIENTO <- CONTEOS %>%
   filter_at(vars(matches("_label")),
-            all_vars(!. %in%   c(
-              "__mv__", "__tot__", "No especificado", "__na__"
-            )))
+            all_vars(!. %in%  c("__tot__","__mv__","__na__" ) ))
 
-group_by(OCUPACION2, PET2_label, PET2_value) %>% summarise(n = sum(value))
+tasa_hacinamiento <- HACINAMIENTO %>%
+  mutate(Pobx = ifelse(TOTAL_PERS3_value/PCH122_value > 2,
+                       value, 0),
+         PobT = value) %>%
+  group_by(
+    dam2 = str_pad(
+      string = MPIO1_value,
+      width = 5,
+      pad = "0"
+    )
+  ) %>%
+  summarise(PobT = sum(PobT),
+            Pobx = sum(Pobx)) %>% 
+  transmute(dam2,
+            hacinamiento = Pobx/PobT)
+## tasa de desocupación
+OCUPACION <-
+  redatam.query(guatemala, "freq  MUPIO.MPIO by  PERSONA.PET",
+                tot.omit = FALSE)
+OCUPACION2 <- OCUPACION %>%
+  filter(!PET2_label %in% c("__tot__", "No especificado", "__na__"))
+
+group_by(OCUPACION2, PET2_value, PET2_label) %>% summarise(n = sum(value))
 
 sum(OCUPACION2$value)
 
 
 OCUPACION2 <- OCUPACION2 %>%
   transmute(
-    provi = str_pad(
-      string = REDCODEN1_value,
-      width = 4,
+    dam2 = str_pad(
+      string = MPIO1_value,
+      width = 5,
       pad = "0"
     ),
     ocupados = ifelse(PET2_value  %in% c(1), 1, 0),
     desocupados = ifelse(PET2_value  %in% c(2), 1, 0),
     value
-  ) %>% group_by(provi, ocupados, desocupados) %>%
-  summarise(value = sum(value), .groups = "drop")
+  ) %>% group_by(dam2, ocupados, desocupados) %>%
+  summarise(value = sum(value))
 
 
 tabla <-
@@ -424,8 +424,9 @@ tabla <-
     names_prefix = c("ocupados")
   )
 
+
 tasa_desocupacion <- tabla %>%
-  transmute(provi,
+  transmute(dam2,
             tasa_desocupacion = ocupados0_1 / sum(ocupados0_1 + ocupados1_0))
 
 statelevel_predictors_df <- list(
@@ -442,16 +443,18 @@ statelevel_predictors_df <- list(
   tasa_electricidad,
   tasa_agua,
   tasa_gas,
-  # tasa_basuras,
+  tasa_basuras,
   tasa_internet,
   tasa_piso,
   tasa_paredes,
   tasa_techo,
   tasa_edu_sup,
   tasa_alfabeta,
+  tasa_hacinamiento,
   tasa_desocupacion
 ) %>%
   reduce(.f = inner_join)
 
 saveRDS(statelevel_predictors_df, "R codes/statelevel_predictors_df.rds")
+
 
