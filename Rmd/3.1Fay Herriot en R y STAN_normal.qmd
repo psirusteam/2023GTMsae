@@ -1,0 +1,358 @@
+---
+title: "Modelo de Fay Herriot (Normal)"
+subtitle: "CEPAL - División de Estadísticas Sociales"
+author: "Andrés Gutiérrez - Stalyn Guerrero"
+format: html
+project:
+  type: website
+  output-dir: docs
+---
+
+```{r setup, include=FALSE, message=FALSE, error=FALSE, warning=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  cache = TRUE,
+  cache.path = "0Recursos/3.2normal/",
+  fig.path = "0Recursos/3.2normal_fig/"
+)
+library(printr)
+library(kableExtra)
+library(tidyverse)
+tba <- function(dat, cap = NA){
+  kable(dat,
+      format = "html", digits =  4,
+      caption = cap) %>% 
+     kable_styling(bootstrap_options = "striped", full_width = F)%>%
+         kable_classic(full_width = F, html_font = "Arial Narrow")
+}
+
+```
+
+
+El modelo de Fay Herriot FH, propuesto por Fay y Herriot (1979), es un modelo estadístico de área y es el más comúnmente utilizado, cabe tener en cuenta, que dentro de la metodología de estimación en áreas pequeñas, los modelos de área son los de mayor aplicación, ya que lo más factible es no contar con la información a nivel de individuo, pero si encontrar no solo los datos a nivel de área, sino también información auxiliar asociada a estos datos. Este modelo lineal mixto, fue el primero en incluir efectos aleatorios a nivel de área, lo que implica que la mayoría de la información que se introduce al modelo corresponde a agregaciaciones usualmente, departamentos, regiones, provincias, municipios entre otros, donde las estimaciones que se logran con el modelo se obtienen sobre estas agregaciones o subpoblaciones.
+
+
+-   El modelo FH enlaza indicadores de las áreas $\delta_d$, $d = 1, \cdots , D$, asumiendo que varían respeto a un vector de $p$ covariables, $\boldsymbol{x}_d$ , de forma constante. El modelo esta dado por la ecuación
+
+$$
+\delta_d = \boldsymbol{x^T}_d\boldsymbol{\beta} + u_d ,\ \ \ \ \  d = 1, \cdots , D
+$$ 
+
+- $u_d$ es el término de error, o el efecto aleatorio, diferente para cada área dado por
+
+$$
+\begin{eqnarray*}
+u_{d} & \stackrel{iid}{\sim} & \left(0,\sigma_{u}^{2}\right)
+\end{eqnarray*}
+$$
+
+-   Sin embargo, los verdaderos valores de los indicadores $\delta_d$ no son observables. Entonces, usamos el estimador directo $\hat{\delta}^{DIR}_d$ para $\delta_d$ , lo que conlleva un error debido al muestro.
+
+-   $\hat{\delta}^{DIR}_d$ todavía se considera insesgado bajo el diseño muestral.
+
+-   Podemos definir, entonces, 
+
+$$
+\hat{\delta}^{DIR}_d = \delta_d + e_d, \ \ \ \ \ \ d = 1, \cdots , D 
+$$ 
+    
+donde $e_d$ es el error debido al muestreo, $e_{d} \stackrel{ind}{\sim} \left(0,\psi\right)$
+
+-   Dichas varianzas $\psi_d = var_{\pi}\left(\hat{\delta}^{DIR}_d\mid\delta_d\right)$, $d = 1,\cdots,D$ se estiman con los microdatos de la encuesta.
+
+-   Por tanto, el modelo se hace, $$
+    \hat{\delta}^{DIR}_d = \boldsymbol{x^T}_d\boldsymbol{\beta} + u_d + e_d, \ \ \ \ \ \ d = 1, \cdots , D
+    $$
+
+-   El BLUP (best linear unbiased predictor) bajo el modelo FH de $\delta_d$ viene dado por
+
+$$
+    \begin{eqnarray*}
+    \tilde{\delta}_{d}^{FH} & = & \boldsymbol{x_d}^{T}\tilde{\boldsymbol{\beta}}+\tilde{u}_{d}
+    \end{eqnarray*}
+$$
+
+-   Si sustituimos $\tilde{u}_d = \gamma_d\left(\hat{\delta}^{DIR}_d - \boldsymbol{x_d}^{T}\tilde{\boldsymbol{\beta}} \right)$ en el BLUP bajo el modelo FH, obtenemos $$
+    \begin{eqnarray*}
+    \tilde{\delta}_{d}^{FH} & = & \gamma_d\hat{\delta}^{DIR}_{d}+(1-\gamma_d)\boldsymbol{x_d}^{T}\tilde{\boldsymbol{\beta}}
+    \end{eqnarray*}
+    $$ siendo $\gamma_d=\frac{\sigma^2_u}{\sigma^2_u + \psi_d}$.
+
+-   Habitualmente, no sabemos el verdadero valor de $\sigma^2_u$ efectos aleatorios $u_d$.
+
+-   Sea $\hat{\sigma}^2_u$ un estimador consistente para $\sigma^2_u$. Entonces, obtenemos el BLUP empírico (empirical BLUP, EBLUP) de $\delta_d$ ,
+
+$$
+    \begin{eqnarray*}
+    \tilde{\delta}_{d}^{FH} & = & \hat{\gamma_d}\hat{\delta}^{DIR}_{d}+(1-\hat{\gamma_d})\boldsymbol{x_d}^{T}\hat{\boldsymbol{\beta}}
+    \end{eqnarray*}
+$$
+
+donde $\hat{\gamma_d}=\frac{\hat{\sigma}^2_u}{\hat{\sigma}^2_u + \psi_d}$.
+
+-   Un estimador insesgado de segundo orden del ECM (llamado el estimador Prasad-Rao) viene dado por
+
+$$
+    \begin{eqnarray*}
+    mse_{PR}\left(\tilde{\delta}_{d}^{FH}\right) & = & g_{1d}\left(\hat{\sigma}_{u}^{2}\right)+g_{2d}\left(\hat{\sigma}_{u}^{2}\right)+2g_{3d}\left(\hat{\sigma}_{u}^{2}\right)
+    \end{eqnarray*}
+     con 
+$$ con
+
+$$
+\begin{eqnarray*} g_{1d}\left(\hat{\sigma}_{u}^{2}\right) & = & \gamma_{d}\psi_{d}\\
+g_{2d}\left(\hat{\sigma}_{u}^{2}\right) & = & \left(1-\gamma_{d}\right)^{2}\boldsymbol{x}^{T}\left(\sum_{d=1}^{D}\left(\sigma_{u}^{2}+\psi_{d}\right)\boldsymbol{x}_{d}\boldsymbol{x}_{d}^{T}\right)^{-1}\boldsymbol{x}_{d},\\
+g_{3d}\left(\hat{\sigma}_{u}^{2}\right) & = & \left(1-\gamma_{d}\right)^{2}\left(\sigma_{u}^{2}+\psi_{d}\right)^{-1}\overline{var}\left(\hat{\sigma}_{u}^{2}\right),
+\end{eqnarray*}
+$$
+
+donde $$
+\begin{eqnarray*}
+\overline{var}\left(\hat{\sigma}_{u}^{2}\right) & = & \mathit{I}^{-1 }\left(\sigma_{u}^{2}\right)=2\left\{ \sum_{d=1}^{D}\left(\sigma_{u}^{2}+\psi_{d}\right)^{-2}\right\} ^{-1}
+\end{eqnarray*}
+$$ para un estimador REML y $\mathit{I}$ es la información Fisher
+
+-   El estimador directo no es el único insumo del modelo de áreas de Fay-Herriot; también lo es su varianza. El estimador puntual da un indicio de la localización del parámetro, y su varianza presenta el nivel de certeza o confianza sobre esta localización.
+
+-   Al tratar con cifras provenientes de procesamientos con encuestas de hogares, es indispensable siempre tener en cuenta que el sustento inferencial recae en la estrategia de muestreo, definida como la dupla compuesta por el diseño de muestreo y el estimador escogido.
+
+
+$$
+\begin{eqnarray*}
+Y\mid\mu,\sigma_{e} & \sim & N\left(\mu,\sigma_{e}\right)\\
+\mu & = & \boldsymbol{X\beta}+V
+\end{eqnarray*}
+$$
+
+donde $V \sim N(0 , \sigma_v)$.
+
+Las distribuciones previas para $\boldsymbol{\beta}$ y $\sigma^2_v$
+
+$$
+\begin{eqnarray*}
+\beta_k & \sim   & N(\mu_0, \tau^2_0)\\
+\sigma^2_v &\sim & IG(\alpha_1,\alpha_2)
+\end{eqnarray*}
+$$
+
+
+## Procesamiento en R
+
+Lectura de la base de datos que resultó en el paso anterior y selección de las columnas de interés
+```{r}
+library(tidyverse)
+library(magrittr)
+
+base_FH <- readRDS("../Data/base_FH_2021.rds") %>% 
+  select(provi, pobreza, vardir, hat_var)
+```
+
+Lectura de las covariables, las cuales son obtenidas previamente. Dado la diferencia entre las escalas de las variables  es necesario hacer un ajuste a estas. 
+
+```{r}
+statelevel_predictors_df <- readRDS("../Data/statelevel_predictors_df_provi.rds") %>% 
+    mutate_at(.vars = c("F182013_stable_lights",
+                      "X2016_crops.coverfraction",
+                      "X2016_urban.coverfraction",
+                      "X2016_gHM",
+                      "accessibility",
+                      "accessibility_walking_only"),
+            function(x) scale(x)*2+5)
+```
+
+Uniendo las dos bases de datos. 
+
+```{r}
+base_FH <- full_join(base_FH, statelevel_predictors_df, by = "provi" )
+tba(base_FH[,1:8] %>% head(10))
+```
+
+# Preparando los insumos para `STAN`
+
+Dividir la base de datos en dominios observados y no observados
+
+### Dominios observados.
+```{r}
+data_dir <- base_FH %>% filter(!is.na(pobreza))
+```
+
+### Dominios NO observados.
+```{r}
+data_syn <-
+  base_FH %>% anti_join(data_dir %>% select(provi))
+tba(data_syn[,1:8])
+```
+
+### Matrix de covariables (Efectos fijos) 
+
+```{r}
+formula_mod  <- formula(~ sexo2 + 
+                         anoest2 +
+                         anoest3 +
+                         anoest4 + 
+                         edad2 +
+                         edad3  +
+                         edad4  +
+                         edad5 +
+                         etnia1 +
+                         etnia2 +
+                         tasa_desocupacion +
+                         F182013_stable_lights +
+                         X2016_urban.coverfraction +
+                         rezago_escolar + alfabeta)
+## Dominios observados
+Xdat <- model.matrix(formula_mod, data = data_dir)
+
+## Dominios no observados
+Xs <- model.matrix(formula_mod, data = data_syn)
+
+```
+
+Para realizar la predicción del modelo es necesario validar que $X$ y $Xs$ deben tener la mismas columnas en el mismo orden.
+
+```{r}
+temp <- setdiff(colnames(Xdat),colnames(Xs))
+
+temp <- matrix(
+  0,
+  nrow = nrow(Xs),
+  ncol = length(temp),
+  dimnames = list(1:nrow(Xs), temp)
+)
+
+Xs <- cbind(Xs,temp)[,colnames(Xdat)]
+
+```
+
+
+Creando lista de parámetros para `STAN`
+
+```{r}
+sample_data <- list(
+  N1 = nrow(Xdat),   # Observados.
+  N2 = nrow(Xs),   # NO Observados.
+  p  = ncol(Xdat),       # Número de regresores.
+  X  = as.matrix(Xdat),  # Covariables Observados.
+  Xs = as.matrix(Xs),    # Covariables NO Observados
+  y  = as.numeric(data_dir$pobreza), # Estimación directa
+  sigma_e = sqrt(data_dir$hat_var)   # Error de estimación
+)
+```
+
+ Compilando el modelo en `STAN`
+```{r}
+library(cmdstanr)
+# file.edit("../Data/modelosStan/17FH_normal.stan")
+fit_FH_normal <- cmdstan_model("../Data/modelosStan/17FH_normal.stan")
+
+model_FH_normal <-
+  fit_FH_normal$sample(
+    data = sample_data,
+    chains = 4,
+    parallel_chains = 4,
+    iter_warmup = 2000,
+    iter_sampling = 1000,
+    seed = 1234,
+    refresh = 500
+  )
+
+```
+
+### Resultados del modelo para los dominios observados. 
+
+```{r}
+library(bayesplot)
+library(patchwork)
+y_pred_B <- model_FH_normal$draws(variables = "theta", format = "matrix")
+rowsrandom <- sample(nrow(y_pred_B), 100)
+y_pred2 <- y_pred_B[rowsrandom, ]
+ppc_dens_overlay(y = as.numeric(data_dir$pobreza), y_pred2)
+```
+
+Análisis gráfico de la convergencia de las cadenas. 
+
+```{r}
+(mcmc_dens_chains(model_FH_normal$draws("sigma2_v")) +
+    mcmc_areas(model_FH_normal$draws("sigma2_v")))/ 
+  mcmc_trace(model_FH_normal$draws("sigma2_v"))
+```
+
+Estimación del FH de la pobreza en los dominios observados. 
+
+```{r}
+theta_FH <- model_FH_normal$summary(variables =  "theta")
+data_dir %<>% mutate(pred = theta_FH$mean, 
+                     pred_EE = theta_FH$sd,
+                     Cv_pred = pred_EE/pred)
+```
+
+Estimación del FH de la pobreza en los dominios NO observados. 
+
+```{r}
+theta_FH_pred <- model_FH_normal$summary(variables =  "y_pred")
+
+data_syn <- data_syn %>% 
+  mutate(pred = theta_FH_pred$mean,
+         pred_EE = theta_FH_pred$sd,
+         Cv_pred = pred_EE/pred)
+
+tba(data_syn %>% 
+      select(provi, pobreza, pred, pred_EE, Cv_pred ))
+
+```
+
+# Mapa de pobreza
+
+```{r, out.height= "120%"}
+library(sp)
+library(sf)
+library(tmap)
+
+data_syn %<>% mutate(
+  pred = ifelse(pred < 0, 0,pred),
+  Cv_pred = ifelse(Cv_pred < 0, 0,Cv_pred)) 
+
+data_map <- rbind(data_dir, data_syn) %>% 
+  select(provi, pobreza, pred, pred_EE, Cv_pred ) 
+
+
+## Leer Shapefile del país
+ShapeSAE <- read_sf("../Shape/PROVINCIAS.shp")%>% 
+            mutate(provi = str_pad(IDPROV, pad = "0", width = 4))
+
+
+mapa <- tm_shape(ShapeSAE %>%
+                   left_join(data_map,  by = "provi"))
+
+brks_lp <- c(0,0.025,0.05, 0.1, 0.15, 0.2,0.4, 1)
+tmap_options(check.and.fix = TRUE)
+Mapa_lp <-
+  mapa + tm_polygons(
+    c("pobreza", "pred"),
+    breaks = brks_lp,
+    title = "Mapa de pobreza",
+    palette = "YlOrRd",
+    colorNA = "white"
+  ) + tm_layout(asp = 1.5)
+
+Mapa_lp
+```
+
+Coeficiente de variación.  
+
+```{r, out.height= "120%"}
+Mapa_cv <-
+  mapa + tm_polygons(
+    c("Cv_pred"),
+     title = "Mapa de pobreza(cv)",
+    palette = "YlOrRd",
+    colorNA = "white"
+  ) + tm_layout(asp = 2.5)
+
+Mapa_cv
+
+```
+
+

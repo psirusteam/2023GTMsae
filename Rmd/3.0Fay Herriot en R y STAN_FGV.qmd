@@ -1,6 +1,6 @@
 ---
 title: "Función Generalizada de Varianza (FGV)"
-subtitle: "CEPAL - División de Estadísticas Sociales"
+subtitle: "CEPAL - Unidad de Estadísticas Sociales"
 author: "Andrés Gutiérrez - Stalyn Guerrero"
 format: html
 project:
@@ -14,8 +14,8 @@ knitr::opts_chunk$set(
   message = FALSE,
   warning = FALSE,
   cache = TRUE,
-  cache.path = "0Recursos/3.1FGV/",
-  fig.path = "0Recursos/3.1FGV_fig/"
+  cache.path = "0Recursos/3.0FGV/",
+  fig.path = "0Recursos/3.0FGV/"
 )
 library(printr)
 library(kableExtra)
@@ -85,18 +85,21 @@ library(tidyverse)
 library(magrittr)
 source("0Recursos/0Funciones/0Source_FH.R")
 
-encuesta <- readRDS("../Data/encuestaPER21N.rds") %>% 
+encuesta <- readRDS("../Data/encuestaGTM14N.rds") %>% 
   transmute(
-    depto,
-    provi = substr(ubigeo,1,4),
+    dam = str_pad(dam_ee, width = 2, pad = "0"),
+    dam2 = str_pad(mupio, width = 3, pad = "0"),
+    dam2 = paste0(dam, dam2),
     wkx = `_fep`, 
     upm = `_upm`,
-    estrato = `_estrato`,
+    estrato = paste0(dam,area_ee),
     pobreza = ifelse(ingcorte < lp, 1 , 0))
 
 ```
 
--   *depto*: Corresponde al código asignado a la segunda división administrativa del país.
+-   *dam*: Corresponde al código asignado a la división administrativa mayor del país.
+
+-   *dam2*: Corresponde al código asignado a la segunda división administrativa del país.
 
 -   *lp* linea de pobreza definidas por CEPAL. 
 
@@ -107,7 +110,7 @@ encuesta <- readRDS("../Data/encuestaPER21N.rds") %>%
 tba(encuesta %>% head(10))
 ```
 
-Definir el diseño muestral haciendo uso de las librerias `srvyr` y `survey`
+Definir el diseño muestral haciendo uso de las librerías `srvyr` y `survey`
 
 ```{r}
 library(survey)
@@ -122,31 +125,44 @@ diseno <-
     nest = TRUE,
     .data = encuesta
   )
-
+summary(diseno)
 ```
 
 Para la estimación directa de la proporción se emplea la función `direct.supr`, disponible en el archivo `0Source_FH.R`, dando como resultado.
 
 ```{r}
-directoprovi <- direct.supr(design.base = diseno,
+directodam2 <- direct.supr(design.base = diseno,
                              variable = pobreza, 
-                             group = provi,
+                             group = dam2,
                              upm = upm,
                              estrato = estrato)
 
-directoprovi %>%
+## 01006 ninguno es pobre.
+
+directodam2 %>%
   group_by(Flag) %>%
   summarise(n = n()) %>% 
   arrange(n) %>% tba()
 ```
+En el caso particular de la dam2 **01006** tenemos que: 
+
+```{r}
+temp <-  encuesta %>% filter(dam2 == "01006")
+temp %>% group_by(upm)  %>%
+  summarise(n = n(),
+            pobres = sum(pobreza)) %>% tba()
+
+```
+
+
 
 Para los dominios que no son excluidos se hace la transformación arcoseno, calculo del *DEFF* y varianza 
 
 ```{r}
-base_sae <- directoprovi %>% 
+base_sae <- directodam2 %>% 
   filter(Flag != "Excluir") %>%
   transmute(
-    provi = provi,             # Id para los dominios
+    dam2 = dam2,             # Id para los dominios
     nd = n,                    # Número de observaciones por dominios
     n_effec = n.eff,           # n efectivo. 
     pobreza = p,               # Estimación de la variable
@@ -154,7 +170,7 @@ base_sae <- directoprovi %>%
     vardir = ee ^ 2,                 # Estimación de la varianza directa 
     cv = CV,                       
     var_zd = 1 / (4 * n_effec),      # Varianza para la tranformación arcsin
-    deff_provi = deff                # Deff por dominio
+    deff_dam2 = deff                # Deff por dominio
   )
 
 # View(base_sae)
@@ -165,7 +181,7 @@ Seleccionando las variables de interés para la FGV.
 
 ```{r}
 baseFGV <-  base_sae %>% 
-  select(provi, pobreza, nd, vardir) %>%
+  select(dam2, pobreza, nd, vardir) %>%
   mutate(ln_sigma2 = log(vardir))
 
 ```
@@ -213,11 +229,9 @@ library(patchwork)
 
 ```{r, results='asis'}
 library(gtsummary)
-FGV1 <- lm(ln_sigma2 ~ 1 + pobreza + 
-             nd + I(nd ^ 2) + I(pobreza * nd) +
-             I(sqrt(pobreza)) + I(sqrt(nd)) + 
-             I(sqrt(pobreza * nd)),
+FGV1 <- lm(ln_sigma2 ~ pobreza + I(nd^2) + I(sqrt(pobreza)),
      data = baseFGV)
+
 tbl_regression(FGV1) %>% 
   add_glance_table(include = c(r.squared, adj.r.squared))
 ```
@@ -234,7 +248,7 @@ Varianza suavizada para los dominios observados
 
 
 ```{r}
-hat.sigma <- data.frame(provi = baseFGV$provi,
+hat.sigma <- data.frame(dam2 = baseFGV$dam2,
                         hat_var = delta.hat * exp(fitted.values(FGV1)))
 
 baseFGV$ln_sigma2_pred <- hat.sigma$hat_var
@@ -263,7 +277,7 @@ Predicción de la varianza suavizada
 prediccion_ln_0 = predict(FGV1, newdata = base_sae %>%
                             filter(!is.na(pobreza))) 
 base_sae <- base_sae %>% 
-  left_join(hat.sigma, by = "provi")
+  left_join(hat.sigma, by = "dam2")
 
 base_sae$hat_var[base_sae$vardir == 0 & !is.na(base_sae$vardir)] <-
   delta.hat * exp(prediccion_ln_0)
@@ -274,19 +288,19 @@ Organizando la información para exportar, realizamos validaciones adicionales s
 ```{r}
 base_FH <- base_sae %>%
   mutate(
-    deff_provi = ifelse(is.nan(deff_provi), 1,
-                         deff_provi),
+    deff_dam2 = ifelse(is.nan(deff_dam2), 1,
+                         deff_dam2),
     deff_FGV = ifelse(
       vardir == 0 ,
       1,
-      hat_var / (vardir / deff_provi)
+      hat_var / (vardir / deff_dam2)
     ),
     # Criterio MDS para regularizar el DeffFGV
     deff_FGV = ifelse(deff_FGV < 1, 1, deff_FGV),
     n_eff_FGV = nd / deff_FGV
   )
 
-saveRDS(object = base_FH, "../Data/base_FH_2021.rds")
+saveRDS(object = base_FH, "../Data/base_FH_2014.rds")
 ```
 
 # Análisis gráfico
