@@ -226,12 +226,12 @@ Y\mid\mu,\sigma_{e} &amp; \sim &amp; N\left(\mu,\sigma_{e}\right)\\
 <section id="procesamiento-en-r" class="level2">
 <h2 class="anchored" data-anchor-id="procesamiento-en-r">Procesamiento en R</h2>
 <p>Lectura de la base de datos que resultó en el paso anterior y selección de las columnas de interés</p>
-<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-1_ff089bdd6019783275740f4f91b25499">
+<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-1_693e1b4155250addf38b1307d0d5bd12">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>base_FH <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"../Data/base_FH_2014.rds"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(dam2, pobreza, vardir, hat_var)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(dam2, nd,  pobreza, vardir, hat_var)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Lectura de las covariables, las cuales son obtenidas previamente. Dado la diferencia entre las escalas de las variables es necesario hacer un ajuste a estas.</p>
 <div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-2_0738e39e08ecf961f34d1ec71cbab824">
@@ -255,115 +255,115 @@ Y\mid\mu,\sigma_{e} &amp; \sim &amp; N\left(\mu,\sigma_{e}\right)\\
  <thead>
   <tr>
    <th style="text-align:left;"> dam2 </th>
+   <th style="text-align:right;"> nd </th>
    <th style="text-align:right;"> pobreza </th>
    <th style="text-align:right;"> vardir </th>
    <th style="text-align:right;"> hat_var </th>
    <th style="text-align:left;"> dam </th>
    <th style="text-align:right;"> luces_nocturnas </th>
    <th style="text-align:right;"> suelo_cultivos </th>
-   <th style="text-align:right;"> suelo_urbanos </th>
   </tr>
  </thead>
 <tbody>
   <tr>
    <td style="text-align:left;"> 01007 </td>
+   <td style="text-align:right;"> 186 </td>
    <td style="text-align:right;"> 0.2996 </td>
    <td style="text-align:right;"> 0.0131 </td>
    <td style="text-align:right;"> 0.0093 </td>
    <td style="text-align:left;"> 01 </td>
    <td style="text-align:right;"> 6.425316 </td>
    <td style="text-align:right;"> 4.354648 </td>
-   <td style="text-align:right;"> 5.148490 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 02001 </td>
+   <td style="text-align:right;"> 400 </td>
    <td style="text-align:right;"> 0.4211 </td>
    <td style="text-align:right;"> 0.0094 </td>
    <td style="text-align:right;"> 0.0105 </td>
    <td style="text-align:left;"> 02 </td>
    <td style="text-align:right;"> 5.286546 </td>
    <td style="text-align:right;"> 5.028009 </td>
-   <td style="text-align:right;"> 4.559252 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 02002 </td>
+   <td style="text-align:right;"> 192 </td>
    <td style="text-align:right;"> 0.4476 </td>
    <td style="text-align:right;"> 0.0290 </td>
    <td style="text-align:right;"> 0.0125 </td>
    <td style="text-align:left;"> 02 </td>
    <td style="text-align:right;"> 3.781731 </td>
    <td style="text-align:right;"> 4.867647 </td>
-   <td style="text-align:right;"> 4.236113 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 02003 </td>
+   <td style="text-align:right;"> 260 </td>
    <td style="text-align:right;"> 0.5179 </td>
    <td style="text-align:right;"> 0.0039 </td>
    <td style="text-align:right;"> 0.0117 </td>
    <td style="text-align:left;"> 02 </td>
    <td style="text-align:right;"> 4.856416 </td>
    <td style="text-align:right;"> 5.126377 </td>
-   <td style="text-align:right;"> 4.445161 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 02006 </td>
+   <td style="text-align:right;"> 190 </td>
    <td style="text-align:right;"> 0.5351 </td>
    <td style="text-align:right;"> 0.0202 </td>
    <td style="text-align:right;"> 0.0120 </td>
    <td style="text-align:left;"> 02 </td>
    <td style="text-align:right;"> 4.052222 </td>
    <td style="text-align:right;"> 4.628283 </td>
-   <td style="text-align:right;"> 4.130218 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 02007 </td>
+   <td style="text-align:right;"> 487 </td>
    <td style="text-align:right;"> 0.4423 </td>
    <td style="text-align:right;"> 0.0091 </td>
    <td style="text-align:right;"> 0.0097 </td>
    <td style="text-align:left;"> 02 </td>
    <td style="text-align:right;"> 6.641498 </td>
    <td style="text-align:right;"> 4.895508 </td>
-   <td style="text-align:right;"> 5.230731 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 03001 </td>
+   <td style="text-align:right;"> 449 </td>
    <td style="text-align:right;"> 0.2990 </td>
    <td style="text-align:right;"> 0.0034 </td>
    <td style="text-align:right;"> 0.0076 </td>
    <td style="text-align:left;"> 03 </td>
    <td style="text-align:right;"> 6.961710 </td>
    <td style="text-align:right;"> 4.249805 </td>
-   <td style="text-align:right;"> 6.328201 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 03002 </td>
+   <td style="text-align:right;"> 408 </td>
    <td style="text-align:right;"> 0.2658 </td>
    <td style="text-align:right;"> 0.0089 </td>
    <td style="text-align:right;"> 0.0068 </td>
    <td style="text-align:left;"> 03 </td>
    <td style="text-align:right;"> 4.070177 </td>
    <td style="text-align:right;"> 4.231679 </td>
-   <td style="text-align:right;"> 4.280650 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 03004 </td>
+   <td style="text-align:right;"> 502 </td>
    <td style="text-align:right;"> 0.3215 </td>
    <td style="text-align:right;"> 0.0030 </td>
    <td style="text-align:right;"> 0.0077 </td>
    <td style="text-align:left;"> 03 </td>
    <td style="text-align:right;"> 5.196541 </td>
    <td style="text-align:right;"> 4.356746 </td>
-   <td style="text-align:right;"> 4.719067 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 03006 </td>
+   <td style="text-align:right;"> 371 </td>
    <td style="text-align:right;"> 0.3650 </td>
    <td style="text-align:right;"> 0.0079 </td>
    <td style="text-align:right;"> 0.0100 </td>
    <td style="text-align:left;"> 03 </td>
    <td style="text-align:right;"> 5.721913 </td>
    <td style="text-align:right;"> 4.300431 </td>
-   <td style="text-align:right;"> 4.976970 </td>
   </tr>
 </tbody>
 </table>
@@ -392,13 +392,13 @@ Y\mid\mu,\sigma_{e} &amp; \sim &amp; N\left(\mu,\sigma_{e}\right)\\
  <thead>
   <tr>
    <th style="text-align:left;"> dam2 </th>
+   <th style="text-align:right;"> nd </th>
    <th style="text-align:right;"> pobreza </th>
    <th style="text-align:right;"> vardir </th>
    <th style="text-align:right;"> hat_var </th>
    <th style="text-align:left;"> dam </th>
    <th style="text-align:right;"> luces_nocturnas </th>
    <th style="text-align:right;"> suelo_cultivos </th>
-   <th style="text-align:right;"> suelo_urbanos </th>
   </tr>
  </thead>
 <tbody>
@@ -407,100 +407,100 @@ Y\mid\mu,\sigma_{e} &amp; \sim &amp; N\left(\mu,\sigma_{e}\right)\\
    <td style="text-align:right;"> NA </td>
    <td style="text-align:right;"> NA </td>
    <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
    <td style="text-align:left;"> 16 </td>
    <td style="text-align:right;"> 3.505455 </td>
    <td style="text-align:right;"> 4.478813 </td>
-   <td style="text-align:right;"> 4.512089 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 16014 </td>
    <td style="text-align:right;"> NA </td>
    <td style="text-align:right;"> NA </td>
    <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
    <td style="text-align:left;"> 16 </td>
    <td style="text-align:right;"> 3.512824 </td>
    <td style="text-align:right;"> 4.885733 </td>
-   <td style="text-align:right;"> 4.415839 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 16013 </td>
    <td style="text-align:right;"> NA </td>
    <td style="text-align:right;"> NA </td>
    <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
    <td style="text-align:left;"> 16 </td>
    <td style="text-align:right;"> 4.050201 </td>
    <td style="text-align:right;"> 6.436918 </td>
-   <td style="text-align:right;"> 4.897607 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 16015 </td>
    <td style="text-align:right;"> NA </td>
    <td style="text-align:right;"> NA </td>
    <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
    <td style="text-align:left;"> 16 </td>
    <td style="text-align:right;"> 3.914447 </td>
    <td style="text-align:right;"> 7.543074 </td>
-   <td style="text-align:right;"> 5.749064 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 16011 </td>
    <td style="text-align:right;"> NA </td>
    <td style="text-align:right;"> NA </td>
    <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
    <td style="text-align:left;"> 16 </td>
    <td style="text-align:right;"> 3.674836 </td>
    <td style="text-align:right;"> 4.266054 </td>
-   <td style="text-align:right;"> 4.154494 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 16007 </td>
    <td style="text-align:right;"> NA </td>
    <td style="text-align:right;"> NA </td>
    <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
    <td style="text-align:left;"> 16 </td>
    <td style="text-align:right;"> 3.810438 </td>
    <td style="text-align:right;"> 6.130320 </td>
-   <td style="text-align:right;"> 5.216818 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 16017 </td>
    <td style="text-align:right;"> NA </td>
    <td style="text-align:right;"> NA </td>
    <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
    <td style="text-align:left;"> 16 </td>
    <td style="text-align:right;"> 3.749051 </td>
    <td style="text-align:right;"> 5.920236 </td>
-   <td style="text-align:right;"> 4.168912 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 16003 </td>
    <td style="text-align:right;"> NA </td>
    <td style="text-align:right;"> NA </td>
    <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
    <td style="text-align:left;"> 16 </td>
    <td style="text-align:right;"> 4.497657 </td>
    <td style="text-align:right;"> 4.271988 </td>
-   <td style="text-align:right;"> 4.594661 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 16010 </td>
    <td style="text-align:right;"> NA </td>
    <td style="text-align:right;"> NA </td>
    <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
    <td style="text-align:left;"> 16 </td>
    <td style="text-align:right;"> 3.958993 </td>
    <td style="text-align:right;"> 4.331455 </td>
-   <td style="text-align:right;"> 4.180705 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 16016 </td>
    <td style="text-align:right;"> NA </td>
    <td style="text-align:right;"> NA </td>
    <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
    <td style="text-align:left;"> 16 </td>
    <td style="text-align:right;"> 3.832718 </td>
    <td style="text-align:right;"> 4.668809 </td>
-   <td style="text-align:right;"> 4.661093 </td>
   </tr>
 </tbody>
 </table>
@@ -556,22 +556,74 @@ Y\mid\mu,\sigma_{e} &amp; \sim &amp; N\left(\mu,\sigma_{e}\right)\\
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma_e =</span> <span class="fu">sqrt</span>(data_dir<span class="sc">$</span>hat_var)   <span class="co"># Error de estimación</span></span>
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>Rutina implementada en <code>STAN</code></p>
+<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-9_32b453ba1c2e6f774d7b06fa88b773bb">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>data {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  int<span class="sc">&lt;</span>lower<span class="ot">=</span><span class="dv">0</span><span class="sc">&gt;</span> N1;   <span class="sc">/</span><span class="er">/</span> number of data items</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  int<span class="sc">&lt;</span>lower<span class="ot">=</span><span class="dv">0</span><span class="sc">&gt;</span> N2;   <span class="sc">/</span><span class="er">/</span> number of data items <span class="cf">for</span> prediction</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  int<span class="sc">&lt;</span>lower<span class="ot">=</span><span class="dv">0</span><span class="sc">&gt;</span> p;   <span class="sc">/</span><span class="er">/</span> number of predictors</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  matrix[N1, p] X;   <span class="sc">/</span><span class="er">/</span> predictor matrix</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  matrix[N2, p] Xs;   <span class="sc">/</span><span class="er">/</span> predictor matrix</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  vector[N1] y;      <span class="sc">/</span><span class="er">/</span> predictor matrix </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  vector[N1] sigma_e; <span class="sc">/</span><span class="er">/</span> known variances</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="sc">/</span><span class="er">/</span> The parameters accepted by the model. Our model</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="sc">/</span><span class="er">/</span> accepts two parameters <span class="st">'mu'</span> and <span class="st">'sigma'</span>.</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>parameters {</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  vector[p] beta;       <span class="sc">/</span><span class="er">/</span> coefficients <span class="cf">for</span> predictors</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  real<span class="sc">&lt;</span>lower<span class="ot">=</span><span class="dv">0</span><span class="sc">&gt;</span> sigma2_v;</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  vector[N1] v;</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>transformed parameters{</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>  vector[N1] theta;         </span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>  vector[N1] thetaSyn;</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>  vector[N1] thetaFH;</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>  vector[N1] gammaj;</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>  real<span class="sc">&lt;</span>lower<span class="ot">=</span><span class="dv">0</span><span class="sc">&gt;</span> sigma_v;</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>  thetaSyn <span class="ot">=</span> X <span class="sc">*</span> beta;</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>  theta <span class="ot">=</span> thetaSyn <span class="sc">+</span> v;</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>  sigma_v <span class="ot">=</span> <span class="fu">sqrt</span>(sigma2_v);</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>  gammaj <span class="ot">=</span>  <span class="fu">to_vector</span>(sigma_v .<span class="sc">/</span> (sigma_v <span class="sc">+</span> sigma_e));</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>  thetaFH <span class="ot">=</span> (gammaj) .<span class="sc">*</span> y <span class="sc">+</span> (<span class="dv">1</span><span class="sc">-</span>gammaj).<span class="sc">*</span>thetaSyn; </span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>model {</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>  <span class="sc">/</span><span class="er">/</span> likelihood</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>  y <span class="sc">~</span> <span class="fu">normal</span>(theta, sigma_e); </span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>  <span class="sc">/</span><span class="er">/</span> priors</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>  beta <span class="sc">~</span> <span class="fu">normal</span>(<span class="dv">0</span>, <span class="dv">100</span>);</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>  v <span class="sc">~</span> <span class="fu">normal</span>(<span class="dv">0</span>, sigma_v);</span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>  sigma2_v <span class="sc">~</span> <span class="fu">inv_gamma</span>(<span class="fl">0.0001</span>, <span class="fl">0.0001</span>);</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>generated quantities{</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>  vector[N2] y_pred;</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N2) {</span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>    y_pred[j] <span class="ot">=</span> <span class="fu">normal_rng</span>(Xs[j] <span class="sc">*</span> beta, sigma_v);</span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>Compilando el modelo en <code>STAN</code></p>
-<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-9_caa8b51044672ddbc62ddcdcf27b5acd">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cmdstanr)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># file.edit("../Data/modelosStan/17FH_normal.stan")</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>fit_FH_normal <span class="ot">&lt;-</span> <span class="fu">cmdstan_model</span>(<span class="st">"../Data/modelosStan/17FH_normal.stan"</span>)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>model_FH_normal <span class="ot">&lt;-</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  fit_FH_normal<span class="sc">$</span><span class="fu">sample</span>(</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> sample_data,</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">chains =</span> <span class="dv">4</span>,</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">parallel_chains =</span> <span class="dv">4</span>,</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">iter_warmup =</span> <span class="dv">2000</span>,</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">iter_sampling =</span> <span class="dv">1000</span>,</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">seed =</span> <span class="dv">1234</span>,</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">refresh =</span> <span class="dv">1000</span></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-10_89dffb9a095bd03d986d4d9b8347e950">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cmdstanr)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># file.edit("../Data/modelosStan/17FH_normal.stan")</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>fit_FH_normal <span class="ot">&lt;-</span> <span class="fu">cmdstan_model</span>(<span class="st">"../Data/modelosStan/17FH_normal.stan"</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>model_FH_normal <span class="ot">&lt;-</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  fit_FH_normal<span class="sc">$</span><span class="fu">sample</span>(</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> sample_data,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">chains =</span> <span class="dv">4</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">parallel_chains =</span> <span class="dv">4</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">iter_warmup =</span> <span class="dv">2000</span>,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">iter_sampling =</span> <span class="dv">1000</span>,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">seed =</span> <span class="dv">1234</span>,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">refresh =</span> <span class="dv">1000</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 4 parallel chains...
 
@@ -581,88 +633,138 @@ Chain 3 Iteration:    1 / 3000 [  0%]  (Warmup)
 Chain 4 Iteration:    1 / 3000 [  0%]  (Warmup) 
 Chain 2 Iteration: 1000 / 3000 [ 33%]  (Warmup) 
 Chain 3 Iteration: 1000 / 3000 [ 33%]  (Warmup) 
-Chain 1 Iteration: 1000 / 3000 [ 33%]  (Warmup) 
 Chain 4 Iteration: 1000 / 3000 [ 33%]  (Warmup) 
+Chain 1 Iteration: 1000 / 3000 [ 33%]  (Warmup) 
 Chain 2 Iteration: 2000 / 3000 [ 66%]  (Warmup) 
 Chain 2 Iteration: 2001 / 3000 [ 66%]  (Sampling) 
-Chain 1 Iteration: 2000 / 3000 [ 66%]  (Warmup) 
-Chain 3 Iteration: 2000 / 3000 [ 66%]  (Warmup) 
-Chain 1 Iteration: 2001 / 3000 [ 66%]  (Sampling) 
-Chain 3 Iteration: 2001 / 3000 [ 66%]  (Sampling) 
 Chain 4 Iteration: 2000 / 3000 [ 66%]  (Warmup) 
 Chain 4 Iteration: 2001 / 3000 [ 66%]  (Sampling) 
-Chain 2 Iteration: 3000 / 3000 [100%]  (Sampling) 
-Chain 2 finished in 78.2 seconds.
-Chain 1 Iteration: 3000 / 3000 [100%]  (Sampling) 
-Chain 3 Iteration: 3000 / 3000 [100%]  (Sampling) 
-Chain 1 finished in 79.2 seconds.
-Chain 3 finished in 78.8 seconds.
+Chain 1 Iteration: 2000 / 3000 [ 66%]  (Warmup) 
+Chain 1 Iteration: 2001 / 3000 [ 66%]  (Sampling) 
+Chain 3 Iteration: 2000 / 3000 [ 66%]  (Warmup) 
+Chain 3 Iteration: 2001 / 3000 [ 66%]  (Sampling) 
 Chain 4 Iteration: 3000 / 3000 [100%]  (Sampling) 
-Chain 4 finished in 79.2 seconds.
+Chain 2 Iteration: 3000 / 3000 [100%]  (Sampling) 
+Chain 2 finished in 141.1 seconds.
+Chain 4 finished in 139.7 seconds.
+Chain 1 Iteration: 3000 / 3000 [100%]  (Sampling) 
+Chain 1 finished in 143.0 seconds.
+Chain 3 Iteration: 3000 / 3000 [100%]  (Sampling) 
+Chain 3 finished in 143.0 seconds.
 
 All 4 chains finished successfully.
-Mean chain execution time: 78.9 seconds.
-Total execution time: 81.5 seconds.</code></pre>
+Mean chain execution time: 141.7 seconds.
+Total execution time: 143.7 seconds.</code></pre>
 </div>
 </div>
 </section>
 <section id="resultados-del-modelo-para-los-dominios-observados." class="level3">
 <h3 class="anchored" data-anchor-id="resultados-del-modelo-para-los-dominios-observados.">Resultados del modelo para los dominios observados.</h3>
-<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-10_93a12e43529d208e2657a57bcb23f31f">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bayesplot)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>y_pred_B <span class="ot">&lt;-</span> model_FH_normal<span class="sc">$</span><span class="fu">draws</span>(<span class="at">variables =</span> <span class="st">"theta"</span>, <span class="at">format =</span> <span class="st">"matrix"</span>)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>rowsrandom <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">nrow</span>(y_pred_B), <span class="dv">100</span>)</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>y_pred2 <span class="ot">&lt;-</span> y_pred_B[rowsrandom, ]</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ppc_dens_overlay</span>(<span class="at">y =</span> <span class="fu">as.numeric</span>(data_dir<span class="sc">$</span>pobreza), y_pred2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="0Recursos/3.1normal/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>Análisis gráfico de la convergencia de las cadenas.</p>
-<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-11_2c5ceac5f6e54a417c0839b821fd088a">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(<span class="fu">mcmc_dens_chains</span>(model_FH_normal<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"sigma2_v"</span>)) <span class="sc">+</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mcmc_areas</span>(model_FH_normal<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"sigma2_v"</span>)))<span class="sc">/</span> </span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mcmc_trace</span>(model_FH_normal<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"sigma2_v"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-11_c84799da60b7087e86c1ffe1f621f56d">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bayesplot)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>y_pred_B <span class="ot">&lt;-</span> model_FH_normal<span class="sc">$</span><span class="fu">draws</span>(<span class="at">variables =</span> <span class="st">"theta"</span>, <span class="at">format =</span> <span class="st">"matrix"</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>rowsrandom <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">nrow</span>(y_pred_B), <span class="dv">100</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>y_pred2 <span class="ot">&lt;-</span> y_pred_B[rowsrandom, ]</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ppc_dens_overlay</span>(<span class="at">y =</span> <span class="fu">as.numeric</span>(data_dir<span class="sc">$</span>pobreza), y_pred2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="0Recursos/3.1normal/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Estimación del FH de la pobreza en los dominios observados.</p>
-<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-12_dab8e554769e61fb723e1a6c19e16b2d">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>theta_FH <span class="ot">&lt;-</span> model_FH_normal<span class="sc">$</span><span class="fu">summary</span>(<span class="at">variables =</span>  <span class="st">"theta"</span>)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>data_dir <span class="sc">%&lt;&gt;%</span> <span class="fu">mutate</span>(<span class="at">pred =</span> theta_FH<span class="sc">$</span>mean, </span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">pred_EE =</span> theta_FH<span class="sc">$</span>sd,</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">Cv_pred =</span> pred_EE<span class="sc">/</span>pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Análisis gráfico de la convergencia de las cadenas.</p>
+<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-12_584eda5d9e7a2ab0e08172bd42fac393">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(<span class="fu">mcmc_dens_chains</span>(model_FH_normal<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"sigma2_v"</span>)) <span class="sc">+</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mcmc_areas</span>(model_FH_normal<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"sigma2_v"</span>)))<span class="sc">/</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mcmc_trace</span>(model_FH_normal<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"sigma2_v"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="0Recursos/3.1normal/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>comparando los resultados obtenidos en <code>STAN</code></p>
+<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-13_39c4c0f660e6834c30f34776244c7b93">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">&lt;-</span> model_FH_normal<span class="sc">$</span><span class="fu">summary</span>(<span class="at">variables =</span>  <span class="st">"theta"</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>thetaSyn <span class="ot">&lt;-</span> model_FH_normal<span class="sc">$</span><span class="fu">summary</span>(<span class="at">variables =</span>  <span class="st">"thetaSyn"</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>theta_FH <span class="ot">&lt;-</span> model_FH_normal<span class="sc">$</span><span class="fu">summary</span>(<span class="at">variables =</span>  <span class="st">"thetaFH"</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>data_dir <span class="sc">%&lt;&gt;%</span> <span class="fu">mutate</span>(</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">thetadir =</span> pobreza,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">theta_pred =</span> theta<span class="sc">$</span>mean,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">thetaSyn =</span> thetaSyn<span class="sc">$</span>mean,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">thetaFH =</span> theta_FH<span class="sc">$</span>mean,</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">theta_pred_EE =</span> theta<span class="sc">$</span>sd,</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">Cv_theta_pred =</span> theta_pred_EE<span class="sc">/</span>theta_pred</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>            ) </span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimación predicción del modelo vs ecuación ponderada de FH </span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>p11 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(data_dir, <span class="fu">aes</span>(<span class="at">x =</span> theta_pred, <span class="at">y =</span> thetaFH)) <span class="sc">+</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>,<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="dv">10</span>) </span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimación con la ecuación ponderada de FH Vs estimación sintética</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>p12 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(data_dir, <span class="fu">aes</span>(<span class="at">x =</span> thetaSyn, <span class="at">y =</span> thetaFH)) <span class="sc">+</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>,<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="dv">10</span>) </span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimación con la ecuación ponderada de FH Vs estimación directa</span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>p21 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(data_dir, <span class="fu">aes</span>(<span class="at">x =</span> thetadir, <span class="at">y =</span> thetaFH)) <span class="sc">+</span></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>,<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="dv">10</span>) </span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimación directa Vs estimación sintética</span></span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>p22 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(data_dir, <span class="fu">aes</span>(<span class="at">x =</span> thetadir, <span class="at">y =</span> thetaSyn)) <span class="sc">+</span></span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>,<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="dv">10</span>) </span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>(p11<span class="sc">+</span>p12)<span class="sc">/</span>(p21<span class="sc">+</span>p22)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="0Recursos/3.1normal/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
 </div>
 <p>Estimación del FH de la pobreza en los dominios NO observados.</p>
-<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-13_a9552f04af673e3a42f3891e61de0c9c">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>theta_FH_pred <span class="ot">&lt;-</span> model_FH_normal<span class="sc">$</span><span class="fu">summary</span>(<span class="at">variables =</span>  <span class="st">"y_pred"</span>)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>data_syn <span class="ot">&lt;-</span> data_syn <span class="sc">%&gt;%</span> </span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pred =</span> theta_FH_pred<span class="sc">$</span>mean,</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">pred_EE =</span> theta_FH_pred<span class="sc">$</span>sd,</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">Cv_pred =</span> pred_EE<span class="sc">/</span>pred)</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="fu">tba</span>(data_syn <span class="sc">%&gt;%</span> </span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(dam2, pobreza, pred, pred_EE, Cv_pred ) <span class="sc">%&gt;%</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-14_dcfb8eebfd1e6996d04cffc47b1a8bd9">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>theta_syn_pred <span class="ot">&lt;-</span> model_FH_normal<span class="sc">$</span><span class="fu">summary</span>(<span class="at">variables =</span>  <span class="st">"y_pred"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>data_syn <span class="ot">&lt;-</span> data_syn <span class="sc">%&gt;%</span> </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_pred =</span> theta_syn_pred<span class="sc">$</span>mean,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">thetaSyn =</span> theta_pred,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">thetaFH =</span> theta_pred,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_pred_EE =</span> theta_syn_pred<span class="sc">$</span>sd,</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">Cv_theta_pred =</span> theta_pred_EE<span class="sc">/</span>theta_pred)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tba</span>(data_syn <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(dam2<span class="sc">:</span>hat_var,theta_pred<span class="sc">:</span>Cv_theta_pred))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <table class="table table-striped lightable-classic" style="width: auto !important; margin-left: auto; margin-right: auto; font-family: Arial Narrow; width: auto !important; margin-left: auto; margin-right: auto;">
  <thead>
   <tr>
    <th style="text-align:left;"> dam2 </th>
+   <th style="text-align:right;"> nd </th>
    <th style="text-align:right;"> pobreza </th>
-   <th style="text-align:right;"> pred </th>
-   <th style="text-align:right;"> pred_EE </th>
-   <th style="text-align:right;"> Cv_pred </th>
+   <th style="text-align:right;"> vardir </th>
+   <th style="text-align:right;"> hat_var </th>
+   <th style="text-align:right;"> theta_pred </th>
+   <th style="text-align:right;"> thetaSyn </th>
+   <th style="text-align:right;"> thetaFH </th>
+   <th style="text-align:right;"> theta_pred_EE </th>
+   <th style="text-align:right;"> Cv_theta_pred </th>
   </tr>
  </thead>
 <tbody>
   <tr>
    <td style="text-align:left;"> 16012 </td>
    <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> 0.4392 </td>
+   <td style="text-align:right;"> 0.4392 </td>
    <td style="text-align:right;"> 0.4392 </td>
    <td style="text-align:right;"> 0.1488 </td>
    <td style="text-align:right;"> 0.3387 </td>
@@ -670,6 +772,11 @@ Total execution time: 81.5 seconds.</code></pre>
   <tr>
    <td style="text-align:left;"> 16014 </td>
    <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> 0.5461 </td>
+   <td style="text-align:right;"> 0.5461 </td>
    <td style="text-align:right;"> 0.5461 </td>
    <td style="text-align:right;"> 0.1323 </td>
    <td style="text-align:right;"> 0.2423 </td>
@@ -677,6 +784,11 @@ Total execution time: 81.5 seconds.</code></pre>
   <tr>
    <td style="text-align:left;"> 16013 </td>
    <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> 0.5923 </td>
+   <td style="text-align:right;"> 0.5923 </td>
    <td style="text-align:right;"> 0.5923 </td>
    <td style="text-align:right;"> 0.1431 </td>
    <td style="text-align:right;"> 0.2415 </td>
@@ -684,6 +796,11 @@ Total execution time: 81.5 seconds.</code></pre>
   <tr>
    <td style="text-align:left;"> 16015 </td>
    <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> 0.5488 </td>
+   <td style="text-align:right;"> 0.5488 </td>
    <td style="text-align:right;"> 0.5488 </td>
    <td style="text-align:right;"> 0.1437 </td>
    <td style="text-align:right;"> 0.2618 </td>
@@ -691,6 +808,11 @@ Total execution time: 81.5 seconds.</code></pre>
   <tr>
    <td style="text-align:left;"> 16011 </td>
    <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> 0.4510 </td>
+   <td style="text-align:right;"> 0.4510 </td>
    <td style="text-align:right;"> 0.4510 </td>
    <td style="text-align:right;"> 0.1505 </td>
    <td style="text-align:right;"> 0.3337 </td>
@@ -698,6 +820,11 @@ Total execution time: 81.5 seconds.</code></pre>
   <tr>
    <td style="text-align:left;"> 16007 </td>
    <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> 0.5733 </td>
+   <td style="text-align:right;"> 0.5733 </td>
    <td style="text-align:right;"> 0.5733 </td>
    <td style="text-align:right;"> 0.1512 </td>
    <td style="text-align:right;"> 0.2638 </td>
@@ -705,6 +832,11 @@ Total execution time: 81.5 seconds.</code></pre>
   <tr>
    <td style="text-align:left;"> 16017 </td>
    <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> 0.6705 </td>
+   <td style="text-align:right;"> 0.6705 </td>
    <td style="text-align:right;"> 0.6705 </td>
    <td style="text-align:right;"> 0.1447 </td>
    <td style="text-align:right;"> 0.2159 </td>
@@ -712,6 +844,11 @@ Total execution time: 81.5 seconds.</code></pre>
   <tr>
    <td style="text-align:left;"> 16003 </td>
    <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> 0.5920 </td>
+   <td style="text-align:right;"> 0.5920 </td>
    <td style="text-align:right;"> 0.5920 </td>
    <td style="text-align:right;"> 0.1442 </td>
    <td style="text-align:right;"> 0.2436 </td>
@@ -719,6 +856,11 @@ Total execution time: 81.5 seconds.</code></pre>
   <tr>
    <td style="text-align:left;"> 16010 </td>
    <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> 0.5761 </td>
+   <td style="text-align:right;"> 0.5761 </td>
    <td style="text-align:right;"> 0.5761 </td>
    <td style="text-align:right;"> 0.1498 </td>
    <td style="text-align:right;"> 0.2600 </td>
@@ -726,6 +868,11 @@ Total execution time: 81.5 seconds.</code></pre>
   <tr>
    <td style="text-align:left;"> 16016 </td>
    <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> 0.5965 </td>
+   <td style="text-align:right;"> 0.5965 </td>
    <td style="text-align:right;"> 0.5965 </td>
    <td style="text-align:right;"> 0.1419 </td>
    <td style="text-align:right;"> 0.2380 </td>
@@ -735,116 +882,1160 @@ Total execution time: 81.5 seconds.</code></pre>
 
 </div>
 </div>
+<p>consolidando las bases de estimaciones para dominios observados y NO observados.</p>
+<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-15_c08ea3bfb3bcdc5ad170c6bfab33e18a">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>estimacionesPre <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(data_dir, data_syn) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(dam, dam2, theta_pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="proceso-de-benchmark" class="level2">
+<h2 class="anchored" data-anchor-id="proceso-de-benchmark">Proceso de Benchmark</h2>
+<ol type="1">
+<li>Del censo extraer el total de personas por DAM2</li>
+</ol>
+<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-16_3bddbca95d8a1ae6469eeb989abbebd8">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>total_pp <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">"../Data/total_personas_dam.rds"</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>N_dam_pp <span class="ot">&lt;-</span> total_pp <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(dam) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>            <span class="fu">mutate</span>(<span class="at">dam_pp =</span> <span class="fu">sum</span>(total_pp) ) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="fu">tba</span>(N_dam_pp <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table class="table table-striped lightable-classic" style="width: auto !important; margin-left: auto; margin-right: auto; font-family: Arial Narrow; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> dam </th>
+   <th style="text-align:left;"> dam2 </th>
+   <th style="text-align:right;"> total_pp </th>
+   <th style="text-align:right;"> dam_pp </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:left;"> 01001 </td>
+   <td style="text-align:right;"> 923392 </td>
+   <td style="text-align:right;"> 3015081 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:left;"> 01002 </td>
+   <td style="text-align:right;"> 80582 </td>
+   <td style="text-align:right;"> 3015081 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:left;"> 01003 </td>
+   <td style="text-align:right;"> 79844 </td>
+   <td style="text-align:right;"> 3015081 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:left;"> 01004 </td>
+   <td style="text-align:right;"> 7229 </td>
+   <td style="text-align:right;"> 3015081 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:left;"> 01005 </td>
+   <td style="text-align:right;"> 70973 </td>
+   <td style="text-align:right;"> 3015081 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:left;"> 01006 </td>
+   <td style="text-align:right;"> 114752 </td>
+   <td style="text-align:right;"> 3015081 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:left;"> 01007 </td>
+   <td style="text-align:right;"> 58609 </td>
+   <td style="text-align:right;"> 3015081 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:left;"> 01008 </td>
+   <td style="text-align:right;"> 465773 </td>
+   <td style="text-align:right;"> 3015081 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:left;"> 01009 </td>
+   <td style="text-align:right;"> 51292 </td>
+   <td style="text-align:right;"> 3015081 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:left;"> 01010 </td>
+   <td style="text-align:right;"> 218156 </td>
+   <td style="text-align:right;"> 3015081 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:left;"> 01011 </td>
+   <td style="text-align:right;"> 31605 </td>
+   <td style="text-align:right;"> 3015081 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:left;"> 01012 </td>
+   <td style="text-align:right;"> 12638 </td>
+   <td style="text-align:right;"> 3015081 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:left;"> 01013 </td>
+   <td style="text-align:right;"> 58922 </td>
+   <td style="text-align:right;"> 3015081 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:left;"> 01014 </td>
+   <td style="text-align:right;"> 116711 </td>
+   <td style="text-align:right;"> 3015081 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:left;"> 01015 </td>
+   <td style="text-align:right;"> 433734 </td>
+   <td style="text-align:right;"> 3015081 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:left;"> 01016 </td>
+   <td style="text-align:right;"> 155422 </td>
+   <td style="text-align:right;"> 3015081 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:left;"> 01017 </td>
+   <td style="text-align:right;"> 135447 </td>
+   <td style="text-align:right;"> 3015081 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 02 </td>
+   <td style="text-align:left;"> 02001 </td>
+   <td style="text-align:right;"> 24821 </td>
+   <td style="text-align:right;"> 176632 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 02 </td>
+   <td style="text-align:left;"> 02002 </td>
+   <td style="text-align:right;"> 12164 </td>
+   <td style="text-align:right;"> 176632 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 02 </td>
+   <td style="text-align:left;"> 02003 </td>
+   <td style="text-align:right;"> 45765 </td>
+   <td style="text-align:right;"> 176632 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<ol start="2" type="1">
+<li>Obtener las estimaciones directa por DAM o el nivel de agregación en el cual la encuesta es representativa.</li>
+</ol>
+<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-17_99bd7b230e2941e3e0349378499fb28e">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>encuesta <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"../Data/encuestaGTM14N.rds"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">dam =</span> <span class="fu">str_pad</span>(dam_ee, <span class="at">width =</span> <span class="dv">2</span>, <span class="at">pad =</span> <span class="st">"0"</span>),</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">dam2 =</span> <span class="fu">str_pad</span>(mupio, <span class="at">width =</span> <span class="dv">3</span>, <span class="at">pad =</span> <span class="st">"0"</span>),</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">dam2 =</span> <span class="fu">paste0</span>(dam, dam2),</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">wkx =</span> <span class="st">`</span><span class="at">_fep</span><span class="st">`</span>, </span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">upm =</span> <span class="st">`</span><span class="at">_upm</span><span class="st">`</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">estrato =</span> <span class="fu">paste0</span>(dam,area_ee),</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">pobreza =</span> <span class="fu">ifelse</span>(ingcorte <span class="sc">&lt;</span> lp, <span class="dv">1</span> , <span class="dv">0</span>))</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="co">#--- Estimación directa por dam ---#</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survey)</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(srvyr)</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">survey.lonely.psu =</span> <span class="st">"adjust"</span>)</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>diseno <span class="ot">&lt;-</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_survey_design</span>(</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">ids =</span> upm,</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">weights =</span> wkx,</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">strata =</span> estrato,</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">nest =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">.data =</span> encuesta</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>directoDam <span class="ot">&lt;-</span> diseno <span class="sc">%&gt;%</span> </span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(dam) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">nd =</span> <span class="fu">unweighted</span>(<span class="fu">n</span>()),</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_dir =</span> <span class="fu">survey_mean</span>(pobreza, <span class="at">vartype =</span> <span class="fu">c</span>(<span class="st">"se"</span>, <span class="st">"ci"</span>))</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a><span class="fu">tba</span>(directoDam <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table class="table table-striped lightable-classic" style="width: auto !important; margin-left: auto; margin-right: auto; font-family: Arial Narrow; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> dam </th>
+   <th style="text-align:right;"> nd </th>
+   <th style="text-align:right;"> theta_dir </th>
+   <th style="text-align:right;"> theta_dir_se </th>
+   <th style="text-align:right;"> theta_dir_low </th>
+   <th style="text-align:right;"> theta_dir_upp </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:right;"> 2145 </td>
+   <td style="text-align:right;"> 0.1877 </td>
+   <td style="text-align:right;"> 0.0358 </td>
+   <td style="text-align:right;"> 0.1175 </td>
+   <td style="text-align:right;"> 0.2580 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 02 </td>
+   <td style="text-align:right;"> 1997 </td>
+   <td style="text-align:right;"> 0.4622 </td>
+   <td style="text-align:right;"> 0.0450 </td>
+   <td style="text-align:right;"> 0.3739 </td>
+   <td style="text-align:right;"> 0.5505 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 03 </td>
+   <td style="text-align:right;"> 3773 </td>
+   <td style="text-align:right;"> 0.3287 </td>
+   <td style="text-align:right;"> 0.0291 </td>
+   <td style="text-align:right;"> 0.2716 </td>
+   <td style="text-align:right;"> 0.3857 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 04 </td>
+   <td style="text-align:right;"> 2550 </td>
+   <td style="text-align:right;"> 0.6245 </td>
+   <td style="text-align:right;"> 0.0367 </td>
+   <td style="text-align:right;"> 0.5524 </td>
+   <td style="text-align:right;"> 0.6966 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 05 </td>
+   <td style="text-align:right;"> 3144 </td>
+   <td style="text-align:right;"> 0.3271 </td>
+   <td style="text-align:right;"> 0.0267 </td>
+   <td style="text-align:right;"> 0.2747 </td>
+   <td style="text-align:right;"> 0.3794 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 06 </td>
+   <td style="text-align:right;"> 1725 </td>
+   <td style="text-align:right;"> 0.5496 </td>
+   <td style="text-align:right;"> 0.0481 </td>
+   <td style="text-align:right;"> 0.4553 </td>
+   <td style="text-align:right;"> 0.6440 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 07 </td>
+   <td style="text-align:right;"> 2311 </td>
+   <td style="text-align:right;"> 0.6528 </td>
+   <td style="text-align:right;"> 0.0342 </td>
+   <td style="text-align:right;"> 0.5856 </td>
+   <td style="text-align:right;"> 0.7199 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 08 </td>
+   <td style="text-align:right;"> 2359 </td>
+   <td style="text-align:right;"> 0.6107 </td>
+   <td style="text-align:right;"> 0.0431 </td>
+   <td style="text-align:right;"> 0.5261 </td>
+   <td style="text-align:right;"> 0.6953 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 09 </td>
+   <td style="text-align:right;"> 3329 </td>
+   <td style="text-align:right;"> 0.5159 </td>
+   <td style="text-align:right;"> 0.0465 </td>
+   <td style="text-align:right;"> 0.4246 </td>
+   <td style="text-align:right;"> 0.6072 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 10 </td>
+   <td style="text-align:right;"> 3051 </td>
+   <td style="text-align:right;"> 0.4829 </td>
+   <td style="text-align:right;"> 0.0314 </td>
+   <td style="text-align:right;"> 0.4212 </td>
+   <td style="text-align:right;"> 0.5446 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<ol start="3" type="1">
+<li>Realizar el consolidando información obtenida en <em>1</em> y <em>2</em>.</li>
+</ol>
+<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-18_7c1b417ccf28040b70b989839362f115">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">&lt;-</span> directoDam <span class="sc">%&gt;%</span> </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(N_dam_pp, <span class="at">by =</span> <span class="st">"dam"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(estimacionesPre) </span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tba</span>(temp <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table class="table table-striped lightable-classic" style="width: auto !important; margin-left: auto; margin-right: auto; font-family: Arial Narrow; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> dam </th>
+   <th style="text-align:right;"> nd </th>
+   <th style="text-align:right;"> theta_dir </th>
+   <th style="text-align:right;"> theta_dir_se </th>
+   <th style="text-align:right;"> theta_dir_low </th>
+   <th style="text-align:right;"> theta_dir_upp </th>
+   <th style="text-align:left;"> dam2 </th>
+   <th style="text-align:right;"> total_pp </th>
+   <th style="text-align:right;"> dam_pp </th>
+   <th style="text-align:right;"> theta_pred </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:right;"> 2145 </td>
+   <td style="text-align:right;"> 0.1877 </td>
+   <td style="text-align:right;"> 0.0358 </td>
+   <td style="text-align:right;"> 0.1175 </td>
+   <td style="text-align:right;"> 0.258 </td>
+   <td style="text-align:left;"> 01001 </td>
+   <td style="text-align:right;"> 923392 </td>
+   <td style="text-align:right;"> 3015081 </td>
+   <td style="text-align:right;"> 0.3204 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:right;"> 2145 </td>
+   <td style="text-align:right;"> 0.1877 </td>
+   <td style="text-align:right;"> 0.0358 </td>
+   <td style="text-align:right;"> 0.1175 </td>
+   <td style="text-align:right;"> 0.258 </td>
+   <td style="text-align:left;"> 01002 </td>
+   <td style="text-align:right;"> 80582 </td>
+   <td style="text-align:right;"> 3015081 </td>
+   <td style="text-align:right;"> 0.3228 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:right;"> 2145 </td>
+   <td style="text-align:right;"> 0.1877 </td>
+   <td style="text-align:right;"> 0.0358 </td>
+   <td style="text-align:right;"> 0.1175 </td>
+   <td style="text-align:right;"> 0.258 </td>
+   <td style="text-align:left;"> 01003 </td>
+   <td style="text-align:right;"> 79844 </td>
+   <td style="text-align:right;"> 3015081 </td>
+   <td style="text-align:right;"> 0.3942 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:right;"> 2145 </td>
+   <td style="text-align:right;"> 0.1877 </td>
+   <td style="text-align:right;"> 0.0358 </td>
+   <td style="text-align:right;"> 0.1175 </td>
+   <td style="text-align:right;"> 0.258 </td>
+   <td style="text-align:left;"> 01004 </td>
+   <td style="text-align:right;"> 7229 </td>
+   <td style="text-align:right;"> 3015081 </td>
+   <td style="text-align:right;"> 0.5694 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:right;"> 2145 </td>
+   <td style="text-align:right;"> 0.1877 </td>
+   <td style="text-align:right;"> 0.0358 </td>
+   <td style="text-align:right;"> 0.1175 </td>
+   <td style="text-align:right;"> 0.258 </td>
+   <td style="text-align:left;"> 01005 </td>
+   <td style="text-align:right;"> 70973 </td>
+   <td style="text-align:right;"> 3015081 </td>
+   <td style="text-align:right;"> 0.5695 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:right;"> 2145 </td>
+   <td style="text-align:right;"> 0.1877 </td>
+   <td style="text-align:right;"> 0.0358 </td>
+   <td style="text-align:right;"> 0.1175 </td>
+   <td style="text-align:right;"> 0.258 </td>
+   <td style="text-align:left;"> 01006 </td>
+   <td style="text-align:right;"> 114752 </td>
+   <td style="text-align:right;"> 3015081 </td>
+   <td style="text-align:right;"> 0.4901 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:right;"> 2145 </td>
+   <td style="text-align:right;"> 0.1877 </td>
+   <td style="text-align:right;"> 0.0358 </td>
+   <td style="text-align:right;"> 0.1175 </td>
+   <td style="text-align:right;"> 0.258 </td>
+   <td style="text-align:left;"> 01007 </td>
+   <td style="text-align:right;"> 58609 </td>
+   <td style="text-align:right;"> 3015081 </td>
+   <td style="text-align:right;"> 0.3938 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:right;"> 2145 </td>
+   <td style="text-align:right;"> 0.1877 </td>
+   <td style="text-align:right;"> 0.0358 </td>
+   <td style="text-align:right;"> 0.1175 </td>
+   <td style="text-align:right;"> 0.258 </td>
+   <td style="text-align:left;"> 01008 </td>
+   <td style="text-align:right;"> 465773 </td>
+   <td style="text-align:right;"> 3015081 </td>
+   <td style="text-align:right;"> 0.2898 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:right;"> 2145 </td>
+   <td style="text-align:right;"> 0.1877 </td>
+   <td style="text-align:right;"> 0.0358 </td>
+   <td style="text-align:right;"> 0.1175 </td>
+   <td style="text-align:right;"> 0.258 </td>
+   <td style="text-align:left;"> 01009 </td>
+   <td style="text-align:right;"> 51292 </td>
+   <td style="text-align:right;"> 3015081 </td>
+   <td style="text-align:right;"> 0.4886 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:right;"> 2145 </td>
+   <td style="text-align:right;"> 0.1877 </td>
+   <td style="text-align:right;"> 0.0358 </td>
+   <td style="text-align:right;"> 0.1175 </td>
+   <td style="text-align:right;"> 0.258 </td>
+   <td style="text-align:left;"> 01010 </td>
+   <td style="text-align:right;"> 218156 </td>
+   <td style="text-align:right;"> 3015081 </td>
+   <td style="text-align:right;"> 0.5206 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<ol start="4" type="1">
+<li>Con la información organizada realizar el calculo de los pesos para el Benchmark</li>
+</ol>
+<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-19_f2f79d10bc5f68809702a6cfd3b4663a">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>R_dam2 <span class="ot">&lt;-</span> temp <span class="sc">%&gt;%</span> </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(dam) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">R_dam_RB =</span> <span class="fu">unique</span>(theta_dir) <span class="sc">/</span> <span class="fu">sum</span>((total_pp  <span class="sc">/</span> dam_pp) <span class="sc">*</span> theta_pred),</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">R_dam_DB =</span> <span class="fu">unique</span>(theta_dir) <span class="sc">-</span> <span class="fu">sum</span>((total_pp  <span class="sc">/</span> dam_pp) <span class="sc">*</span> theta_pred)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(directoDam, <span class="at">by =</span> <span class="st">"dam"</span>)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="fu">tba</span>(R_dam2 <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(R_dam_RB)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table class="table table-striped lightable-classic" style="width: auto !important; margin-left: auto; margin-right: auto; font-family: Arial Narrow; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> dam </th>
+   <th style="text-align:right;"> R_dam_RB </th>
+   <th style="text-align:right;"> R_dam_DB </th>
+   <th style="text-align:right;"> nd </th>
+   <th style="text-align:right;"> theta_dir </th>
+   <th style="text-align:right;"> theta_dir_se </th>
+   <th style="text-align:right;"> theta_dir_low </th>
+   <th style="text-align:right;"> theta_dir_upp </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 16 </td>
+   <td style="text-align:right;"> 1.2798 </td>
+   <td style="text-align:right;"> 0.1571 </td>
+   <td style="text-align:right;"> 2246 </td>
+   <td style="text-align:right;"> 0.7184 </td>
+   <td style="text-align:right;"> 0.0403 </td>
+   <td style="text-align:right;"> 0.6394 </td>
+   <td style="text-align:right;"> 0.7975 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 07 </td>
+   <td style="text-align:right;"> 1.1606 </td>
+   <td style="text-align:right;"> 0.0903 </td>
+   <td style="text-align:right;"> 2311 </td>
+   <td style="text-align:right;"> 0.6528 </td>
+   <td style="text-align:right;"> 0.0342 </td>
+   <td style="text-align:right;"> 0.5856 </td>
+   <td style="text-align:right;"> 0.7199 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 19 </td>
+   <td style="text-align:right;"> 1.1068 </td>
+   <td style="text-align:right;"> 0.0422 </td>
+   <td style="text-align:right;"> 1572 </td>
+   <td style="text-align:right;"> 0.4379 </td>
+   <td style="text-align:right;"> 0.0584 </td>
+   <td style="text-align:right;"> 0.3233 </td>
+   <td style="text-align:right;"> 0.5525 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 22 </td>
+   <td style="text-align:right;"> 1.0776 </td>
+   <td style="text-align:right;"> 0.0421 </td>
+   <td style="text-align:right;"> 3045 </td>
+   <td style="text-align:right;"> 0.5852 </td>
+   <td style="text-align:right;"> 0.0308 </td>
+   <td style="text-align:right;"> 0.5248 </td>
+   <td style="text-align:right;"> 0.6457 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 13 </td>
+   <td style="text-align:right;"> 1.0576 </td>
+   <td style="text-align:right;"> 0.0396 </td>
+   <td style="text-align:right;"> 2484 </td>
+   <td style="text-align:right;"> 0.7270 </td>
+   <td style="text-align:right;"> 0.0429 </td>
+   <td style="text-align:right;"> 0.6428 </td>
+   <td style="text-align:right;"> 0.8113 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 18 </td>
+   <td style="text-align:right;"> 1.0319 </td>
+   <td style="text-align:right;"> 0.0140 </td>
+   <td style="text-align:right;"> 1689 </td>
+   <td style="text-align:right;"> 0.4524 </td>
+   <td style="text-align:right;"> 0.1084 </td>
+   <td style="text-align:right;"> 0.2397 </td>
+   <td style="text-align:right;"> 0.6652 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 21 </td>
+   <td style="text-align:right;"> 1.0301 </td>
+   <td style="text-align:right;"> 0.0189 </td>
+   <td style="text-align:right;"> 2306 </td>
+   <td style="text-align:right;"> 0.6463 </td>
+   <td style="text-align:right;"> 0.0361 </td>
+   <td style="text-align:right;"> 0.5755 </td>
+   <td style="text-align:right;"> 0.7171 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 06 </td>
+   <td style="text-align:right;"> 1.0222 </td>
+   <td style="text-align:right;"> 0.0119 </td>
+   <td style="text-align:right;"> 1725 </td>
+   <td style="text-align:right;"> 0.5496 </td>
+   <td style="text-align:right;"> 0.0481 </td>
+   <td style="text-align:right;"> 0.4553 </td>
+   <td style="text-align:right;"> 0.6440 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 12 </td>
+   <td style="text-align:right;"> 0.9973 </td>
+   <td style="text-align:right;"> -0.0018 </td>
+   <td style="text-align:right;"> 2191 </td>
+   <td style="text-align:right;"> 0.6712 </td>
+   <td style="text-align:right;"> 0.0433 </td>
+   <td style="text-align:right;"> 0.5861 </td>
+   <td style="text-align:right;"> 0.7562 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 04 </td>
+   <td style="text-align:right;"> 0.9926 </td>
+   <td style="text-align:right;"> -0.0047 </td>
+   <td style="text-align:right;"> 2550 </td>
+   <td style="text-align:right;"> 0.6245 </td>
+   <td style="text-align:right;"> 0.0367 </td>
+   <td style="text-align:right;"> 0.5524 </td>
+   <td style="text-align:right;"> 0.6966 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 17 </td>
+   <td style="text-align:right;"> 0.9919 </td>
+   <td style="text-align:right;"> -0.0044 </td>
+   <td style="text-align:right;"> 2757 </td>
+   <td style="text-align:right;"> 0.5369 </td>
+   <td style="text-align:right;"> 0.0329 </td>
+   <td style="text-align:right;"> 0.4724 </td>
+   <td style="text-align:right;"> 0.6014 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 10 </td>
+   <td style="text-align:right;"> 0.9887 </td>
+   <td style="text-align:right;"> -0.0055 </td>
+   <td style="text-align:right;"> 3051 </td>
+   <td style="text-align:right;"> 0.4829 </td>
+   <td style="text-align:right;"> 0.0314 </td>
+   <td style="text-align:right;"> 0.4212 </td>
+   <td style="text-align:right;"> 0.5446 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 08 </td>
+   <td style="text-align:right;"> 0.9868 </td>
+   <td style="text-align:right;"> -0.0082 </td>
+   <td style="text-align:right;"> 2359 </td>
+   <td style="text-align:right;"> 0.6107 </td>
+   <td style="text-align:right;"> 0.0431 </td>
+   <td style="text-align:right;"> 0.5261 </td>
+   <td style="text-align:right;"> 0.6953 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 02 </td>
+   <td style="text-align:right;"> 0.9753 </td>
+   <td style="text-align:right;"> -0.0117 </td>
+   <td style="text-align:right;"> 1997 </td>
+   <td style="text-align:right;"> 0.4622 </td>
+   <td style="text-align:right;"> 0.0450 </td>
+   <td style="text-align:right;"> 0.3739 </td>
+   <td style="text-align:right;"> 0.5505 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 14 </td>
+   <td style="text-align:right;"> 0.9646 </td>
+   <td style="text-align:right;"> -0.0246 </td>
+   <td style="text-align:right;"> 2515 </td>
+   <td style="text-align:right;"> 0.6722 </td>
+   <td style="text-align:right;"> 0.0333 </td>
+   <td style="text-align:right;"> 0.6068 </td>
+   <td style="text-align:right;"> 0.7375 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 09 </td>
+   <td style="text-align:right;"> 0.9638 </td>
+   <td style="text-align:right;"> -0.0194 </td>
+   <td style="text-align:right;"> 3329 </td>
+   <td style="text-align:right;"> 0.5159 </td>
+   <td style="text-align:right;"> 0.0465 </td>
+   <td style="text-align:right;"> 0.4246 </td>
+   <td style="text-align:right;"> 0.6072 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 15 </td>
+   <td style="text-align:right;"> 0.9493 </td>
+   <td style="text-align:right;"> -0.0287 </td>
+   <td style="text-align:right;"> 1703 </td>
+   <td style="text-align:right;"> 0.5369 </td>
+   <td style="text-align:right;"> 0.0414 </td>
+   <td style="text-align:right;"> 0.4557 </td>
+   <td style="text-align:right;"> 0.6181 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 11 </td>
+   <td style="text-align:right;"> 0.9162 </td>
+   <td style="text-align:right;"> -0.0409 </td>
+   <td style="text-align:right;"> 1978 </td>
+   <td style="text-align:right;"> 0.4477 </td>
+   <td style="text-align:right;"> 0.0397 </td>
+   <td style="text-align:right;"> 0.3698 </td>
+   <td style="text-align:right;"> 0.5256 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 20 </td>
+   <td style="text-align:right;"> 0.9021 </td>
+   <td style="text-align:right;"> -0.0571 </td>
+   <td style="text-align:right;"> 1805 </td>
+   <td style="text-align:right;"> 0.5259 </td>
+   <td style="text-align:right;"> 0.0571 </td>
+   <td style="text-align:right;"> 0.4139 </td>
+   <td style="text-align:right;"> 0.6380 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 05 </td>
+   <td style="text-align:right;"> 0.8915 </td>
+   <td style="text-align:right;"> -0.0398 </td>
+   <td style="text-align:right;"> 3144 </td>
+   <td style="text-align:right;"> 0.3271 </td>
+   <td style="text-align:right;"> 0.0267 </td>
+   <td style="text-align:right;"> 0.2747 </td>
+   <td style="text-align:right;"> 0.3794 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 03 </td>
+   <td style="text-align:right;"> 0.8377 </td>
+   <td style="text-align:right;"> -0.0637 </td>
+   <td style="text-align:right;"> 3773 </td>
+   <td style="text-align:right;"> 0.3287 </td>
+   <td style="text-align:right;"> 0.0291 </td>
+   <td style="text-align:right;"> 0.2716 </td>
+   <td style="text-align:right;"> 0.3857 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:right;"> 0.5222 </td>
+   <td style="text-align:right;"> -0.1718 </td>
+   <td style="text-align:right;"> 2145 </td>
+   <td style="text-align:right;"> 0.1877 </td>
+   <td style="text-align:right;"> 0.0358 </td>
+   <td style="text-align:right;"> 0.1175 </td>
+   <td style="text-align:right;"> 0.2580 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<p>calculando los pesos para cada dominio.</p>
+<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-20_4c8acd391e808cc2b5fbd53d5312b6bb">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>pesos <span class="ot">&lt;-</span> temp <span class="sc">%&gt;%</span> </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">W_i =</span> total_pp <span class="sc">/</span> dam_pp) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(dam2, W_i)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tba</span>(pesos <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table class="table table-striped lightable-classic" style="width: auto !important; margin-left: auto; margin-right: auto; font-family: Arial Narrow; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> dam2 </th>
+   <th style="text-align:right;"> W_i </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 01001 </td>
+   <td style="text-align:right;"> 0.3063 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01002 </td>
+   <td style="text-align:right;"> 0.0267 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01003 </td>
+   <td style="text-align:right;"> 0.0265 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01004 </td>
+   <td style="text-align:right;"> 0.0024 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01005 </td>
+   <td style="text-align:right;"> 0.0235 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01006 </td>
+   <td style="text-align:right;"> 0.0381 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01007 </td>
+   <td style="text-align:right;"> 0.0194 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01008 </td>
+   <td style="text-align:right;"> 0.1545 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01009 </td>
+   <td style="text-align:right;"> 0.0170 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 01010 </td>
+   <td style="text-align:right;"> 0.0724 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<ol start="5" type="1">
+<li>Realizar la estimación FH Benchmark</li>
+</ol>
+<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-21_f5fc3f22932924021e8b12439f9f60eb">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>estimacionesBench <span class="ot">&lt;-</span> estimacionesPre <span class="sc">%&gt;%</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(R_dam2, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"dam"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">theta_pred_RBench =</span> R_dam_RB <span class="sc">*</span> theta_pred) <span class="sc">%&gt;%</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(pesos) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(dam, dam2, W_i, theta_pred, theta_pred_RBench)  </span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tba</span>(estimacionesBench <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table class="table table-striped lightable-classic" style="width: auto !important; margin-left: auto; margin-right: auto; font-family: Arial Narrow; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> dam </th>
+   <th style="text-align:left;"> dam2 </th>
+   <th style="text-align:right;"> W_i </th>
+   <th style="text-align:right;"> theta_pred </th>
+   <th style="text-align:right;"> theta_pred_RBench </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:left;"> 01007 </td>
+   <td style="text-align:right;"> 0.0194 </td>
+   <td style="text-align:right;"> 0.3938 </td>
+   <td style="text-align:right;"> 0.2056 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 02 </td>
+   <td style="text-align:left;"> 02001 </td>
+   <td style="text-align:right;"> 0.1405 </td>
+   <td style="text-align:right;"> 0.4113 </td>
+   <td style="text-align:right;"> 0.4012 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 02 </td>
+   <td style="text-align:left;"> 02002 </td>
+   <td style="text-align:right;"> 0.0689 </td>
+   <td style="text-align:right;"> 0.4600 </td>
+   <td style="text-align:right;"> 0.4486 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 02 </td>
+   <td style="text-align:left;"> 02003 </td>
+   <td style="text-align:right;"> 0.2591 </td>
+   <td style="text-align:right;"> 0.5150 </td>
+   <td style="text-align:right;"> 0.5023 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 02 </td>
+   <td style="text-align:left;"> 02006 </td>
+   <td style="text-align:right;"> 0.0745 </td>
+   <td style="text-align:right;"> 0.5203 </td>
+   <td style="text-align:right;"> 0.5075 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 02 </td>
+   <td style="text-align:left;"> 02007 </td>
+   <td style="text-align:right;"> 0.2233 </td>
+   <td style="text-align:right;"> 0.4629 </td>
+   <td style="text-align:right;"> 0.4514 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 03 </td>
+   <td style="text-align:left;"> 03001 </td>
+   <td style="text-align:right;"> 0.1394 </td>
+   <td style="text-align:right;"> 0.2989 </td>
+   <td style="text-align:right;"> 0.2504 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 03 </td>
+   <td style="text-align:left;"> 03002 </td>
+   <td style="text-align:right;"> 0.0655 </td>
+   <td style="text-align:right;"> 0.2741 </td>
+   <td style="text-align:right;"> 0.2296 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 03 </td>
+   <td style="text-align:left;"> 03004 </td>
+   <td style="text-align:right;"> 0.1127 </td>
+   <td style="text-align:right;"> 0.3729 </td>
+   <td style="text-align:right;"> 0.3123 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 03 </td>
+   <td style="text-align:left;"> 03006 </td>
+   <td style="text-align:right;"> 0.0885 </td>
+   <td style="text-align:right;"> 0.3930 </td>
+   <td style="text-align:right;"> 0.3292 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<ol start="6" type="1">
+<li>Validación: Estimación FH con Benchmark</li>
+</ol>
+<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-22_a0b3e995a978c528eb75dc5d5f3148cf">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>estimacionesBench <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(dam) <span class="sc">%&gt;%</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">theta_reg_RB =</span> <span class="fu">sum</span>(W_i <span class="sc">*</span> theta_pred_RBench)) <span class="sc">%&gt;%</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(directoDam, <span class="at">by =</span> <span class="st">"dam"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tba</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table class="table table-striped lightable-classic" style="width: auto !important; margin-left: auto; margin-right: auto; font-family: Arial Narrow; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> dam </th>
+   <th style="text-align:right;"> theta_reg_RB </th>
+   <th style="text-align:right;"> nd </th>
+   <th style="text-align:right;"> theta_dir </th>
+   <th style="text-align:right;"> theta_dir_se </th>
+   <th style="text-align:right;"> theta_dir_low </th>
+   <th style="text-align:right;"> theta_dir_upp </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:right;"> 0.1877 </td>
+   <td style="text-align:right;"> 2145 </td>
+   <td style="text-align:right;"> 0.1877 </td>
+   <td style="text-align:right;"> 0.0358 </td>
+   <td style="text-align:right;"> 0.1175 </td>
+   <td style="text-align:right;"> 0.2580 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 02 </td>
+   <td style="text-align:right;"> 0.4622 </td>
+   <td style="text-align:right;"> 1997 </td>
+   <td style="text-align:right;"> 0.4622 </td>
+   <td style="text-align:right;"> 0.0450 </td>
+   <td style="text-align:right;"> 0.3739 </td>
+   <td style="text-align:right;"> 0.5505 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 03 </td>
+   <td style="text-align:right;"> 0.3287 </td>
+   <td style="text-align:right;"> 3773 </td>
+   <td style="text-align:right;"> 0.3287 </td>
+   <td style="text-align:right;"> 0.0291 </td>
+   <td style="text-align:right;"> 0.2716 </td>
+   <td style="text-align:right;"> 0.3857 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 04 </td>
+   <td style="text-align:right;"> 0.6245 </td>
+   <td style="text-align:right;"> 2550 </td>
+   <td style="text-align:right;"> 0.6245 </td>
+   <td style="text-align:right;"> 0.0367 </td>
+   <td style="text-align:right;"> 0.5524 </td>
+   <td style="text-align:right;"> 0.6966 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 05 </td>
+   <td style="text-align:right;"> 0.3271 </td>
+   <td style="text-align:right;"> 3144 </td>
+   <td style="text-align:right;"> 0.3271 </td>
+   <td style="text-align:right;"> 0.0267 </td>
+   <td style="text-align:right;"> 0.2747 </td>
+   <td style="text-align:right;"> 0.3794 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 06 </td>
+   <td style="text-align:right;"> 0.5496 </td>
+   <td style="text-align:right;"> 1725 </td>
+   <td style="text-align:right;"> 0.5496 </td>
+   <td style="text-align:right;"> 0.0481 </td>
+   <td style="text-align:right;"> 0.4553 </td>
+   <td style="text-align:right;"> 0.6440 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 07 </td>
+   <td style="text-align:right;"> 0.6528 </td>
+   <td style="text-align:right;"> 2311 </td>
+   <td style="text-align:right;"> 0.6528 </td>
+   <td style="text-align:right;"> 0.0342 </td>
+   <td style="text-align:right;"> 0.5856 </td>
+   <td style="text-align:right;"> 0.7199 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 08 </td>
+   <td style="text-align:right;"> 0.6107 </td>
+   <td style="text-align:right;"> 2359 </td>
+   <td style="text-align:right;"> 0.6107 </td>
+   <td style="text-align:right;"> 0.0431 </td>
+   <td style="text-align:right;"> 0.5261 </td>
+   <td style="text-align:right;"> 0.6953 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 09 </td>
+   <td style="text-align:right;"> 0.5159 </td>
+   <td style="text-align:right;"> 3329 </td>
+   <td style="text-align:right;"> 0.5159 </td>
+   <td style="text-align:right;"> 0.0465 </td>
+   <td style="text-align:right;"> 0.4246 </td>
+   <td style="text-align:right;"> 0.6072 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 10 </td>
+   <td style="text-align:right;"> 0.4829 </td>
+   <td style="text-align:right;"> 3051 </td>
+   <td style="text-align:right;"> 0.4829 </td>
+   <td style="text-align:right;"> 0.0314 </td>
+   <td style="text-align:right;"> 0.4212 </td>
+   <td style="text-align:right;"> 0.5446 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 11 </td>
+   <td style="text-align:right;"> 0.4477 </td>
+   <td style="text-align:right;"> 1978 </td>
+   <td style="text-align:right;"> 0.4477 </td>
+   <td style="text-align:right;"> 0.0397 </td>
+   <td style="text-align:right;"> 0.3698 </td>
+   <td style="text-align:right;"> 0.5256 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 12 </td>
+   <td style="text-align:right;"> 0.6712 </td>
+   <td style="text-align:right;"> 2191 </td>
+   <td style="text-align:right;"> 0.6712 </td>
+   <td style="text-align:right;"> 0.0433 </td>
+   <td style="text-align:right;"> 0.5861 </td>
+   <td style="text-align:right;"> 0.7562 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 13 </td>
+   <td style="text-align:right;"> 0.7270 </td>
+   <td style="text-align:right;"> 2484 </td>
+   <td style="text-align:right;"> 0.7270 </td>
+   <td style="text-align:right;"> 0.0429 </td>
+   <td style="text-align:right;"> 0.6428 </td>
+   <td style="text-align:right;"> 0.8113 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 14 </td>
+   <td style="text-align:right;"> 0.6722 </td>
+   <td style="text-align:right;"> 2515 </td>
+   <td style="text-align:right;"> 0.6722 </td>
+   <td style="text-align:right;"> 0.0333 </td>
+   <td style="text-align:right;"> 0.6068 </td>
+   <td style="text-align:right;"> 0.7375 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 15 </td>
+   <td style="text-align:right;"> 0.5369 </td>
+   <td style="text-align:right;"> 1703 </td>
+   <td style="text-align:right;"> 0.5369 </td>
+   <td style="text-align:right;"> 0.0414 </td>
+   <td style="text-align:right;"> 0.4557 </td>
+   <td style="text-align:right;"> 0.6181 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 16 </td>
+   <td style="text-align:right;"> 0.7184 </td>
+   <td style="text-align:right;"> 2246 </td>
+   <td style="text-align:right;"> 0.7184 </td>
+   <td style="text-align:right;"> 0.0403 </td>
+   <td style="text-align:right;"> 0.6394 </td>
+   <td style="text-align:right;"> 0.7975 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 17 </td>
+   <td style="text-align:right;"> 0.5369 </td>
+   <td style="text-align:right;"> 2757 </td>
+   <td style="text-align:right;"> 0.5369 </td>
+   <td style="text-align:right;"> 0.0329 </td>
+   <td style="text-align:right;"> 0.4724 </td>
+   <td style="text-align:right;"> 0.6014 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 18 </td>
+   <td style="text-align:right;"> 0.4524 </td>
+   <td style="text-align:right;"> 1689 </td>
+   <td style="text-align:right;"> 0.4524 </td>
+   <td style="text-align:right;"> 0.1084 </td>
+   <td style="text-align:right;"> 0.2397 </td>
+   <td style="text-align:right;"> 0.6652 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 19 </td>
+   <td style="text-align:right;"> 0.4379 </td>
+   <td style="text-align:right;"> 1572 </td>
+   <td style="text-align:right;"> 0.4379 </td>
+   <td style="text-align:right;"> 0.0584 </td>
+   <td style="text-align:right;"> 0.3233 </td>
+   <td style="text-align:right;"> 0.5525 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 20 </td>
+   <td style="text-align:right;"> 0.5259 </td>
+   <td style="text-align:right;"> 1805 </td>
+   <td style="text-align:right;"> 0.5259 </td>
+   <td style="text-align:right;"> 0.0571 </td>
+   <td style="text-align:right;"> 0.4139 </td>
+   <td style="text-align:right;"> 0.6380 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 21 </td>
+   <td style="text-align:right;"> 0.6463 </td>
+   <td style="text-align:right;"> 2306 </td>
+   <td style="text-align:right;"> 0.6463 </td>
+   <td style="text-align:right;"> 0.0361 </td>
+   <td style="text-align:right;"> 0.5755 </td>
+   <td style="text-align:right;"> 0.7171 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 22 </td>
+   <td style="text-align:right;"> 0.5852 </td>
+   <td style="text-align:right;"> 3045 </td>
+   <td style="text-align:right;"> 0.5852 </td>
+   <td style="text-align:right;"> 0.0308 </td>
+   <td style="text-align:right;"> 0.5248 </td>
+   <td style="text-align:right;"> 0.6457 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</section>
+<section id="validación-gráfica-de-los-resultados." class="level2">
+<h2 class="anchored" data-anchor-id="validación-gráfica-de-los-resultados.">Validación gráfica de los resultados.</h2>
+<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-23_898a6fcccb36a89f3c5200f1c08e58b8">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">&lt;-</span> estimacionesBench <span class="sc">%&gt;%</span> <span class="fu">left_join</span>(</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>data_dir <span class="sc">%&gt;%</span> <span class="fu">select</span>(dam2, thetaSyn, thetaFH),</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>data_syn <span class="sc">%&gt;%</span> <span class="fu">select</span>(dam2, thetaSyn, thetaFH))) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="fu">group_by</span>(dam) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summarise</span>(<span class="at">thetaSyn =</span> <span class="fu">sum</span>(W_i <span class="sc">*</span> thetaSyn),</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">thetaFH =</span> <span class="fu">sum</span>(W_i <span class="sc">*</span> theta_pred),</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>          <span class="at">theta_RBench =</span> <span class="fu">sum</span>(W_i <span class="sc">*</span> theta_pred_RBench)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>          ) <span class="sc">%&gt;%</span>   </span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="fu">left_join</span>(directoDam, <span class="at">by =</span> <span class="st">"dam"</span>)  <span class="sc">%&gt;%</span> </span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="fu">arrange</span>(nd) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>())</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>temp <span class="sc">%&lt;&gt;%</span> <span class="fu">gather</span>(<span class="at">key =</span> <span class="st">"Metodo"</span>,<span class="at">value =</span> <span class="st">"Estimacion"</span>,</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>                <span class="sc">-</span>id, <span class="sc">-</span>dam, <span class="sc">-</span>theta_dir_upp, <span class="sc">-</span>theta_dir_low,<span class="sc">-</span>nd, <span class="sc">-</span>theta_dir_se)</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> temp, <span class="fu">aes</span>(<span class="at">x =</span> id, <span class="at">y =</span> Estimacion, <span class="at">shape =</span> Metodo)) <span class="sc">+</span></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> Metodo), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> theta_dir_low), <span class="at">linetype  =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> theta_dir_upp),  <span class="at">linetype  =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="dv">10</span>) <span class="sc">+</span> </span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">""</span>, <span class="at">x =</span> <span class="st">"Orden por tamaño de la muestra"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="0Recursos/3.1normal/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 </section>
 </section>
 <section id="mapa-de-pobreza" class="level1">
 <h1>Mapa de pobreza</h1>
-<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-14_14001d5c1d40bc96df4cd5c4318bd996">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sp)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tmap)</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>data_map <span class="ot">&lt;-</span> <span class="fu">rbind</span>(data_dir, data_syn) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(dam2, pobreza, pred, pred_EE, Cv_pred )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Validando valores menores que cero o mayores a uno</p>
-<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-15_bb73388a350c58e2b79474f03f3d985c">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(data_map,pred<span class="sc">&lt;</span><span class="dv">0</span> <span class="sc">|</span> pred <span class="sc">&gt;</span><span class="dv">1</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-24_3e4aa35e6a8249a00a106fd65720e18a">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sp)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tmap)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>estimacionesBench <span class="sc">%&lt;&gt;%</span> <span class="fu">left_join</span>(</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>data_dir <span class="sc">%&gt;%</span> <span class="fu">select</span>(dam2, theta_pred_EE , Cv_theta_pred),</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>data_syn <span class="sc">%&gt;%</span> <span class="fu">select</span>(dam2, theta_pred_EE , Cv_theta_pred)))</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="do">## Leer Shapefile del país</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>ShapeSAE <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="st">"../Shape/Guatemala_adm2_uscb_2020.shp"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">temp =</span> <span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">D"</span>, <span class="at">replacement =</span> <span class="st">""</span>,<span class="at">x =</span> GEO_MATCH),</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">dam =</span> <span class="fu">substr</span>(temp, <span class="dv">1</span>,<span class="dv">2</span>),</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">dam2 =</span> <span class="fu">paste0</span>(dam,<span class="fu">str_pad</span>(<span class="fu">str_sub</span>(temp,<span class="dv">3</span>,<span class="dv">4</span>), <span class="at">width =</span> <span class="dv">3</span>,<span class="at">pad =</span> <span class="st">"0"</span>))</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>         )</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>mapa <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(ShapeSAE <span class="sc">%&gt;%</span></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">left_join</span>(estimacionesBench,  <span class="at">by =</span> <span class="st">"dam2"</span>))</span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>brks_lp <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.025</span>,<span class="fl">0.05</span>, <span class="fl">0.1</span>, <span class="fl">0.15</span>, <span class="fl">0.2</span>,<span class="fl">0.4</span>, <span class="dv">1</span>)</span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_options</span>(<span class="at">check.and.fix =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>Mapa_lp <span class="ot">&lt;-</span></span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>  mapa <span class="sc">+</span> <span class="fu">tm_polygons</span>(</span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="st">"theta_pred_RBench"</span>),</span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> brks_lp,</span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Mapa de pobreza"</span>,</span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">palette =</span> <span class="st">"YlOrRd"</span>,</span>
+<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">colorNA =</span> <span class="st">"white"</span></span>
+<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> <span class="fu">tm_layout</span>(<span class="at">asp =</span> <span class="fl">1.5</span>)</span>
+<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a>Mapa_lp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-dam2
-</th>
-<th style="text-align:right;">
-pobreza
-</th>
-<th style="text-align:right;">
-pred
-</th>
-<th style="text-align:right;">
-pred_EE
-</th>
-<th style="text-align:right;">
-Cv_pred
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-01013
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
--0.0163101
-</td>
-<td style="text-align:right;">
-0.2132224
-</td>
-<td style="text-align:right;">
--13.0730407
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-09008
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-1.0701594
-</td>
-<td style="text-align:right;">
-0.2058605
-</td>
-<td style="text-align:right;">
-0.1923643
-</td>
-</tr>
-</tbody>
-
-</table>
+<p><img src="0Recursos/3.1normal/unnamed-chunk-24-1.png" style="height:120.0%" width="672"></p>
 </div>
 </div>
-<p>realizando el truncado de las predicciones</p>
-<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-16_61904cfdab7697bbb6385ead36f9b0e5">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>data_map <span class="ot">&lt;-</span> data_map <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">pred =</span> <span class="fu">ifelse</span>(pred<span class="sc">&lt;</span><span class="dv">0</span>,<span class="dv">0</span>,pred),</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                                <span class="at">pred =</span> <span class="fu">ifelse</span>(pred<span class="sc">&gt;</span><span class="dv">1</span>,<span class="dv">1</span>,pred))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell" data-hash="0Recursos/3.1normal/unnamed-chunk-17_6ce3039a041b98e183d9765101dc0493">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Leer Shapefile del país</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>ShapeSAE <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="st">"../Shape/Guatemala_adm2_uscb_2020.shp"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">temp =</span> <span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">D"</span>, <span class="at">replacement =</span> <span class="st">""</span>,<span class="at">x =</span> GEO_MATCH),</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">dam =</span> <span class="fu">substr</span>(temp, <span class="dv">1</span>,<span class="dv">2</span>),</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">dam2 =</span> <span class="fu">paste0</span>(dam,<span class="fu">str_pad</span>(<span class="fu">str_sub</span>(temp,<span class="dv">3</span>,<span class="dv">4</span>), <span class="at">width =</span> <span class="dv">3</span>,<span class="at">pad =</span> <span class="st">"0"</span>))</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>         )</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>mapa <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(ShapeSAE <span class="sc">%&gt;%</span></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">left_join</span>(data_map,  <span class="at">by =</span> <span class="st">"dam2"</span>))</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>brks_lp <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.025</span>,<span class="fl">0.05</span>, <span class="fl">0.1</span>, <span class="fl">0.15</span>, <span class="fl">0.2</span>,<span class="fl">0.4</span>, <span class="dv">1</span>)</span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_options</span>(<span class="at">check.and.fix =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>Mapa_lp <span class="ot">&lt;-</span></span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  mapa <span class="sc">+</span> <span class="fu">tm_polygons</span>(</span>
-<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="st">"pobreza"</span>, <span class="st">"pred"</span>),</span>
-<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> brks_lp,</span>
-<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Mapa de pobreza"</span>,</span>
-<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">palette =</span> <span class="st">"YlOrRd"</span>,</span>
-<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">colorNA =</span> <span class="st">"white"</span></span>
-<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> <span class="fu">tm_layout</span>(<span class="at">asp =</span> <span class="fl">1.5</span>)</span>
-<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>Mapa_lp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="0Recursos/3.1normal/unnamed-chunk-17-1.png" style="height:120.0%" width="672"></p>
-</div>
-</div>
-<p>Los valores en blanco en el gráfico de la derecha son lagos.</p>
+<p>Los valores en blanco son los lagos AMATITLÁN y ATITLÁN.</p>
 </section>
 
 </main>

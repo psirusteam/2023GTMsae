@@ -146,7 +146,7 @@ library(tidyverse)
 library(magrittr)
 
 base_FH <- readRDS("../Data/base_FH_2014.rds") %>% 
-  select(dam2, pobreza, vardir, hat_var)
+  select(dam2, nd,  pobreza, vardir, hat_var)
 ```
 
 Lectura de las covariables, las cuales son obtenidas previamente. Dado la diferencia entre las escalas de las variables  es necesario hacer un ajuste a estas. 
@@ -242,6 +242,62 @@ sample_data <- list(
 )
 ```
 
+Rutina implementada en `STAN`
+
+```{r, eval=FALSE}
+data {
+  int<lower=0> N1;   // number of data items
+  int<lower=0> N2;   // number of data items for prediction
+  int<lower=0> p;   // number of predictors
+  matrix[N1, p] X;   // predictor matrix
+  matrix[N2, p] Xs;   // predictor matrix
+  vector[N1] y;      // predictor matrix 
+  vector[N1] sigma_e; // known variances
+}
+
+// The parameters accepted by the model. Our model
+// accepts two parameters 'mu' and 'sigma'.
+parameters {
+  vector[p] beta;       // coefficients for predictors
+  real<lower=0> sigma2_v;
+  vector[N1] v;
+}
+
+transformed parameters{
+  vector[N1] theta;         
+  vector[N1] thetaSyn;
+  vector[N1] thetaFH;
+  vector[N1] gammaj;
+  
+  real<lower=0> sigma_v;
+  thetaSyn = X * beta;
+  theta = thetaSyn + v;
+  sigma_v = sqrt(sigma2_v);
+  
+  gammaj =  to_vector(sigma_v ./ (sigma_v + sigma_e));
+  
+  thetaFH = (gammaj) .* y + (1-gammaj).*thetaSyn; 
+}
+
+model {
+  // likelihood
+  y ~ normal(theta, sigma_e); 
+  // priors
+  beta ~ normal(0, 100);
+  v ~ normal(0, sigma_v);
+  sigma2_v ~ inv_gamma(0.0001, 0.0001);
+}
+
+generated quantities{
+  vector[N2] y_pred;
+  for(j in 1:N2) {
+    y_pred[j] = normal_rng(Xs[j] * beta, sigma_v);
+  }
+}
+
+```
+
+
  Compilando el modelo en `STAN`
 ```{r}
 library(cmdstanr)
@@ -280,30 +336,214 @@ Análisis gráfico de la convergencia de las cadenas.
   mcmc_trace(model_FH_normal$draws("sigma2_v"))
 ```
 
-Estimación del FH de la pobreza en los dominios observados. 
+comparando los resultados obtenidos en `STAN`
 
 ```{r}
-theta_FH <- model_FH_normal$summary(variables =  "theta")
-data_dir %<>% mutate(pred = theta_FH$mean, 
-                     pred_EE = theta_FH$sd,
-                     Cv_pred = pred_EE/pred)
+theta <- model_FH_normal$summary(variables =  "theta")
+thetaSyn <- model_FH_normal$summary(variables =  "thetaSyn")
+theta_FH <- model_FH_normal$summary(variables =  "thetaFH")
+
+data_dir %<>% mutate(
+            thetadir = pobreza,
+            theta_pred = theta$mean,
+            thetaSyn = thetaSyn$mean,
+            thetaFH = theta_FH$mean,
+            theta_pred_EE = theta$sd,
+            Cv_theta_pred = theta_pred_EE/theta_pred
+            ) 
+# Estimación predicción del modelo vs ecuación ponderada de FH 
+p11 <- ggplot(data_dir, aes(x = theta_pred, y = thetaFH)) +
+  geom_point() + 
+  geom_abline(slope = 1,intercept = 0, colour = "red") +
+  theme_bw(10) 
+
+# Estimación con la ecuación ponderada de FH Vs estimación sintética
+p12 <- ggplot(data_dir, aes(x = thetaSyn, y = thetaFH)) +
+  geom_point() + 
+  geom_abline(slope = 1,intercept = 0, colour = "red") +
+  theme_bw(10) 
+
+# Estimación con la ecuación ponderada de FH Vs estimación directa
+
+p21 <- ggplot(data_dir, aes(x = thetadir, y = thetaFH)) +
+  geom_point() + 
+  geom_abline(slope = 1,intercept = 0, colour = "red") +
+  theme_bw(10) 
+
+# Estimación directa Vs estimación sintética
+
+p22 <- ggplot(data_dir, aes(x = thetadir, y = thetaSyn)) +
+  geom_point() + 
+  geom_abline(slope = 1,intercept = 0, colour = "red") +
+  theme_bw(10) 
+
+(p11+p12)/(p21+p22)
+
 ```
 
 Estimación del FH de la pobreza en los dominios NO observados. 
 
 ```{r}
-theta_FH_pred <- model_FH_normal$summary(variables =  "y_pred")
+theta_syn_pred <- model_FH_normal$summary(variables =  "y_pred")
 
 data_syn <- data_syn %>% 
-  mutate(pred = theta_FH_pred$mean,
-         pred_EE = theta_FH_pred$sd,
-         Cv_pred = pred_EE/pred)
+  mutate(
+    theta_pred = theta_syn_pred$mean,
+    thetaSyn = theta_pred,
+    thetaFH = theta_pred,
+    theta_pred_EE = theta_syn_pred$sd,
+    Cv_theta_pred = theta_pred_EE/theta_pred)
 
-tba(data_syn %>% 
-      select(dam2, pobreza, pred, pred_EE, Cv_pred ) %>%
-      slice(1:10))
+tba(data_syn %>% slice(1:10) %>%
+      select(dam2:hat_var,theta_pred:Cv_theta_pred))
 
 ```
+
+consolidando las bases de estimaciones para dominios observados y NO observados. 
+
+```{r}
+estimacionesPre <- bind_rows(data_dir, data_syn) %>% 
+  select(dam, dam2, theta_pred)
+```
+
+
+## Proceso de Benchmark 
+
+1. Del censo extraer el total de personas por DAM2 
+
+
+```{r}
+total_pp <- readRDS(file = "../Data/total_personas_dam.rds")
+
+
+N_dam_pp <- total_pp %>% group_by(dam) %>% 
+            mutate(dam_pp = sum(total_pp) ) %>% 
+  ungroup()
+
+tba(N_dam_pp %>% slice(1:20))
+```
+
+2. Obtener las estimaciones directa por DAM o el nivel de agregación en el cual la encuesta es representativa. 
+
+```{r}
+encuesta <- readRDS("../Data/encuestaGTM14N.rds") %>% 
+  transmute(
+    dam = str_pad(dam_ee, width = 2, pad = "0"),
+    dam2 = str_pad(mupio, width = 3, pad = "0"),
+    dam2 = paste0(dam, dam2),
+    wkx = `_fep`, 
+    upm = `_upm`,
+    estrato = paste0(dam,area_ee),
+    pobreza = ifelse(ingcorte < lp, 1 , 0))
+#--- Estimación directa por dam ---#
+
+library(survey)
+library(srvyr)
+options(survey.lonely.psu = "adjust")
+
+diseno <-
+  as_survey_design(
+    ids = upm,
+    weights = wkx,
+    strata = estrato,
+    nest = TRUE,
+    .data = encuesta
+  )
+directoDam <- diseno %>% 
+  group_by(dam) %>% 
+  summarise(
+    nd = unweighted(n()),
+    theta_dir = survey_mean(pobreza, vartype = c("se", "ci"))
+    )
+
+tba(directoDam %>% slice(1:10))
+```
+
+3. Realizar el consolidando información obtenida en *1* y *2*.  
+
+```{r}
+temp <- directoDam %>% 
+  left_join(N_dam_pp, by = "dam") %>%
+  left_join(estimacionesPre) 
+tba(temp %>% slice(1:10))
+```
+
+4. Con la información organizada realizar el calculo de los pesos para el Benchmark
+
+```{r}
+R_dam2 <- temp %>% 
+  group_by(dam) %>% 
+  summarise(
+  R_dam_RB = unique(theta_dir) / sum((total_pp  / dam_pp) * theta_pred),
+  R_dam_DB = unique(theta_dir) - sum((total_pp  / dam_pp) * theta_pred)
+) %>%
+  left_join(directoDam, by = "dam")
+
+tba(R_dam2 %>% arrange(desc(R_dam_RB)))
+```
+
+calculando los pesos para cada dominio. 
+
+```{r}
+pesos <- temp %>% 
+  mutate(W_i = total_pp / dam_pp) %>% 
+  select(dam2, W_i)
+tba(pesos %>% slice(1:10))
+
+```
+
+5. Realizar la estimación FH  Benchmark 
+
+```{r}
+
+estimacionesBench <- estimacionesPre %>%
+  left_join(R_dam2, by = c("dam")) %>%
+  mutate(theta_pred_RBench = R_dam_RB * theta_pred) %>%
+  left_join(pesos) %>% 
+  select(dam, dam2, W_i, theta_pred, theta_pred_RBench)  
+
+  tba(estimacionesBench %>% slice(1:10))
+
+```
+
+6. Validación: Estimación FH con Benchmark
+
+```{r}
+estimacionesBench %>% group_by(dam) %>%
+  summarise(theta_reg_RB = sum(W_i * theta_pred_RBench)) %>%
+  left_join(directoDam, by = "dam") %>% 
+  tba()
+```
+
+## Validación gráfica de los resultados. 
+
+```{r}
+temp <- estimacionesBench %>% left_join(
+bind_rows(
+data_dir %>% select(dam2, thetaSyn, thetaFH),
+data_syn %>% select(dam2, thetaSyn, thetaFH))) %>% 
+group_by(dam) %>% 
+summarise(thetaSyn = sum(W_i * thetaSyn),
+          thetaFH = sum(W_i * theta_pred),
+          theta_RBench = sum(W_i * theta_pred_RBench)
+          ) %>%   
+left_join(directoDam, by = "dam")  %>% 
+arrange(nd) %>% 
+    mutate(id = 1:n())
+
+temp %<>% gather(key = "Metodo",value = "Estimacion",
+                -id, -dam, -theta_dir_upp, -theta_dir_low,-nd, -theta_dir_se)
+
+ggplot(data = temp, aes(x = id, y = Estimacion, shape = Metodo)) +
+  geom_point(aes(color = Metodo), size = 2) +
+  geom_line(aes(y = theta_dir_low), linetype  = 2) +
+  geom_line(aes(y = theta_dir_upp),  linetype  = 2) +
+  theme_bw(10) + 
+  labs(y = "", x = "Orden por tamaño de la muestra")
+
+```
+
+
 
 # Mapa de pobreza
 
@@ -312,24 +552,11 @@ library(sp)
 library(sf)
 library(tmap)
 
-data_map <- rbind(data_dir, data_syn) %>% 
-  select(dam2, pobreza, pred, pred_EE, Cv_pred )
-```
+estimacionesBench %<>% left_join(
+bind_rows(
+data_dir %>% select(dam2, theta_pred_EE , Cv_theta_pred),
+data_syn %>% select(dam2, theta_pred_EE , Cv_theta_pred)))
 
-Validando valores menores que cero o mayores a uno
-
-```{r}
-filter(data_map,pred<0 | pred >1) 
-```
-
-realizando el truncado de las predicciones 
-```{r}
-data_map <- data_map %>% mutate(pred = ifelse(pred<0,0,pred),
-                                pred = ifelse(pred>1,1,pred))
-```
-
-
-```{r, out.height= "120%"}
 ## Leer Shapefile del país
 ShapeSAE <- read_sf("../Shape/Guatemala_adm2_uscb_2020.shp") %>% 
   mutate(temp = gsub(pattern = "\\D", replacement = "",x = GEO_MATCH),
@@ -337,14 +564,15 @@ ShapeSAE <- read_sf("../Shape/Guatemala_adm2_uscb_2020.shp") %>%
          dam2 = paste0(dam,str_pad(str_sub(temp,3,4), width = 3,pad = "0"))
          )
 
+
 mapa <- tm_shape(ShapeSAE %>%
-                   left_join(data_map,  by = "dam2"))
+                   left_join(estimacionesBench,  by = "dam2"))
 
 brks_lp <- c(0,0.025,0.05, 0.1, 0.15, 0.2,0.4, 1)
 tmap_options(check.and.fix = TRUE)
 Mapa_lp <-
   mapa + tm_polygons(
-    c("pobreza", "pred"),
+    c("theta_pred_RBench"),
     breaks = brks_lp,
     title = "Mapa de pobreza",
     palette = "YlOrRd",
@@ -354,5 +582,5 @@ Mapa_lp <-
 Mapa_lp
 ```
 
-Los valores en blanco en el gráfico de la derecha son lagos. 
+Los valores en blanco son los lagos AMATITLÁN y  ATITLÁN. 
 

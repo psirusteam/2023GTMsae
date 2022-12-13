@@ -18,10 +18,15 @@ parameters {
 
 transformed parameters{
   vector[N1] theta;
+  vector[N1] thetaSyn;
+  vector[N1] thetaFH;
+  vector[N1] gammaj;
   real<lower=0> sigma_v;
-  theta = X * beta + v;
+  thetaSyn = X * beta;
+  theta = thetaSyn + v;
   sigma_v = sqrt(sigma2_v);
-  
+  gammaj =  to_vector(sigma_v ./ (sigma_v + sigma_e));
+  thetaFH = (gammaj) .* y + (1-gammaj).*thetaSyn; 
 }
 
 model {

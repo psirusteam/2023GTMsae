@@ -1,8 +1,8 @@
 ---
 title: "Pasos para instalar cmdstanr"
-subtitle: "CEPAL - División de Estadísticas Sociales"
+subtitle: "CEPAL - Unidad de Estadísticas Sociales"
 author: "Andrés Gutiérrez - Stalyn Guerrero"
-format: html
+format: pdf
 ---
 
 ```{r setup, include=FALSE, message=FALSE, error=FALSE, warning=FALSE}
@@ -57,7 +57,9 @@ install.packages("usmap")
 install.packages("kableExtra")
 install.packages("formatR")
 install.packages("printr")
-install.packages("remotes") 
+install.packages("remotes")
+install.packages("latex2exp")
+install.packages("gtsummary")
 remotes::install_github("stan-dev/cmdstanr")
 ```
 
