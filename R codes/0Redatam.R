@@ -20,6 +20,21 @@ library(DataExplorer)
 
 ## leer base desde el repositorio CEPAL
 guatemala <- redatam.open("V:/DAT/SAECEPAL/MrPMunicipal/GTM/1.Ingreso/Data/cpv2018gtm-cde.dicx")
+CONTEOS <- redatam.query(
+  guatemala, "freq MUPIO.MPIO
+             by PERSONA.PCP6", tot.omit = FALSE)
+
+
+temp <- CONTEOS %>% filter(PCP62_mask == 1, MPIO1_mask != 1) %>% 
+  transmute(paso = str_pad(MPIO1_value, width = 4, pad = "0"),
+            dam = str_sub(paso,1,2),
+            paso = str_pad(str_sub(paso,3,4),  width = 3, pad = "0"),
+            dam2 = paste0(dam,paso),
+            paso = NULL, 
+            total_pp = value) 
+saveRDS(object = temp, "Data/total_personas_dam.rds")
+
+sum(temp$total_pp)
 
 CONTEOS <- redatam.query(
   guatemala, "freq MUPIO.MPIO
