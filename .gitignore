@@ -2,6 +2,4 @@
 .Rhistory
 .RData
 .Ruserdata
-R codes
-4.1Modelo_unidad_pobreza/
-4.2Modelo unidad multinomial_empleo_files/
+fit_multinomial.rds
