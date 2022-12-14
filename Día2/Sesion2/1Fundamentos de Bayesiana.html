@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.165">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Andrés Gutiérrez - Stalyn Guerrero">
+
+<title>Fundamentos de la inferencia Bayesiana en R y STAN</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="1Fundamentos de Bayesiana_files/libs/clipboard/clipboard.min.js"></script>
+<script src="1Fundamentos de Bayesiana_files/libs/quarto-html/quarto.js"></script>
+<script src="1Fundamentos de Bayesiana_files/libs/quarto-html/popper.min.js"></script>
+<script src="1Fundamentos de Bayesiana_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="1Fundamentos de Bayesiana_files/libs/quarto-html/anchor.min.js"></script>
+<link href="1Fundamentos de Bayesiana_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="1Fundamentos de Bayesiana_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="1Fundamentos de Bayesiana_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="1Fundamentos de Bayesiana_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="1Fundamentos de Bayesiana_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+<script src="1Fundamentos de Bayesiana_files/libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="1Fundamentos de Bayesiana_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Fundamentos de la inferencia Bayesiana en R y STAN</h1>
+<p class="subtitle lead">CEPAL - Unidad de Estadísticas Sociales</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Andrés Gutiérrez - Stalyn Guerrero </p>
+          </div>
+  </div>
+    
+    
+  </div>
+  
+
+</header>
+
+<section id="regla-de-bayes" class="level2">
+<h2 class="anchored" data-anchor-id="regla-de-bayes">Regla de Bayes</h2>
+<p>En términos de inferencia para <span class="math inline">\(\boldsymbol{\theta}\)</span>, es necesario encontrar la distribución de los parámetros condicionada a la observación de los datos. Para este fin, es necesario definir la distribución conjunta de la variable de interés con el vector de parámetros.</p>
+<p><span class="math display">\[
+p(\boldsymbol{\theta},\mathbf{Y})=p(\boldsymbol{\theta})p(\mathbf{Y} \mid \boldsymbol{\theta})
+\]</span></p>
+<ul>
+<li><p>La distribución <span class="math inline">\(p(\boldsymbol{\theta})\)</span> se le conoce con el nombre de distribución previa.</p></li>
+<li><p>El término <span class="math inline">\(p(\mathbf{Y} \mid \boldsymbol{\theta})\)</span> es la distribución de muestreo, verosimilitud o distribución de los datos.</p></li>
+<li><p>La distribución del vector de parámetros condicionada a los datos observados está dada por</p>
+<p><span class="math display">\[
+p(\boldsymbol{\theta} \mid \mathbf{Y})=\frac{p(\boldsymbol{\theta},\mathbf{Y})}{p(\mathbf{Y})}=\frac{p(\boldsymbol{\theta})p(\mathbf{Y} \mid \boldsymbol{\theta})}{p(\mathbf{Y})}
+\]</span></p></li>
+<li><p>A la distribución <span class="math inline">\(p(\boldsymbol{\theta} \mid \mathbf{Y})\)</span> se le conoce con el nombre de distribución <strong><em>posterior</em></strong>. Nótese que el denominador no depende del vector de parámetros y considerando a los datos observados como fijos, corresponde a una constante y puede ser obviada. Por lo tanto, otra representación de la regla de Bayes está dada por</p>
+<p><span class="math display">\[
+p(\boldsymbol{\theta} \mid \mathbf{Y})\propto p(\mathbf{Y} \mid \boldsymbol{\theta})p(\boldsymbol{\theta})
+\]</span></p></li>
+</ul>
+</section>
+<section id="inferencia-bayesiana." class="level2">
+<h2 class="anchored" data-anchor-id="inferencia-bayesiana.">Inferencia Bayesiana.</h2>
+<p>En términos de estimación, inferencia y predicción, el enfoque Bayesiano supone dos momentos o etapas:</p>
+<ol type="1">
+<li><strong>Antes de la recolección de las datos</strong>, en donde el investigador propone, basado en su conocimiento, experiencia o fuentes externas, una distribución de probabilidad previa para el parámetro de interés.</li>
+<li><strong>Después de la recolección de los datos.</strong> Siguiendo el teorema de Bayes, el investigador actualiza su conocimiento acerca del comportamiento probabilístico del parámetro de interés mediante la distribución posterior de este.</li>
+</ol>
+</section>
+<section id="modelos-uniparamétricos" class="level2">
+<h2 class="anchored" data-anchor-id="modelos-uniparamétricos">Modelos uniparamétricos</h2>
+<p>Los modelos que están definidos en términos de un solo parámetro que pertenece al conjunto de los números reales se definen como modelos <em>uniparamétricos</em>.</p>
+</section>
+<section id="modelo-bernoulli" class="level2">
+<h2 class="anchored" data-anchor-id="modelo-bernoulli">Modelo Bernoulli</h2>
+<p>Suponga que <span class="math inline">\(Y\)</span> es una variable aleatoria con distribución Bernoulli dada por:</p>
+<p><span class="math display">\[
+p(Y \mid \theta)=\theta^y(1-\theta)^{1-y}I_{\{0,1\}}(y)
+\]</span></p>
+<p>Como el parámetro <span class="math inline">\(\theta\)</span> está restringido al espacio <span class="math inline">\(\Theta=[0,1]\)</span>, entonces es posible formular varias opciones para la distribución previa del parámetro. En particular, la distribución uniforme restringida al intervalo <span class="math inline">\([0,1]\)</span> o la distribución Beta parecen ser buenas opciones. Puesto que la distribución uniforme es un caso particular de la distribución Beta. Por lo tanto la distribución previa del parámetro <span class="math inline">\(\theta\)</span> estará dada por</p>
+<p><span class="math display">\[
+\begin{equation}
+p(\theta \mid \alpha,\beta)=
+\frac{1}{Beta(\alpha,\beta)}\theta^{\alpha-1}(1-\theta)^{\beta-1}I_{[0,1]}(\theta).
+\end{equation}
+\]</span></p>
+<p>y la distribución posterior del parámetro <span class="math inline">\(\theta\)</span> sigue una distribución</p>
+<p><span class="math display">\[
+\begin{equation*}
+\theta \mid Y \sim Beta(y+\alpha,\beta-y+1)
+\end{equation*}
+\]</span></p>
+<p>Cuando se tiene una muestra aleatoria <span class="math inline">\(Y_1,\ldots,Y_n\)</span> de variables con distribución Bernoulli de parámetro <span class="math inline">\(\theta\)</span>, entonces la distribución posterior del parámetro de interés es</p>
+<p><span class="math display">\[
+\begin{equation*}
+\theta \mid Y_1,\ldots,Y_n \sim Beta\left(\sum_{i=1}^ny_i+\alpha,\beta-\sum_{i=1}^ny_i+n\right)
+\end{equation*}
+\]</span></p>
+<section id="práctica-en-r" class="level3">
+<h3 class="anchored" data-anchor-id="práctica-en-r">Práctica en <strong>R</strong></h3>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-1_5fcb3d32e86bef2b8a8b23ab58b8327b">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>encuesta <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"Data/encuestaGTM14N.rds"</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Sea <span class="math inline">\(Y\)</span> la variable aleatoria</p>
+<p><span class="math display">\[
+Y_{i}=\begin{cases}
+1 &amp; ingreso&lt;lp\\
+0 &amp; ingreso\geq lp
+\end{cases}
+\]</span></p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-2_37eb07e83eef3c9de9b48eefdbd15355">
+
+</div>
+<p>El tamaño de la muestra es de 19732 Indígena</p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-3_47ec631e53299aef2ee6de231648ad5b">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>datay <span class="ot">&lt;-</span> encuesta <span class="sc">%&gt;%</span> <span class="fu">filter</span>(etnia_ee <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(<span class="at">y =</span> <span class="fu">ifelse</span>(ingcorte <span class="sc">&lt;</span> lp, <span class="dv">1</span>,<span class="dv">0</span>))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">addmargins</span>(<span class="fu">table</span>(datay<span class="sc">$</span>y))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table>
+<thead>
+<tr>
+<th style="text-align:right;">
+0
+</th>
+<th style="text-align:right;">
+1
+</th>
+<th style="text-align:right;">
+Sum
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+6280
+</td>
+<td style="text-align:right;">
+13452
+</td>
+<td style="text-align:right;">
+19732
+</td>
+</tr>
+</tbody>
+
+</table>
+</div>
+</div>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-4_7c65aef6e8298e816124e040cd409513">
+
+</div>
+<p>Un grupo de estadístico experto decide utilizar una distribución previa Beta, definiendo los parámetros de la distribución previa como <span class="math inline">\(Beta(\alpha=1, \beta=1)\)</span>. La distribución posterior del parámetro de interés, que representa la probabilidad de estar por debajo de la linea de pobreza, es <span class="math inline">\(Beta(1.3452\times 10^{4} + 1, 1 - 1.3452\times 10^{4} + 19732)=Beta(1.3453\times 10^{4}, 6281)\)</span></p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/BernoEj1_d0f2a57dbf6be210790313892fd13651">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="0Recursos/1Fundamentos/BernoEj1-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Distribución previa (línea roja) y distribución posterior (línea negra)</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>La estimación del parámetro estaría dado por:</p>
+<p><span class="math display">\[
+E(X) = \frac{\alpha}{\alpha + \beta} = \frac{1.3453\times 10^{4}}{1.3453\times 10^{4}+ 6281} = 0.6817168
+\]</span></p>
+<p>luego, el intervalo de credibilidad para la distribución posterior es.</p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-5_f966a3bb322b6b4de25a9bf7c2cde6a1">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="fu">length</span>(datay<span class="sc">$</span>y)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>n1 <span class="ot">=</span> <span class="fu">sum</span>(datay<span class="sc">$</span>y)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>),</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">shape1 =</span> <span class="dv">1</span> <span class="sc">+</span> n1,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">shape2 =</span> <span class="dv">1</span> <span class="sc">-</span> n1 <span class="sc">+</span> n)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.6752006 0.6881982</code></pre>
+</div>
+</div>
+</section>
+<section id="práctica-en-stan" class="level3">
+<h3 class="anchored" data-anchor-id="práctica-en-stan">Práctica en <strong>STAN</strong></h3>
+<p>En <code>STAN</code> es posible obtener el mismo tipo de inferencia creando cuatro cadenas cuya distribución de probabilidad coincide con la distribución posterior del ejemplo.</p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-6_e2327990e6c277b3258a4bf40a556601">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Definir el modelo</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>data {                         <span class="sc">/</span><span class="er">/</span> Entrada el modelo </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  int<span class="sc">&lt;</span>lower<span class="ot">=</span><span class="dv">0</span><span class="sc">&gt;</span> n;              <span class="sc">/</span><span class="er">/</span> Numero de observaciones  </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  int y[n];                    <span class="sc">/</span><span class="er">/</span> Vector de longitud n</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  real a;</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  real b;</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>parameters {                   <span class="sc">/</span><span class="er">/</span> Definir parámetro</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  real<span class="sc">&lt;</span>lower<span class="ot">=</span><span class="dv">0</span>, upper<span class="ot">=</span><span class="dv">1</span><span class="sc">&gt;</span> theta;</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>model {                        <span class="sc">/</span><span class="er">/</span> Definir modelo</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  y <span class="sc">~</span> <span class="fu">bernoulli</span>(theta);</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  theta <span class="sc">~</span> <span class="fu">beta</span>(a, b);      <span class="sc">/</span><span class="er">/</span> Distribución previa </span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>generated quantities {</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    real ypred[n];                    <span class="sc">/</span><span class="er">/</span> vector de longitud n</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (ii <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    ypred[ii] <span class="ot">=</span> <span class="fu">bernoulli_rng</span>(theta);</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Para compilar <em>STAN</em> debemos definir los parámetros de entrada</p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-7_f20f14d9381543d7647f5a0712386cb6">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>    sample_data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">n =</span> <span class="fu">nrow</span>(datay),</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">y =</span> datay<span class="sc">$</span>y,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">a =</span> <span class="dv">1</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">b =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Para ejecutar <code>STAN</code> en R tenemos la librería <em>cmdstanr</em></p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-8_f1b4c5a3bfc0896e84a8c15e4142ccce">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cmdstanr)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># file.edit("Data/modelosStan/1Bernoulli.stan")</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>Bernoulli <span class="ot">&lt;-</span> <span class="fu">cmdstan_model</span>(<span class="at">stan_file =</span> <span class="st">"Data/modelosStan/1Bernoulli.stan"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-9_f55b837066a3e10d611fe39f5d6e94e5">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>model_Bernoulli <span class="ot">&lt;-</span> Bernoulli<span class="sc">$</span><span class="fu">sample</span>(<span class="at">data =</span> sample_data, </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">chains =</span> <span class="dv">4</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">parallel_chains =</span> <span class="dv">4</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">seed =</span> <span class="dv">1234</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">refresh =</span> <span class="dv">1000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Running MCMC with 4 parallel chains...
+
+Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 2 finished in 51.8 seconds.
+Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 1 finished in 52.4 seconds.
+Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 3 finished in 52.0 seconds.
+Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 4 finished in 51.9 seconds.
+
+All 4 chains finished successfully.
+Mean chain execution time: 52.0 seconds.
+Total execution time: 53.2 seconds.</code></pre>
+</div>
+</div>
+<p>La estimación del parámetro <span class="math inline">\(\theta\)</span> es:</p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-10_4c80e0a9ec286f219a11b9e91a30f867">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>model_Bernoulli<span class="sc">$</span><span class="fu">summary</span>(<span class="at">variables =</span> <span class="st">"theta"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(variable<span class="sc">:</span>q95) <span class="sc">%&gt;%</span> <span class="fu">tba</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table class="table table-striped lightable-classic" style="width: auto !important; margin-left: auto; margin-right: auto; font-family: Arial Narrow; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> variable </th>
+   <th style="text-align:right;"> mean </th>
+   <th style="text-align:right;"> median </th>
+   <th style="text-align:right;"> sd </th>
+   <th style="text-align:right;"> mad </th>
+   <th style="text-align:right;"> q5 </th>
+   <th style="text-align:right;"> q95 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> theta </td>
+   <td style="text-align:right;"> 0.6817 </td>
+   <td style="text-align:right;"> 0.6817 </td>
+   <td style="text-align:right;"> 0.0034 </td>
+   <td style="text-align:right;"> 0.0033 </td>
+   <td style="text-align:right;"> 0.6763 </td>
+   <td style="text-align:right;"> 0.6874 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<p>Para observar las cadenas compilamos las lineas de código</p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-11_fc57e5d72638cf77a6f2ad3362e89f08">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(posterior) </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">&lt;-</span> <span class="fu">as_draws_df</span>(model_Bernoulli<span class="sc">$</span><span class="fu">draws</span>(<span class="at">variables =</span> <span class="st">"theta"</span>))</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> temp, <span class="fu">aes</span>(<span class="at">x =</span> theta))<span class="sc">+</span> </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> posterior1,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">args =</span> <span class="fu">list</span>(<span class="at">y =</span> datay<span class="sc">$</span>y),</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>                <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">20</span>) <span class="sc">+</span> </span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> latex2exp<span class="sc">::</span><span class="fu">TeX</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">theta"</span>),</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> latex2exp<span class="sc">::</span><span class="fu">TeX</span>(<span class="st">"f(</span><span class="sc">\\</span><span class="st">theta)"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="0Recursos/1Fundamentos/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Resultado con STAN (línea azul) y posterior teórica (línea negra)</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Para validar las cadenas</p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-12_3fbbc1a121b1d23f34d4ffcb35b54066">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bayesplot)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>(<span class="fu">mcmc_dens_chains</span>(model_Bernoulli<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"theta"</span>)) <span class="sc">+</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_areas</span>(model_Bernoulli<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"theta"</span>)))<span class="sc">/</span> </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_trace</span>(model_Bernoulli<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"theta"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="0Recursos/1Fundamentos/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Predicción de <span class="math inline">\(Y\)</span> en cada una de las iteraciones de las cadenas.</p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-13_b8374988caab46e4c969f092e1ad5a6d">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>y_pred_B <span class="ot">&lt;-</span> model_Bernoulli<span class="sc">$</span><span class="fu">draws</span>(<span class="at">variables =</span> <span class="st">"ypred"</span>, <span class="at">format =</span> <span class="st">"matrix"</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>rowsrandom <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">nrow</span>(y_pred_B), <span class="dv">100</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>y_pred2 <span class="ot">&lt;-</span> y_pred_B[rowsrandom, <span class="dv">1</span><span class="sc">:</span>n]</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ppc_dens_overlay</span>(<span class="at">y =</span> datay<span class="sc">$</span>y, y_pred2) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="0Recursos/1Fundamentos/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="modelo-binomial" class="level2">
+<h2 class="anchored" data-anchor-id="modelo-binomial">Modelo Binomial</h2>
+<p>Cuando se dispone de una muestra aleatoria de variables con distribución Bernoulli <span class="math inline">\(Y_1,\ldots,Y_n\)</span>, la inferencia Bayesiana se puede llevar a cabo usando la distribución Binomial, puesto que es bien sabido que la suma de variables aleatorias Bernoulli</p>
+<p><span class="math display">\[
+\begin{equation*}
+S=\sum_{i=1}^nY_i
+\end{equation*}
+\]</span></p>
+<p>sigue una distribución Binomial. Es decir:</p>
+<p><span class="math display">\[
+\begin{equation}
+p(S \mid \theta)=\binom{n}{s}\theta^s(1-\theta)^{n-s}I_{\{0,1,\ldots,n\}}(s),
+\end{equation}
+\]</span></p>
+<p>Nótese que la distribución Binomial es un caso general para la distribución Bernoulli, cuando <span class="math inline">\(n=1\)</span>. Por lo tanto es natural suponer que distribución previa del parámetro <span class="math inline">\(\theta\)</span> estará dada por</p>
+<p><span class="math display">\[
+\begin{equation}
+p(\theta \mid \alpha,\beta)=
+\frac{1}{Beta(\alpha,\beta)}\theta^{\alpha-1}(1-\theta)^{\beta-1}I_{[0,1]}(\theta).
+\end{equation}
+\]</span></p>
+<p>La distribución posterior del parámetro <span class="math inline">\(\theta\)</span> sigue una distribución</p>
+<p><span class="math display">\[
+\begin{equation*}
+\theta \mid S \sim Beta(s+\alpha,\beta-s+n)
+\end{equation*}
+\]</span></p>
+<p>Ahora, cuando se tiene una sucesión de variables aleatorias <span class="math inline">\(S_1,\ldots,S_i, \ldots,S_k\)</span> independientes y con distribución <span class="math inline">\(Binomial(n_i,\theta_i)\)</span> para <span class="math inline">\(i=1,\ldots,k\)</span>, entonces la distribución posterior del parámetro de interés <span class="math inline">\(\theta_i\)</span> es</p>
+<p><span class="math display">\[
+\begin{equation*}
+\theta_i \mid s_i \sim Beta\left(s_i+\alpha,\ \beta+ n_i- s_i\right)
+\end{equation*}
+\]</span></p>
+<section id="práctica-en-stan-1" class="level3">
+<h3 class="anchored" data-anchor-id="práctica-en-stan-1">Práctica en <strong>STAN</strong></h3>
+<p>Sea <span class="math inline">\(S_k\)</span> el conteo de personas en condición de pobreza en el <span class="math inline">\(k-ésimo\)</span> departamento en la muestra.</p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-14_0d69f66d877d324b1d0c47c95b55475a">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>dataS <span class="ot">&lt;-</span> encuesta <span class="sc">%&gt;%</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">dam =</span> <span class="fu">as_factor</span>(dam_ee,<span class="at">levels =</span> <span class="st">"values"</span>), </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">dam =</span> <span class="fu">str_pad</span>(dam, <span class="at">pad =</span> <span class="st">"0"</span>, <span class="at">width =</span> <span class="dv">2</span>),</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">nombre =</span> <span class="fu">toupper</span>(<span class="fu">as_factor</span>(dam_ee)),</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">ifelse</span>(ingcorte <span class="sc">&lt;</span> lp, <span class="dv">1</span>,<span class="dv">0</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(dam, nombre) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">nd =</span> <span class="fu">n</span>(),   <span class="co">#Número de ensayos </span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">Sd =</span> <span class="fu">sum</span>(y) <span class="co">#Número de éxito </span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tba</span>(dataS)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table class="table table-striped lightable-classic" style="width: auto !important; margin-left: auto; margin-right: auto; font-family: Arial Narrow; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> dam </th>
+   <th style="text-align:left;"> nombre </th>
+   <th style="text-align:right;"> nd </th>
+   <th style="text-align:right;"> Sd </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 01 </td>
+   <td style="text-align:left;"> GUATEMALA </td>
+   <td style="text-align:right;"> 2145 </td>
+   <td style="text-align:right;"> 371 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 02 </td>
+   <td style="text-align:left;"> EL PROGRESO </td>
+   <td style="text-align:right;"> 1997 </td>
+   <td style="text-align:right;"> 994 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 03 </td>
+   <td style="text-align:left;"> SACATEPÉQUEZ </td>
+   <td style="text-align:right;"> 3773 </td>
+   <td style="text-align:right;"> 1186 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 04 </td>
+   <td style="text-align:left;"> CHIMALTENANGO </td>
+   <td style="text-align:right;"> 2550 </td>
+   <td style="text-align:right;"> 1629 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 05 </td>
+   <td style="text-align:left;"> ESCUINTLA </td>
+   <td style="text-align:right;"> 3144 </td>
+   <td style="text-align:right;"> 1068 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 06 </td>
+   <td style="text-align:left;"> SANTA ROSA </td>
+   <td style="text-align:right;"> 1725 </td>
+   <td style="text-align:right;"> 938 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 07 </td>
+   <td style="text-align:left;"> SOLOLÁ </td>
+   <td style="text-align:right;"> 2311 </td>
+   <td style="text-align:right;"> 1532 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 08 </td>
+   <td style="text-align:left;"> TOTONICAPÁN </td>
+   <td style="text-align:right;"> 2359 </td>
+   <td style="text-align:right;"> 1492 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 09 </td>
+   <td style="text-align:left;"> QUETZALTENANGO </td>
+   <td style="text-align:right;"> 3329 </td>
+   <td style="text-align:right;"> 1876 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 10 </td>
+   <td style="text-align:left;"> SUCHITEPÉQUEZ </td>
+   <td style="text-align:right;"> 3051 </td>
+   <td style="text-align:right;"> 1490 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 11 </td>
+   <td style="text-align:left;"> RETALHULEU </td>
+   <td style="text-align:right;"> 1978 </td>
+   <td style="text-align:right;"> 935 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 12 </td>
+   <td style="text-align:left;"> SAN MARCOS </td>
+   <td style="text-align:right;"> 2191 </td>
+   <td style="text-align:right;"> 1532 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 13 </td>
+   <td style="text-align:left;"> HUEHUETENANGO </td>
+   <td style="text-align:right;"> 2484 </td>
+   <td style="text-align:right;"> 1854 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 14 </td>
+   <td style="text-align:left;"> QUICHÉ </td>
+   <td style="text-align:right;"> 2515 </td>
+   <td style="text-align:right;"> 1799 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 15 </td>
+   <td style="text-align:left;"> BAJA VERAPAZ </td>
+   <td style="text-align:right;"> 1703 </td>
+   <td style="text-align:right;"> 972 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 16 </td>
+   <td style="text-align:left;"> ALTA VERAPAZ </td>
+   <td style="text-align:right;"> 2246 </td>
+   <td style="text-align:right;"> 1632 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 17 </td>
+   <td style="text-align:left;"> PETÉN </td>
+   <td style="text-align:right;"> 2757 </td>
+   <td style="text-align:right;"> 1470 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 18 </td>
+   <td style="text-align:left;"> IZABAL </td>
+   <td style="text-align:right;"> 1689 </td>
+   <td style="text-align:right;"> 694 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 19 </td>
+   <td style="text-align:left;"> ZACAPA </td>
+   <td style="text-align:right;"> 1572 </td>
+   <td style="text-align:right;"> 670 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 20 </td>
+   <td style="text-align:left;"> CHIQUIMULA </td>
+   <td style="text-align:right;"> 1805 </td>
+   <td style="text-align:right;"> 963 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 21 </td>
+   <td style="text-align:left;"> JALAPA </td>
+   <td style="text-align:right;"> 2306 </td>
+   <td style="text-align:right;"> 1535 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 22 </td>
+   <td style="text-align:left;"> JUTIAPA </td>
+   <td style="text-align:right;"> 3045 </td>
+   <td style="text-align:right;"> 1830 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<p>Creando código de <code>STAN</code></p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-15_32e264611ee47dfe487f01c05df41980">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>data {</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  int<span class="sc">&lt;</span>lower<span class="ot">=</span><span class="dv">0</span><span class="sc">&gt;</span> K;                 <span class="sc">/</span><span class="er">/</span> Número de provincia  </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  int<span class="sc">&lt;</span>lower<span class="ot">=</span><span class="dv">0</span><span class="sc">&gt;</span> n[K];              <span class="sc">/</span><span class="er">/</span> Número de ensayos </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  int<span class="sc">&lt;</span>lower<span class="ot">=</span><span class="dv">0</span><span class="sc">&gt;</span> s[K];              <span class="sc">/</span><span class="er">/</span> Número de éxitos</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  real a;</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  real b;</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>parameters {</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  real<span class="sc">&lt;</span>lower<span class="ot">=</span><span class="dv">0</span>, upper<span class="ot">=</span><span class="dv">1</span><span class="sc">&gt;</span> theta[K]; <span class="sc">/</span><span class="er">/</span> theta_d<span class="sc">|</span>s_d</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>model {</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(kk <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>K) {</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  s[kk] <span class="sc">~</span> <span class="fu">binomial</span>(n[kk], theta[kk]);</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">to_vector</span>(theta) <span class="sc">~</span> <span class="fu">beta</span>(a, b);</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>generated quantities {</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    real spred[K];                    <span class="sc">/</span><span class="er">/</span> vector de longitud K</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(kk <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>K){</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>    spred[kk] <span class="ot">=</span> <span class="fu">binomial_rng</span>(n[kk],theta[kk]);</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Preparando el código de <code>STAN</code></p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-16_404e0266a45658cf9ab51f7ff0b36bf0">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Definir el modelo</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># file.edit("Data/modelosStan/3Binomial.stan")</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>Binomial2 <span class="ot">&lt;-</span> <span class="fu">cmdstan_model</span>(<span class="at">stan_file =</span> <span class="st">"Data/modelosStan/3Binomial.stan"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Organizando datos para <code>STAN</code></p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-17_4938ff1e42e441878f5f52958f523e22">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>sample_data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">K =</span> <span class="fu">nrow</span>(dataS),</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">s =</span> dataS<span class="sc">$</span>Sd,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">n =</span> dataS<span class="sc">$</span>nd,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">a =</span> <span class="dv">1</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>                    <span class="at">b =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Para ejecutar <code>STAN</code> en R tenemos la librería <em>cmdstanr</em></p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-18_f0155c1410f8ddd623e5e6f9713b133d">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>model_Binomial2 <span class="ot">&lt;-</span> Binomial2<span class="sc">$</span><span class="fu">sample</span>(<span class="at">data =</span> sample_data, </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">chains =</span> <span class="dv">4</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">parallel_chains =</span> <span class="dv">4</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">seed =</span> <span class="dv">1234</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">refresh =</span> <span class="dv">1000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Running MCMC with 4 parallel chains...
+
+Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 1 finished in 1.0 seconds.
+Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 3 finished in 1.0 seconds.
+Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 4 finished in 1.0 seconds.
+Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 2 finished in 1.1 seconds.
+
+All 4 chains finished successfully.
+Mean chain execution time: 1.0 seconds.
+Total execution time: 1.8 seconds.</code></pre>
+</div>
+</div>
+<p>La estimación del parámetro <span class="math inline">\(\theta\)</span> es:</p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-19_e654bde693847376a591ac471459d91e">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>model_Binomial2<span class="sc">$</span><span class="fu">summary</span>(<span class="at">variables =</span> <span class="st">"theta"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(variable<span class="sc">:</span>q95) <span class="sc">%&gt;%</span> <span class="fu">tba</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table class="table table-striped lightable-classic" style="width: auto !important; margin-left: auto; margin-right: auto; font-family: Arial Narrow; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> variable </th>
+   <th style="text-align:right;"> mean </th>
+   <th style="text-align:right;"> median </th>
+   <th style="text-align:right;"> sd </th>
+   <th style="text-align:right;"> mad </th>
+   <th style="text-align:right;"> q5 </th>
+   <th style="text-align:right;"> q95 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> theta[1] </td>
+   <td style="text-align:right;"> 0.1734 </td>
+   <td style="text-align:right;"> 0.1732 </td>
+   <td style="text-align:right;"> 0.0082 </td>
+   <td style="text-align:right;"> 0.0083 </td>
+   <td style="text-align:right;"> 0.1600 </td>
+   <td style="text-align:right;"> 0.1867 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> theta[2] </td>
+   <td style="text-align:right;"> 0.4978 </td>
+   <td style="text-align:right;"> 0.4978 </td>
+   <td style="text-align:right;"> 0.0111 </td>
+   <td style="text-align:right;"> 0.0107 </td>
+   <td style="text-align:right;"> 0.4794 </td>
+   <td style="text-align:right;"> 0.5163 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> theta[3] </td>
+   <td style="text-align:right;"> 0.3146 </td>
+   <td style="text-align:right;"> 0.3145 </td>
+   <td style="text-align:right;"> 0.0076 </td>
+   <td style="text-align:right;"> 0.0075 </td>
+   <td style="text-align:right;"> 0.3019 </td>
+   <td style="text-align:right;"> 0.3272 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> theta[4] </td>
+   <td style="text-align:right;"> 0.6386 </td>
+   <td style="text-align:right;"> 0.6385 </td>
+   <td style="text-align:right;"> 0.0098 </td>
+   <td style="text-align:right;"> 0.0098 </td>
+   <td style="text-align:right;"> 0.6224 </td>
+   <td style="text-align:right;"> 0.6549 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> theta[5] </td>
+   <td style="text-align:right;"> 0.3398 </td>
+   <td style="text-align:right;"> 0.3396 </td>
+   <td style="text-align:right;"> 0.0085 </td>
+   <td style="text-align:right;"> 0.0084 </td>
+   <td style="text-align:right;"> 0.3260 </td>
+   <td style="text-align:right;"> 0.3539 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> theta[6] </td>
+   <td style="text-align:right;"> 0.5436 </td>
+   <td style="text-align:right;"> 0.5435 </td>
+   <td style="text-align:right;"> 0.0123 </td>
+   <td style="text-align:right;"> 0.0120 </td>
+   <td style="text-align:right;"> 0.5230 </td>
+   <td style="text-align:right;"> 0.5639 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> theta[7] </td>
+   <td style="text-align:right;"> 0.6628 </td>
+   <td style="text-align:right;"> 0.6627 </td>
+   <td style="text-align:right;"> 0.0101 </td>
+   <td style="text-align:right;"> 0.0103 </td>
+   <td style="text-align:right;"> 0.6460 </td>
+   <td style="text-align:right;"> 0.6794 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> theta[8] </td>
+   <td style="text-align:right;"> 0.6325 </td>
+   <td style="text-align:right;"> 0.6327 </td>
+   <td style="text-align:right;"> 0.0104 </td>
+   <td style="text-align:right;"> 0.0100 </td>
+   <td style="text-align:right;"> 0.6150 </td>
+   <td style="text-align:right;"> 0.6495 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> theta[9] </td>
+   <td style="text-align:right;"> 0.5635 </td>
+   <td style="text-align:right;"> 0.5635 </td>
+   <td style="text-align:right;"> 0.0087 </td>
+   <td style="text-align:right;"> 0.0087 </td>
+   <td style="text-align:right;"> 0.5493 </td>
+   <td style="text-align:right;"> 0.5781 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> theta[10] </td>
+   <td style="text-align:right;"> 0.4885 </td>
+   <td style="text-align:right;"> 0.4885 </td>
+   <td style="text-align:right;"> 0.0089 </td>
+   <td style="text-align:right;"> 0.0088 </td>
+   <td style="text-align:right;"> 0.4735 </td>
+   <td style="text-align:right;"> 0.5031 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> theta[11] </td>
+   <td style="text-align:right;"> 0.4727 </td>
+   <td style="text-align:right;"> 0.4728 </td>
+   <td style="text-align:right;"> 0.0113 </td>
+   <td style="text-align:right;"> 0.0115 </td>
+   <td style="text-align:right;"> 0.4540 </td>
+   <td style="text-align:right;"> 0.4910 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> theta[12] </td>
+   <td style="text-align:right;"> 0.6991 </td>
+   <td style="text-align:right;"> 0.6992 </td>
+   <td style="text-align:right;"> 0.0097 </td>
+   <td style="text-align:right;"> 0.0099 </td>
+   <td style="text-align:right;"> 0.6831 </td>
+   <td style="text-align:right;"> 0.7149 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> theta[13] </td>
+   <td style="text-align:right;"> 0.7462 </td>
+   <td style="text-align:right;"> 0.7462 </td>
+   <td style="text-align:right;"> 0.0086 </td>
+   <td style="text-align:right;"> 0.0088 </td>
+   <td style="text-align:right;"> 0.7322 </td>
+   <td style="text-align:right;"> 0.7602 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> theta[14] </td>
+   <td style="text-align:right;"> 0.7151 </td>
+   <td style="text-align:right;"> 0.7152 </td>
+   <td style="text-align:right;"> 0.0094 </td>
+   <td style="text-align:right;"> 0.0092 </td>
+   <td style="text-align:right;"> 0.6995 </td>
+   <td style="text-align:right;"> 0.7304 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> theta[15] </td>
+   <td style="text-align:right;"> 0.5707 </td>
+   <td style="text-align:right;"> 0.5708 </td>
+   <td style="text-align:right;"> 0.0121 </td>
+   <td style="text-align:right;"> 0.0122 </td>
+   <td style="text-align:right;"> 0.5507 </td>
+   <td style="text-align:right;"> 0.5901 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> theta[16] </td>
+   <td style="text-align:right;"> 0.7264 </td>
+   <td style="text-align:right;"> 0.7265 </td>
+   <td style="text-align:right;"> 0.0095 </td>
+   <td style="text-align:right;"> 0.0093 </td>
+   <td style="text-align:right;"> 0.7111 </td>
+   <td style="text-align:right;"> 0.7418 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> theta[17] </td>
+   <td style="text-align:right;"> 0.5331 </td>
+   <td style="text-align:right;"> 0.5333 </td>
+   <td style="text-align:right;"> 0.0095 </td>
+   <td style="text-align:right;"> 0.0095 </td>
+   <td style="text-align:right;"> 0.5173 </td>
+   <td style="text-align:right;"> 0.5485 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> theta[18] </td>
+   <td style="text-align:right;"> 0.4111 </td>
+   <td style="text-align:right;"> 0.4109 </td>
+   <td style="text-align:right;"> 0.0120 </td>
+   <td style="text-align:right;"> 0.0118 </td>
+   <td style="text-align:right;"> 0.3910 </td>
+   <td style="text-align:right;"> 0.4311 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> theta[19] </td>
+   <td style="text-align:right;"> 0.4263 </td>
+   <td style="text-align:right;"> 0.4263 </td>
+   <td style="text-align:right;"> 0.0121 </td>
+   <td style="text-align:right;"> 0.0123 </td>
+   <td style="text-align:right;"> 0.4068 </td>
+   <td style="text-align:right;"> 0.4461 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> theta[20] </td>
+   <td style="text-align:right;"> 0.5335 </td>
+   <td style="text-align:right;"> 0.5334 </td>
+   <td style="text-align:right;"> 0.0121 </td>
+   <td style="text-align:right;"> 0.0118 </td>
+   <td style="text-align:right;"> 0.5138 </td>
+   <td style="text-align:right;"> 0.5536 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> theta[21] </td>
+   <td style="text-align:right;"> 0.6655 </td>
+   <td style="text-align:right;"> 0.6655 </td>
+   <td style="text-align:right;"> 0.0096 </td>
+   <td style="text-align:right;"> 0.0097 </td>
+   <td style="text-align:right;"> 0.6500 </td>
+   <td style="text-align:right;"> 0.6813 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> theta[22] </td>
+   <td style="text-align:right;"> 0.6010 </td>
+   <td style="text-align:right;"> 0.6008 </td>
+   <td style="text-align:right;"> 0.0091 </td>
+   <td style="text-align:right;"> 0.0093 </td>
+   <td style="text-align:right;"> 0.5862 </td>
+   <td style="text-align:right;"> 0.6158 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<p>Para validar las cadenas</p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-20_ae2b67c5145622d9e40bd34c86c7731b">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_areas</span>(model_Binomial2<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"theta"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="0Recursos/1Fundamentos/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-21_a36ba2e7bbb57efd555196159ac59cc6">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_trace</span>(model_Binomial2<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"theta"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="0Recursos/1Fundamentos/unnamed-chunk-21-1.png" class="img-fluid" style="width:200.0%"></p>
+</div>
+</div>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-22_6e5750ebf303b0de73ccfd4dec82305c">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>y_pred_B <span class="ot">&lt;-</span> model_Binomial2<span class="sc">$</span><span class="fu">draws</span>(<span class="at">variables =</span> <span class="st">"spred"</span>, <span class="at">format =</span> <span class="st">"matrix"</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>rowsrandom <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">nrow</span>(y_pred_B), <span class="dv">200</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>y_pred2 <span class="ot">&lt;-</span> y_pred_B[rowsrandom, ]</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>g1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> dataS, <span class="fu">aes</span>(<span class="at">x =</span> Sd))<span class="sc">+</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> ..density..)) <span class="sc">+</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">size =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">""</span>)<span class="sc">+</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="dv">20</span>) </span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>g2 <span class="ot">&lt;-</span> <span class="fu">ppc_dens_overlay</span>(<span class="at">y =</span> dataS<span class="sc">$</span>Sd, y_pred2) </span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>g1<span class="sc">/</span>g2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="0Recursos/1Fundamentos/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="modelo-normal-con-media-desconocida" class="level2">
+<h2 class="anchored" data-anchor-id="modelo-normal-con-media-desconocida">Modelo Normal con media desconocida</h2>
+<p>Suponga que <span class="math inline">\(Y_1,\cdots,Y_n\)</span> son variables independientes e idénticamente distribuidos con distribución <span class="math inline">\(Normal(\theta,\sigma^2)\)</span> con <span class="math inline">\(\theta\)</span> desconocido pero <span class="math inline">\(\sigma^2\)</span> conocido. De esta forma, la función de verosimilitud de los datos está dada por</p>
+<p><span class="math display">\[
+\begin{align*}
+p(\mathbf{Y} \mid \theta)
+&amp;=\prod_{i=1}^n\frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{-\frac{1}{2\sigma^2}(y_i-\theta)^2\right\}I_\mathbb{R}(y) \\
+&amp;=(2\pi\sigma^2)^{-n/2}\exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n(y_i-\theta)^2\right\}
+\end{align*}
+\]</span></p>
+<p>Como el parámetro <span class="math inline">\(\theta\)</span> puede tomar cualquier valor en los reales, es posible asignarle una distribución previa <span class="math inline">\(\theta \sim Normal(\mu,\tau^2)\)</span>. Bajo este marco de referencia se tienen los siguientes resultados</p>
+<p>La distribución posterior del parámetro de interés <span class="math inline">\(\theta\)</span> sigue una distribución</p>
+<p><span class="math display">\[
+\begin{equation*}
+\theta|\mathbf{Y} \sim Normal(\mu_n,\tau^2_n)
+\end{equation*}
+\]</span></p>
+<p>En donde</p>
+<p><span class="math display">\[
+\begin{equation}
+\mu_n=\frac{\frac{n}{\sigma^2}\bar{Y}+\frac{1}{\tau^2}\mu}{\frac{n}{\sigma^2}+\frac{1}{\tau^2}}
+\ \ \ \ \ \ \ \text{y} \ \ \ \ \ \ \
+\tau_n^2=\left(\frac{n}{\sigma^2}+\frac{1}{\tau^2}\right)^{-1}
+\end{equation}
+\]</span></p>
+<section id="práctica-en-stan-2" class="level3">
+<h3 class="anchored" data-anchor-id="práctica-en-stan-2">Práctica en <strong>STAN</strong></h3>
+<p>Sea <span class="math inline">\(Y\)</span> el logaritmo del ingreso</p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-23_17ca4a6fd5aec9b35af7dee75d0e891c">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>dataNormal <span class="ot">&lt;-</span> encuesta <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">transmute</span>(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>     dam_ee ,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">logIngreso =</span> <span class="fu">log</span>(ingcorte <span class="sc">+</span><span class="dv">1</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(dam_ee <span class="sc">==</span> <span class="dv">3</span>)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="co">#3</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>media <span class="ot">&lt;-</span> <span class="fu">mean</span>(dataNormal<span class="sc">$</span>logIngreso)</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>Sd <span class="ot">&lt;-</span> <span class="fu">sd</span>(dataNormal<span class="sc">$</span>logIngreso)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>g1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(dataNormal,<span class="fu">aes</span>(<span class="at">x =</span> logIngreso))<span class="sc">+</span> </span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">size =</span><span class="dv">2</span>, <span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span>dnorm, </span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>                <span class="at">args =</span> <span class="fu">list</span>(<span class="at">mean =</span> media, <span class="at">sd =</span> Sd),</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>                <span class="at">size =</span><span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">20</span>) <span class="sc">+</span> </span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">""</span>, <span class="at">x =</span> (<span class="st">"Log(Ingreso)"</span>))</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>g2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(dataNormal, <span class="fu">aes</span>(<span class="at">sample =</span> logIngreso)) <span class="sc">+</span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>     <span class="fu">stat_qq</span>() <span class="sc">+</span> <span class="fu">stat_qq_line</span>() <span class="sc">+</span></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">20</span>) </span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>g1<span class="sc">|</span>g2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="0Recursos/1Fundamentos/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Resultado en la muestra (línea azul) y distribución teórica (línea negra)</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Creando código de <code>STAN</code></p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-24_e6e0c369c059cc0ff3b76a4d62452e3c">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>data {</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  int<span class="sc">&lt;</span>lower<span class="ot">=</span><span class="dv">0</span><span class="sc">&gt;</span> n;     <span class="sc">/</span><span class="er">/</span> Número de observaciones</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  real y[n];          <span class="sc">/</span><span class="er">/</span> LogIngreso </span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  real <span class="sc">&lt;</span>lower<span class="ot">=</span><span class="dv">0</span><span class="sc">&gt;</span> Sigma;  <span class="sc">/</span><span class="er">/</span> Desviación estándar   </span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>parameters {</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  real theta;</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>model {</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  y <span class="sc">~</span> <span class="fu">normal</span>(theta, Sigma);</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  theta <span class="sc">~</span> <span class="fu">normal</span>(<span class="dv">0</span>, <span class="dv">1000</span>); <span class="sc">/</span><span class="er">/</span> Distribución previa</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>generated quantities {</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>    real ypred[n];                    <span class="sc">/</span><span class="er">/</span> Vector de longitud n</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(kk <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>    ypred[kk] <span class="ot">=</span> <span class="fu">normal_rng</span>(theta,Sigma);</span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Preparando el código de <code>STAN</code></p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-25_3e9893e32dc41a6e618cd7fbd4ef8a8c">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># file.edit("Data/modelosStan/4NormalMedia.stan")</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>NormalMedia <span class="ot">&lt;-</span> <span class="fu">cmdstan_model</span>(<span class="at">stan_file =</span> <span class="st">"Data/modelosStan/4NormalMedia.stan"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Organizando datos para <code>STAN</code></p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-26_8421475399ff98f8ba20d7d2311d490a">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>sample_data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">n =</span> <span class="fu">nrow</span>(dataNormal),</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">Sigma =</span> <span class="fu">sd</span>(dataNormal<span class="sc">$</span>logIngreso),</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">y =</span> dataNormal<span class="sc">$</span>logIngreso)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Para ejecutar <code>STAN</code> en R tenemos la librería <em>cmdstanr</em></p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-27_2fb10c2e7d2081b9d0864acfa836a70b">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>model_NormalMedia <span class="ot">&lt;-</span> NormalMedia<span class="sc">$</span><span class="fu">sample</span>(<span class="at">data =</span> sample_data, </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">chains =</span> <span class="dv">4</span>,</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">parallel_chains =</span> <span class="dv">4</span>,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">seed =</span> <span class="dv">1234</span>,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">refresh =</span> <span class="dv">1000</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>                 )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Running MCMC with 4 parallel chains...
+
+Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 1 finished in 15.6 seconds.
+Chain 2 finished in 15.4 seconds.
+Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 3 finished in 15.6 seconds.
+Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 4 finished in 15.1 seconds.
+
+All 4 chains finished successfully.
+Mean chain execution time: 15.4 seconds.
+Total execution time: 16.7 seconds.</code></pre>
+</div>
+</div>
+<p>La estimación del parámetro <span class="math inline">\(\theta\)</span> es:</p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-28_20902b593d560c2dd8f88efca0b4a997">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>model_NormalMedia<span class="sc">$</span><span class="fu">summary</span>(<span class="at">variables =</span> <span class="st">"theta"</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(variable<span class="sc">:</span>q95) <span class="sc">%&gt;%</span> <span class="fu">tba</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table class="table table-striped lightable-classic" style="width: auto !important; margin-left: auto; margin-right: auto; font-family: Arial Narrow; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> variable </th>
+   <th style="text-align:right;"> mean </th>
+   <th style="text-align:right;"> median </th>
+   <th style="text-align:right;"> sd </th>
+   <th style="text-align:right;"> mad </th>
+   <th style="text-align:right;"> q5 </th>
+   <th style="text-align:right;"> q95 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> theta </td>
+   <td style="text-align:right;"> 6.8929 </td>
+   <td style="text-align:right;"> 6.8928 </td>
+   <td style="text-align:right;"> 0.012 </td>
+   <td style="text-align:right;"> 0.0119 </td>
+   <td style="text-align:right;"> 6.8729 </td>
+   <td style="text-align:right;"> 6.912 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-29_576bfde504085288ef37f875ae682c50">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>(<span class="fu">mcmc_dens_chains</span>(model_NormalMedia<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"theta"</span>)) <span class="sc">+</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_areas</span>(model_NormalMedia<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"theta"</span>)))<span class="sc">/</span> </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_trace</span>(model_NormalMedia<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"theta"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="0Recursos/1Fundamentos/unnamed-chunk-29-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-30_97ea8c7cca8ca812818f734ce2b17286">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>y_pred_B <span class="ot">&lt;-</span> model_NormalMedia<span class="sc">$</span><span class="fu">draws</span>(<span class="at">variables =</span> <span class="st">"ypred"</span>, <span class="at">format =</span> <span class="st">"matrix"</span>)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>rowsrandom <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">nrow</span>(y_pred_B), <span class="dv">100</span>)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>y_pred2 <span class="ot">&lt;-</span> y_pred_B[rowsrandom, ]</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ppc_dens_overlay</span>(<span class="at">y =</span> <span class="fu">as.numeric</span>(dataNormal<span class="sc">$</span>logIngreso), y_pred2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="0Recursos/1Fundamentos/unnamed-chunk-30-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="modelos-multiparamétricos" class="level1">
+<h1>Modelos multiparamétricos</h1>
+<ul>
+<li>La distribución normal univariada que tiene dos parámetros: la media <span class="math inline">\(\theta\)</span> y la varianza <span class="math inline">\(\sigma^2\)</span>.</li>
+<li>La distribución multinomial cuyo parámetro es un vector de probabilidades <span class="math inline">\(\boldsymbol{\theta}\)</span>.</li>
+</ul>
+<section id="modelo-normal-con-media-y-varianza-desconocida" class="level2">
+<h2 class="anchored" data-anchor-id="modelo-normal-con-media-y-varianza-desconocida">Modelo Normal con media y varianza desconocida</h2>
+<p>Supongamos que se dispone de realizaciones de un conjunto de variables independientes e idénticamente distribuidas <span class="math inline">\(Y_1,\cdots,Y_n\sim N(\theta,\sigma^2)\)</span>. Cuando se desconoce tanto la media como la varianza de la distribución es necesario plantear diversos enfoques y situarse en el más conveniente, según el contexto del problema. En términos de la asignación de las distribuciones previas para <span class="math inline">\(\theta\)</span> y <span class="math inline">\(\sigma^2\)</span> es posible:</p>
+<ul>
+<li>Suponer que la distribución previa <span class="math inline">\(p(\theta)\)</span> es independiente de la distribución previa <span class="math inline">\(p(\sigma^2)\)</span> y que ambas distribuciones son informativas.</li>
+<li>Suponer que la distribución previa <span class="math inline">\(p(\theta)\)</span> es independiente de la distribución previa <span class="math inline">\(p(\sigma^2)\)</span> y que ambas distribuciones son no informativas.</li>
+<li>Suponer que la distribución previa para <span class="math inline">\(\theta\)</span> depende de <span class="math inline">\(\sigma^2\)</span> y escribirla como <span class="math inline">\(p(\theta \mid \sigma^2)\)</span>, mientras que la distribución previa de <span class="math inline">\(\sigma^2\)</span> no depende de <span class="math inline">\(\theta\)</span> y se puede escribir como <span class="math inline">\(p(\sigma^2)\)</span>.</li>
+</ul>
+</section>
+<section id="parámetros-independientes" class="level2">
+<h2 class="anchored" data-anchor-id="parámetros-independientes">Parámetros independientes</h2>
+<p>La distribución previa para el parámetro <span class="math inline">\(\theta\)</span> será</p>
+<p><span class="math display">\[
+\begin{equation*}
+\theta \sim Normal(\mu,\tau^2)
+\end{equation*}
+\]</span></p>
+<p>Y la distribución previa para el parámetro <span class="math inline">\(\sigma^2\)</span> será</p>
+<p><span class="math display">\[
+\begin{equation*}
+\sigma^2 \sim Inversa-Gamma(n_0/2,n_0\sigma^2_0/2)
+\end{equation*}
+\]</span></p>
+<p>Asumiendo independencia previa, la distribución previa conjunta estará dada por</p>
+<p><span class="math display">\[
+\begin{equation}
+p(\theta,\sigma^2)\propto (\sigma^2)^{-n_0/2-1}\exp\left\{-\dfrac{n_0\sigma^2_0}{2\sigma^2}\right\}
+\exp\left\{-\frac{1}{2\tau^2}(\theta-\mu)^2\right\}
+\end{equation}
+\]</span></p>
+<p>La distribución posterior conjunta de los parámetros de interés está dada por</p>
+<p><span class="math display">\[
+\begin{align}
+p(\theta,\sigma^2 \mid \mathbf{Y})&amp;\propto (\sigma^2)^{-(n+n_0)/2-1} \notag \\
+&amp;\times
+\exp\left\{-\frac{1}{2\sigma^2}\left[n_0\sigma^2_0+(n-1)S^2+n(\bar{y}-\theta)^2\right]-\frac{1}{2\tau^2}(\theta-\mu)^2\right\}
+\end{align}
+\]</span></p>
+<p>La distribución posterior condicional de <span class="math inline">\(\theta\)</span> es</p>
+<p><span class="math display">\[
+\begin{equation}
+\theta  \mid  \sigma^2,\mathbf{Y} \sim Normal(\mu_n,\tau_n^2)
+\end{equation}
+\]</span></p>
+<p>En donde las expresiones para <span class="math inline">\(\mu_n\)</span> y <span class="math inline">\(\tau_n^2\)</span> están dados previamente. Por otro lado, la distribución posterior condicional de <span class="math inline">\(\sigma^2\)</span> es</p>
+<p><span class="math display">\[
+\begin{equation}
+\sigma^2  \mid  \theta,\mathbf{Y} \sim Inversa-Gamma\left(\dfrac{n_0+n}{2},\dfrac{v_0}{2}\right)
+\end{equation}
+\]</span></p>
+<p>con <span class="math inline">\(v_0=n_0\sigma^2_0+(n-1)S^2+n(\bar{y}-\theta)^2\)</span>.</p>
+<section id="práctica-en-stan-3" class="level3">
+<h3 class="anchored" data-anchor-id="práctica-en-stan-3">Práctica en <strong>STAN</strong></h3>
+<p>Sea <span class="math inline">\(Y\)</span> el logaritmo del ingreso</p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-31_3dbe81d3810c23bbabdb69b2257629cd">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>dataNormal <span class="ot">&lt;-</span> encuesta <span class="sc">%&gt;%</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">transmute</span>(dam_ee,</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">logIngreso =</span> <span class="fu">log</span>(ingcorte <span class="sc">+</span><span class="dv">1</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(dam_ee <span class="sc">==</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Creando código de <code>STAN</code></p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-32_597b1ebf664467ff2ed2ca675c4b5b55">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>data {</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  int<span class="sc">&lt;</span>lower<span class="ot">=</span><span class="dv">0</span><span class="sc">&gt;</span> n;</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  real y[n];</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>parameters {</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  real sigma;</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  real theta;</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>transformed parameters {</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  real sigma2;</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>  sigma2 <span class="ot">=</span> <span class="fu">pow</span>(sigma, <span class="dv">2</span>);</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>model {</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>  y <span class="sc">~</span> <span class="fu">normal</span>(theta, sigma);</span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>  theta <span class="sc">~</span> <span class="fu">normal</span>(<span class="dv">0</span>, <span class="dv">1000</span>);</span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>  sigma2 <span class="sc">~</span> <span class="fu">inv_gamma</span>(<span class="fl">0.001</span>, <span class="fl">0.001</span>);</span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>generated quantities {</span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>    real ypred[n];                    <span class="sc">/</span><span class="er">/</span> vector de longitud n</span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(kk <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
+<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>    ypred[kk] <span class="ot">=</span> <span class="fu">normal_rng</span>(theta,sigma);</span>
+<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb34-23"><a href="#cb34-23" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Preparando el código de <code>STAN</code></p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-33_2dcf9020d036a02889835ad390c05e25">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># file.edit("Data/modelosStan/5NormalMeanVar.stan")</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>NormalMeanVar  <span class="ot">&lt;-</span> <span class="fu">cmdstan_model</span>(<span class="at">stan_file =</span> <span class="st">"Data/modelosStan/5NormalMeanVar.stan"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Organizando datos para <code>STAN</code></p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-34_879c909220ec9b1a3f12ae20658bd937">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>sample_data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">n =</span> <span class="fu">nrow</span>(dataNormal),</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">y =</span> dataNormal<span class="sc">$</span>logIngreso)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Para ejecutar <code>STAN</code> en R tenemos la librería <em>cmdstanr</em></p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-35_ab682be162827e8fae56a253700f9502">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>model_NormalMedia <span class="ot">&lt;-</span> NormalMeanVar<span class="sc">$</span><span class="fu">sample</span>(<span class="at">data =</span> sample_data, </span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">chains =</span> <span class="dv">4</span>,</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">parallel_chains =</span> <span class="dv">4</span>,</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">seed =</span> <span class="dv">1234</span>,</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">refresh =</span> <span class="dv">1000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Running MCMC with 4 parallel chains...
+
+Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 1 finished in 20.0 seconds.
+Chain 2 finished in 19.9 seconds.
+Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 3 finished in 19.8 seconds.
+Chain 4 finished in 19.9 seconds.
+
+All 4 chains finished successfully.
+Mean chain execution time: 19.9 seconds.
+Total execution time: 21.1 seconds.</code></pre>
+</div>
+</div>
+<p>La estimación del parámetro <span class="math inline">\(\theta\)</span> y <span class="math inline">\(\sigma^2\)</span> es:</p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-36_32f197e34079b890f50f9ab3538f5d84">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>model_NormalMedia<span class="sc">$</span><span class="fu">summary</span>(<span class="at">variables =</span> <span class="fu">c</span>(<span class="st">"theta"</span>, <span class="st">"sigma2"</span>, <span class="st">"sigma"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(variable<span class="sc">:</span>q95) <span class="sc">%&gt;%</span> <span class="fu">tba</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table class="table table-striped lightable-classic" style="width: auto !important; margin-left: auto; margin-right: auto; font-family: Arial Narrow; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> variable </th>
+   <th style="text-align:right;"> mean </th>
+   <th style="text-align:right;"> median </th>
+   <th style="text-align:right;"> sd </th>
+   <th style="text-align:right;"> mad </th>
+   <th style="text-align:right;"> q5 </th>
+   <th style="text-align:right;"> q95 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> theta </td>
+   <td style="text-align:right;"> 6.8932 </td>
+   <td style="text-align:right;"> 6.8929 </td>
+   <td style="text-align:right;"> 0.0125 </td>
+   <td style="text-align:right;"> 0.0128 </td>
+   <td style="text-align:right;"> 6.8729 </td>
+   <td style="text-align:right;"> 6.9142 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> sigma2 </td>
+   <td style="text-align:right;"> 0.5784 </td>
+   <td style="text-align:right;"> 0.5786 </td>
+   <td style="text-align:right;"> 0.0132 </td>
+   <td style="text-align:right;"> 0.0132 </td>
+   <td style="text-align:right;"> 0.5570 </td>
+   <td style="text-align:right;"> 0.6004 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> sigma </td>
+   <td style="text-align:right;"> 0.7605 </td>
+   <td style="text-align:right;"> 0.7606 </td>
+   <td style="text-align:right;"> 0.0087 </td>
+   <td style="text-align:right;"> 0.0087 </td>
+   <td style="text-align:right;"> 0.7463 </td>
+   <td style="text-align:right;"> 0.7749 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-37_cd0a69ab6b33cee6167e9693a1ba195f">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>(<span class="fu">mcmc_dens_chains</span>(model_NormalMedia<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"theta"</span>)) <span class="sc">+</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_areas</span>(model_NormalMedia<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"theta"</span>)))<span class="sc">/</span> </span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_trace</span>(model_NormalMedia<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"theta"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="0Recursos/1Fundamentos/unnamed-chunk-37-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-38_4b0ca03681160c23cbadfb71dac872d8">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>(<span class="fu">mcmc_dens_chains</span>(model_NormalMedia<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"sigma2"</span>)) <span class="sc">+</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_areas</span>(model_NormalMedia<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"sigma2"</span>)))<span class="sc">/</span> </span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_trace</span>(model_NormalMedia<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"sigma2"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="0Recursos/1Fundamentos/unnamed-chunk-38-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-39_c024ee7c26fb5ab21d849e55a7fdec73">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>(<span class="fu">mcmc_dens_chains</span>(model_NormalMedia<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"sigma"</span>)) <span class="sc">+</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_areas</span>(model_NormalMedia<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"sigma"</span>)))<span class="sc">/</span> </span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_trace</span>(model_NormalMedia<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"sigma"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="0Recursos/1Fundamentos/unnamed-chunk-39-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-40_1db07e15f3a4ef2807bf24d86a05ebc5">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>y_pred_B <span class="ot">&lt;-</span> model_NormalMedia<span class="sc">$</span><span class="fu">draws</span>(<span class="at">variables =</span> <span class="st">"ypred"</span>, <span class="at">format =</span> <span class="st">"matrix"</span>)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>rowsrandom <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">nrow</span>(y_pred_B), <span class="dv">100</span>)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>y_pred2 <span class="ot">&lt;-</span> y_pred_B[rowsrandom, ]</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ppc_dens_overlay</span>(<span class="at">y =</span> <span class="fu">as.numeric</span>(<span class="fu">exp</span>(dataNormal<span class="sc">$</span>logIngreso)<span class="sc">-</span><span class="dv">1</span>), y_pred2) <span class="sc">+</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>,<span class="dv">10000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="0Recursos/1Fundamentos/unnamed-chunk-40-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="modelo-multinomial" class="level2">
+<h2 class="anchored" data-anchor-id="modelo-multinomial">Modelo Multinomial</h2>
+<p>En esta sección discutimos el modelamiento bayesiano de datos provenientes de una distribución multinomial que corresponde a una extensión multivariada de la distribución binomial. Suponga que <span class="math inline">\(\textbf{Y}=(Y_1,\ldots,Y_p)'\)</span> es un vector aleatorio con distribución multinomial, así, su distribución está parametrizada por el vector <span class="math inline">\(\boldsymbol{\theta}=(\theta_1,\ldots,\theta_p)'\)</span> y está dada por la siguiente expresión</p>
+<p><span class="math display">\[
+\begin{equation}
+p(\mathbf{Y} \mid \boldsymbol{\theta})=\binom{n}{y_1,\ldots,y_p}\prod_{i=1}^p\theta_i^{y_i} \ \ \ \ \ \theta_i&gt;0 \texttt{ , }  \sum_{i=1}^py_i=n \texttt{ y } \sum_{i=1}^p\theta_i=1
+\end{equation}
+\]</span> Donde</p>
+<p><span class="math display">\[
+\begin{equation*}
+\binom{n}{y_1,\ldots,y_p}=\frac{n!}{y_1!\cdots y_p!}.
+\end{equation*}
+\]</span></p>
+<p>Como cada parámetro <span class="math inline">\(\theta_i\)</span> está restringido al espacio <span class="math inline">\(\Theta=[0,1]\)</span>, entonces es posible asignar a la distribución de Dirichlet como la distribución previa del vector de parámetros. Por lo tanto la distribución previa del vector de parámetros <span class="math inline">\(\boldsymbol{\theta}\)</span>, parametrizada por el vector de hiperparámetros <span class="math inline">\(\boldsymbol{\alpha}=(\alpha_1,\ldots,\alpha_p)'\)</span>, está dada por</p>
+<p><span class="math display">\[
+\begin{equation}
+p(\boldsymbol{\theta} \mid \boldsymbol{\alpha})=\frac{\Gamma(\alpha_1+\cdots+\alpha_p)}{\Gamma(\alpha_1)\cdots\Gamma(\alpha_p)}
+  \prod_{i=1}^p\theta_i^{\alpha_i-1} \ \ \ \ \ \alpha_i&gt;0 \texttt{ y } \sum_{i=1}^p\theta_i=1
+\end{equation}
+\]</span></p>
+<p>La distribución posterior del parámetro <span class="math inline">\(\boldsymbol{\theta}\)</span> sigue una distribución <span class="math inline">\(Dirichlet(y_1+\alpha_1,\ldots,y_p+\alpha_p)\)</span></p>
+<section id="práctica-en-stan-4" class="level3">
+<h3 class="anchored" data-anchor-id="práctica-en-stan-4">Práctica en <strong>STAN</strong></h3>
+<p>Sea <span class="math inline">\(Y\)</span> condición de actividad laboral</p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-41_dbad51e113b7708570f67752a6af7b8a">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>dataMult <span class="ot">&lt;-</span> encuesta <span class="sc">%&gt;%</span> <span class="fu">filter</span>(condact3 <span class="sc">%in%</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">empleo =</span> <span class="fu">as_factor</span>(condact3)) <span class="sc">%&gt;%</span> </span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(empleo) <span class="sc">%&gt;%</span>  <span class="fu">tally</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">theta =</span> n<span class="sc">/</span><span class="fu">sum</span>(n))</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tba</span>(dataMult)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table class="table table-striped lightable-classic" style="width: auto !important; margin-left: auto; margin-right: auto; font-family: Arial Narrow; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> empleo </th>
+   <th style="text-align:right;"> n </th>
+   <th style="text-align:right;"> theta </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:right;"> 21135 </td>
+   <td style="text-align:right;"> 0.4813 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:right;"> 469 </td>
+   <td style="text-align:right;"> 0.0107 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:right;"> 22311 </td>
+   <td style="text-align:right;"> 0.5080 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<p>donde <em>1</em> corresponde a <strong>Ocupado</strong>, <em>2</em> son los <strong>Desocupado</strong> y <em>3</em> son <strong>Inactivo</strong></p>
+<p>Creando código de <code>STAN</code></p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-42_65b24e7fd47779bd1be27025d0884b7f">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>data {</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  int<span class="sc">&lt;</span>lower<span class="ot">=</span><span class="dv">0</span><span class="sc">&gt;</span> k;  <span class="sc">/</span><span class="er">/</span> Número de cátegoria </span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  int y[k];        <span class="sc">/</span><span class="er">/</span> Número de exitos </span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  vector[k] alpha; <span class="sc">/</span><span class="er">/</span> Parámetro de las distribción previa </span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>parameters {</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>  simplex[k] theta;</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>transformed parameters {</span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>  real delta;                              <span class="sc">/</span><span class="er">/</span> Tasa de desocupación</span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>  delta <span class="ot">=</span> theta[<span class="dv">2</span>]<span class="sc">/</span> (theta[<span class="dv">2</span>] <span class="sc">+</span> theta[<span class="dv">1</span>]); <span class="sc">/</span><span class="er">/</span> (Desocupado)<span class="sc">/</span>(Desocupado <span class="sc">+</span> Ocupado)</span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>model {</span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a>  y <span class="sc">~</span> <span class="fu">multinomial</span>(theta);</span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a>  theta <span class="sc">~</span> <span class="fu">dirichlet</span>(alpha);</span>
+<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a>generated quantities {</span>
+<span id="cb45-18"><a href="#cb45-18" aria-hidden="true" tabindex="-1"></a>  int ypred[k];</span>
+<span id="cb45-19"><a href="#cb45-19" aria-hidden="true" tabindex="-1"></a>  ypred <span class="ot">=</span> <span class="fu">multinomial_rng</span>(theta, <span class="fu">sum</span>(y));</span>
+<span id="cb45-20"><a href="#cb45-20" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Preparando el código de <code>STAN</code></p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-43_41eb2599f6f45a1c032a66370a8730b0">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># file.edit("Data/modelosStan/6Multinom.stan")</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>Multinom  <span class="ot">&lt;-</span> <span class="fu">cmdstan_model</span>(<span class="at">stan_file =</span> <span class="st">"Data/modelosStan/6Multinom.stan"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Organizando datos para <code>STAN</code></p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-44_467b8a363c8a300b9c879cdc8f11e547">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>sample_data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">k =</span> <span class="fu">nrow</span>(dataMult),</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">y =</span> dataMult<span class="sc">$</span>n,</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">alpha =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Para ejecutar <code>STAN</code> en R tenemos la librería <em>cmdstanr</em></p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-45_f7be0384947e9fc6317251fdfa4f3599">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>model_Multinom <span class="ot">&lt;-</span> Multinom<span class="sc">$</span><span class="fu">sample</span>(<span class="at">data =</span> sample_data, </span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">chains =</span> <span class="dv">4</span>,</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">parallel_chains =</span> <span class="dv">4</span>,</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">seed =</span> <span class="dv">1234</span>,</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">refresh =</span> <span class="dv">1000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Running MCMC with 4 parallel chains...
+
+Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 1 finished in 0.1 seconds.
+Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 2 finished in 0.2 seconds.
+Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 3 finished in 0.2 seconds.
+Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 4 finished in 0.1 seconds.
+
+All 4 chains finished successfully.
+Mean chain execution time: 0.2 seconds.
+Total execution time: 1.2 seconds.</code></pre>
+</div>
+</div>
+<p>La estimación del parámetro <span class="math inline">\(\theta\)</span> y <span class="math inline">\(\delta\)</span> es:</p>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-46_afe6809c52954b44e443f3a78926b895">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>model_Multinom<span class="sc">$</span><span class="fu">summary</span>(<span class="at">variables =</span> <span class="fu">c</span>(<span class="st">"delta"</span>, <span class="st">"theta"</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(variable<span class="sc">:</span>q95) <span class="sc">%&gt;%</span> <span class="fu">tba</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table class="table table-striped lightable-classic" style="width: auto !important; margin-left: auto; margin-right: auto; font-family: Arial Narrow; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> variable </th>
+   <th style="text-align:right;"> mean </th>
+   <th style="text-align:right;"> median </th>
+   <th style="text-align:right;"> sd </th>
+   <th style="text-align:right;"> mad </th>
+   <th style="text-align:right;"> q5 </th>
+   <th style="text-align:right;"> q95 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> delta </td>
+   <td style="text-align:right;"> 0.0217 </td>
+   <td style="text-align:right;"> 0.0217 </td>
+   <td style="text-align:right;"> 0.0010 </td>
+   <td style="text-align:right;"> 0.0010 </td>
+   <td style="text-align:right;"> 0.0201 </td>
+   <td style="text-align:right;"> 0.0234 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> theta[1] </td>
+   <td style="text-align:right;"> 0.4813 </td>
+   <td style="text-align:right;"> 0.4812 </td>
+   <td style="text-align:right;"> 0.0023 </td>
+   <td style="text-align:right;"> 0.0024 </td>
+   <td style="text-align:right;"> 0.4775 </td>
+   <td style="text-align:right;"> 0.4850 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> theta[2] </td>
+   <td style="text-align:right;"> 0.0107 </td>
+   <td style="text-align:right;"> 0.0107 </td>
+   <td style="text-align:right;"> 0.0005 </td>
+   <td style="text-align:right;"> 0.0005 </td>
+   <td style="text-align:right;"> 0.0099 </td>
+   <td style="text-align:right;"> 0.0115 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> theta[3] </td>
+   <td style="text-align:right;"> 0.5080 </td>
+   <td style="text-align:right;"> 0.5080 </td>
+   <td style="text-align:right;"> 0.0023 </td>
+   <td style="text-align:right;"> 0.0024 </td>
+   <td style="text-align:right;"> 0.5043 </td>
+   <td style="text-align:right;"> 0.5118 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-47_9322760e8e5b16abbde4c8dcb04dd300">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>(<span class="fu">mcmc_dens_chains</span>(model_Multinom<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"theta[1]"</span>)) <span class="sc">+</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_areas</span>(model_Multinom<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"theta[1]"</span>)))<span class="sc">/</span> </span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_trace</span>(model_Multinom<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"theta[1]"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="0Recursos/1Fundamentos/unnamed-chunk-47-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-48_f2f1fe3361196df277601c0020d97956">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>(<span class="fu">mcmc_dens_chains</span>(model_Multinom<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"theta[2]"</span>)) <span class="sc">+</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_areas</span>(model_Multinom<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"theta[2]"</span>)))<span class="sc">/</span> </span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_trace</span>(model_Multinom<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"theta[2]"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="0Recursos/1Fundamentos/unnamed-chunk-48-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-49_510f486cf51306bbe0fa0099d70aadda">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>(<span class="fu">mcmc_dens_chains</span>(model_Multinom<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"theta[3]"</span>)) <span class="sc">+</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_areas</span>(model_Multinom<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"theta[3]"</span>)))<span class="sc">/</span> </span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_trace</span>(model_Multinom<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"theta[3]"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="0Recursos/1Fundamentos/unnamed-chunk-49-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-50_8a8369c8b953593abc00133d4557fb23">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>(<span class="fu">mcmc_dens_chains</span>(model_Multinom<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"delta"</span>)) <span class="sc">+</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_areas</span>(model_Multinom<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"delta"</span>)))<span class="sc">/</span> </span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_trace</span>(model_Multinom<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"delta"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="0Recursos/1Fundamentos/unnamed-chunk-50-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="0Recursos/1Fundamentos/unnamed-chunk-51_e29b812d5de4179fa0b6b1994caec619">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(dataMult)</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>y_pred_B <span class="ot">&lt;-</span> model_Multinom<span class="sc">$</span><span class="fu">draws</span>(<span class="at">variables =</span> <span class="st">"ypred"</span>, <span class="at">format =</span> <span class="st">"matrix"</span>)</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>rowsrandom <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">nrow</span>(y_pred_B), <span class="dv">100</span>)</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>y_pred2 <span class="ot">&lt;-</span> y_pred_B[, <span class="dv">1</span><span class="sc">:</span>n]</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ppc_dens_overlay</span>(<span class="at">y =</span> <span class="fu">as.numeric</span>(dataMult<span class="sc">$</span>n), y_pred2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="0Recursos/1Fundamentos/unnamed-chunk-51-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
