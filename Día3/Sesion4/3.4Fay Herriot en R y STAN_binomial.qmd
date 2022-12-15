@@ -1,0 +1,278 @@
+---
+title: "Fay Herriot en R y STAN (Binomial-beta)"
+subtitle: "CEPAL - Unidad de Estadísticas Sociales"
+author: "Andrés Gutiérrez - Stalyn Guerrero"
+format: html
+project:
+  type: website
+  output-dir: docs
+---
+
+```{r setup, include=FALSE, message=FALSE, error=FALSE, warning=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  cache = TRUE,
+  cache.path = "0Recursos/3.4binomial/",
+  fig.path = "0Recursos/3.4Binomial/"
+)
+library(printr)
+library(kableExtra)
+library(tidyverse)
+tba <- function(dat, cap = NA){
+  kable(dat,
+      format = "html", digits =  4,
+      caption = cap) %>% 
+     kable_styling(bootstrap_options = "striped", full_width = F)%>%
+         kable_classic(full_width = F, html_font = "Arial Narrow")
+}
+
+```
+
+
+El modelo lineal de Fay-Herriot puede ser reemplazado por un modelo mixto lineal generalizado (GLMM). Esto se puede hacer cuando los datos observados $y_d$ son inherentemente discretos, como cuando son recuentos (no ponderados) de personas u hogares muestreados con ciertas características. Uno de estos modelos supone una distribución binomial para $y_d$ con probabilidad de éxito $p_d$, y una logística modelo de regresión para $p_d$ con errores normales en la escala logit. El modelo resultante es
+
+
+$$
+\begin{eqnarray*}
+y_{d}\mid p_{d},n_{d} & \sim & Bin\left(n_{d},p_{d}\right)
+\end{eqnarray*}
+$$
+para $d=1,\dots,D$ y 
+
+$$
+\begin{eqnarray*}
+logit\left(p_{d}\right)=\log\left(\frac{p_{d}}{1-p_{d}}\right) & = & \boldsymbol{x}_{d}^{T}\boldsymbol{\beta}+u_{d}
+\end{eqnarray*}
+$$
+donde $u_{d}\sim N\left(0,\sigma_{u}^{2}\right)$ y $n_{d}$ es el
+tamaño de la muestra para el área $d$.
+
+El modelo anterior se puede aplicar fácilmente a recuentos de muestras no ponderadas $y_d$, pero esto ignora cualquier aspecto complejo del diseño de la encuesta. En muestras complejas donde las $y_d$ son estimaciones ponderadas, surgen dos problemas. En primer lugar, los posibles valores de
+el $y_d$ no serán los números enteros $0, 1, \dots , n_d$ para cualquier definición directa de tamaño de muestra $n_d$. En su lugar, $y_d$ tomará un valor de un conjunto finito de números desigualmente espaciados determinados por las ponderaciones de la encuesta que se aplican a los casos de muestra en el dominio  $d$. En segundo lugar, la varianza muestral de $y_d$
+implícito en la distribución Binomial, es decir,  $n_d \times p_d (1-p_d)$, será incorrecto. Abordamos estos dos problemas al definir un **tamaño de muestra efectivo** $\tilde{n}_d$, y un **número de muestra efectivo de éxitos** $\tilde{y_d}$ determinó mantener: (i) la estimación directa  $\hat{p}_i$, de la pobreza y (ii) una estimación de la varianza de muestreo correspondiente,$\widehat{Var}(\hat{p}_d)$. 
+
+
+Es posible suponer que 
+$$
+\begin{eqnarray*}
+\tilde{n}_{d} & \sim & \frac{\check{p}_{d}\left(1-\check{p}_{d}\right)}{\widehat{Var}\left(\hat{p}_{d}\right)}
+\end{eqnarray*}
+$$
+donde $\check{p}_{d}$ es una preliminar perdicción basada en el modelo
+para la proporción poblacional $p_d$ y y $\widehat{Var}\left(\hat{p}_{d}\right)$ depende de$\check{p}_{d}$ a través de una función de varianza generalizada ajustada (FGV). Note que $\tilde{y}_{d}=\tilde{n}_{d}\times\hat{p}_{d}$. 
+
+Suponga de las distribuciones previas para 
+$\boldsymbol{\beta}$ y $\sigma_{u}^{2}$ son dadas por 
+$$
+\begin{eqnarray*}
+\boldsymbol{\beta}	\sim	N\left(\mu_{0},\tau_{0}\right)\\
+\sigma_{u}^{2}	\sim	IG\left(\alpha_{1},\alpha_{2}\right)
+\end{eqnarray*}
+$$
+
+## Procesamiento en R
+
+Lectura de la base de datos que resultó en el paso anterior y selección de las columnas de interés
+```{r}
+library(tidyverse)
+library(magrittr)
+
+base_FH <- readRDS("Data/base_FH_2014.rds") %>% 
+  select(dam2, pobreza, n_eff_FGV)
+```
+
+Lectura de las covariables, las cuales son obtenidas previamente. Dado la diferencia entre las escalas de las variables  es necesario hacer un ajuste a estas. 
+
+```{r}
+statelevel_predictors_df <- readRDS("Data/statelevel_predictors_df_dam2.rds") %>% 
+    mutate_at(.vars = c("luces_nocturnas",
+                      "suelo_cultivos",
+                      "suelo_urbanos",
+                      "modifica_humana",
+                      "tiempo_hospital",
+                      "tiempo_hospital_no_motor"),
+            function(x) scale(x)*2+5)
+```
+
+Uniendo las dos bases de datos. 
+
+```{r}
+base_FH <- full_join(base_FH,statelevel_predictors_df, by = "dam2" )
+tba(base_FH[,1:8] %>% head(10))
+```
+
+Seleccionando las covariables para el modelo. 
+
+```{r}
+# names_cov <-
+#    statelevel_predictors_df %>% 
+#   data.frame() %>% select_if(is.numeric) %>% names()
+names_cov <- c("luces_nocturnas", "tiene_alcantarillado", 
+               "tiene_electricidad",    "tiene_acueducto",
+               "tiene_gas", "tiene_internet", "piso_tierra",
+               "material_paredes", "material_techo",
+               "rezago_escolar", "alfabeta",
+               "tasa_desocupacion" )
+```
+
+# Preparando los insumos para `STAN`
+
+Dividir la base de datos en dominios observados y no observados
+
+### Dominios observados.
+```{r}
+data_dir <- base_FH %>% filter(!is.na(pobreza))
+```
+
+### Dominios NO observados.
+```{r}
+data_syn <-
+  base_FH %>% anti_join(data_dir %>% select(dam2))
+tba(data_syn[1:10,1:8])
+```
+
+### Matrix de covariables (Efectos fijos) 
+
+```{r}
+## Dominios observados
+Xdat <- data_dir[,names_cov]
+
+## Dominios no observados
+Xs <- data_syn[,names_cov]
+```
+
+Obteniendo el tamaño de muestra efectivo  $\tilde{n}_d$, y el número de muestra efectivo de éxitos $\tilde{y_d}$
+
+```{r}
+n_effec = round(data_dir$n_eff_FGV)
+y_effect  = round((data_dir$pobreza)*n_effec)
+```
+
+Creando lista de parámetros para `STAN`
+
+```{r}
+sample_data <- list(
+  N1 = nrow(Xdat),   # Observados.
+  N2 = nrow(Xs),   # NO Observados.
+  p  = ncol(Xdat),       # Número de regresores.
+  X  = as.matrix(Xdat),  # Covariables Observados.
+  Xs = as.matrix(Xs),    # Covariables NO Observados
+  n_effec = n_effec,
+  y_effect  = y_effect          # Estimación directa. 
+)
+```
+
+ Compilando el modelo en `STAN`
+```{r}
+library(cmdstanr)
+# file.edit("Data/modelosStan/14FH_binomial.stan")
+fit_FH_binomial <- cmdstan_model("Data/modelosStan/14FH_binomial.stan")
+
+model_FH_Binomial <-
+  fit_FH_binomial$sample(
+    data = sample_data,
+    chains = 4,
+    parallel_chains = 4,
+    iter_warmup = 2000,
+    iter_sampling = 1000,
+    seed = 1234,
+    refresh = 500
+  )
+
+```
+
+### Resultados del modelo para los dominios observados. 
+
+```{r}
+library(bayesplot)
+library(patchwork)
+y_pred_B <- model_FH_Binomial$draws(variables = "theta", format = "matrix")
+rowsrandom <- sample(nrow(y_pred_B), 100)
+y_pred2 <- y_pred_B[rowsrandom, ]
+ppc_dens_overlay(y = as.numeric(data_dir$pobreza), y_pred2)
+```
+
+Análisis gráfico de la convergencia de las cadenas. 
+
+```{r}
+(mcmc_dens_chains(model_FH_Binomial$draws("sigma_v")) +
+    mcmc_areas(model_FH_Binomial$draws("sigma_v")))/ 
+  mcmc_trace(model_FH_Binomial$draws("sigma_v"))
+```
+
+Estimación del FH de la pobreza en los dominios observados. 
+
+```{r}
+theta_FH <- model_FH_Binomial$summary(variables =  "theta")
+data_dir %<>% mutate(pred_binomial = theta_FH$mean, 
+                     pred_binomial_EE = theta_FH$sd,
+                     Cv_pred = pred_binomial_EE/pred_binomial)
+```
+
+Estimación del FH de la pobreza en los dominios NO observados. 
+
+```{r}
+theta_FH_pred <- model_FH_Binomial$summary(variables =  "thetaLP")
+
+data_syn <- data_syn %>% 
+  mutate(pred_binomial = theta_FH_pred$mean,
+         pred_binomial_EE = theta_FH_pred$sd,
+         Cv_pred = pred_binomial_EE/pred_binomial)
+
+
+```
+
+# Mapa de pobreza
+
+```{r, out.height= "120%"}
+library(sp)
+library(sf)
+library(tmap)
+
+data_map <- rbind(data_dir, data_syn) %>% 
+  select(dam2, pobreza, pred_binomial, pred_binomial_EE,Cv_pred ) 
+
+
+## Leer Shapefile del país
+ShapeSAE <- read_sf("Shape/Guatemala_adm2_uscb_2020.shp") %>% 
+  mutate(temp = gsub(pattern = "\\D", replacement = "",x = GEO_MATCH),
+         dam = substr(temp, 1,2),
+         dam2 = paste0(dam,str_pad(str_sub(temp,3,4), width = 3,pad = "0"))
+         )
+
+
+mapa <- tm_shape(ShapeSAE %>%
+                   left_join(data_map,  by = "dam2"))
+
+brks_lp <- c(0,0.025,0.05, 0.1, 0.15, 0.2,0.4, 1)
+tmap_options(check.and.fix = TRUE)
+Mapa_lp <-
+  mapa + tm_polygons(
+    c("pobreza", "pred_binomial"),
+    breaks = brks_lp,
+    title = "Mapa de pobreza",
+    palette = "YlOrRd",
+    colorNA = "white"
+  ) + tm_layout(asp = 1.5)
+
+Mapa_lp
+```
+
+Coeficiente de variación.  
+
+```{r, out.height= "120%"}
+Mapa_cv <-
+  mapa + tm_polygons(
+    c("Cv_pred"),
+     title = "Mapa de pobreza(cv)",
+    palette = "YlOrRd",
+    colorNA = "white"
+  ) + tm_layout(asp = 2.5)
+
+Mapa_cv
+
+```
+
+
