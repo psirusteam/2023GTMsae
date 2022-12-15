@@ -1,0 +1,1181 @@
+---
+title: "Estimación de uso de métodos de planificación familiar empleando modelos de unidad"
+subtitle: "CEPAL - Unidad de Estadísticas Sociales"
+author: "Andrés Gutiérrez - Stalyn Guerrero - Gabriel Nieto"
+format: html
+project:
+  type: website
+  output-dir: docs
+---
+
+```{r setup, include=FALSE, message=FALSE, error=FALSE, warning=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  cache = TRUE,
+  cache.path = "0Recursos/5.0Modelos_UNFPA/",
+  fig.path = "0Recursos/5.0Modelos_UNFPA/"
+)
+library(printr)
+library(kableExtra)
+library(tidyverse)
+library(magrittr)
+library(rstan)
+library(rstantools)
+library(rstanarm)
+tba <- function(dat, cap = NA){
+  kable(dat,
+      format = "html", digits =  4,
+      caption = cap) %>% 
+     kable_styling(bootstrap_options = "striped", full_width = F)%>%
+         kable_classic(full_width = F, html_font = "Arial Narrow")
+}
+```
+
+
+# Introducción 
+
+Para los gobiernos y las organizaciones internacionales es muy importante conocer las condiciones de calidad de vida de las personas en lo que incluye la salud, por lo cual, evaluar la capacidad que estas tienen para cubrir sus necesidades de planificación familiar y de acceso a diferentes métodos modernos de planificicación; es fundamental para el diseño y formulación de políticas públicas. Por esta razón, el realizar mapas de uso de métodos de planificación familiar mediante metodologías adecuadas que permitan llegar a estimaciones precisas, se convierte en una herramienta preciada para identificar no solamente las áreas geográficas más vulnerables en términos salud sexual y reproductiva (departamentos, regiones, municipios, provincias, comunas o la división geográfica característica de cada país) sino también la situación de grupos o segmentos poblacionales de interés.
+
+
+
+## Definiciones de los indicadores de interés.
+
+-   Indicador D6 métodos de planificación
+
+    Este indicador, alude a la tasa de prevalencia de uso de métodos anticonceptivos de mujeres sin importar el tipo de método ya sea moderno, tradicional o folclórico, la cual se compone por mujeres en edad fértil (entre 15 y 49 años) y sexualmente activas
+    
+-   Indicador D6m métodos modernos de planificación
+
+    Este indicador, corresponde a la tasa de prevalencia que hace referencia al uso de métodos anticonceptivos de tipo moderno. la cual se compone por mujeres por mujeres en edad fértil (entre 15 y 49 años), sexualmente activas que hacen uso de algún método de tipo moderno.
+    
+-   Indicador NI necesidades insatisfechas
+
+    La definición de este indicador, se entiende como la tasa de prevalencia de mujeres en edad de procrear que por algún motivo no son capaces de cubrir sus necesidades de planificación familiar con algún método anticonceptivo (moderno o tradicional). Esta se compone, por mujeres en edad fértil (entre 15 a 49 años), sexualmente activas y/o unidas que afirma no ser capaces de cubrir sus necesidades de planificación familiar con algún método anticonceptivo (tradicional y/o modernos) 
+    
+-   D7 (junto con necesidades insatisfechas)
+    
+    Este indicador, hace referencia a la proporción de mujeres en edad de procrear (15 a 49 años), sexualmente activas y/o unidas que han decidido por voluntad propia no tener hijos (adicionales) o posponer su siguiente hijo y para ello se encuentran utilizando métodos anticonceptivos modernos. 
+
+
+#	Modelo MRP
+
+De acuerdo con este modelo, como lo expone Gutiérrez y otros (2022), la probabilidad de hacer uso de métodos de planificación para la $i$-ésima persona en el $j$-ésimo post-estrato, puede ser definido para cada unidad de la encuesta. El modelo pretende establecer la relación entre la expectativa $\rho_{di}$  de la variable dicotómica con las covariables de información auxiliar disponibles para ser incluidas. El procedimiento correspondiente a este proceso, modela el logaritmo del cociente entre la probabilidad de usar algún método anticonceptivo a su complemento en relación al conjunto de covariables a nivel de unidad, $x_{ji}$, y el conjunto de covariables a nivel departamental, $Z_d$
+
+$$
+\ln(\frac{ρ_{ji}}{1-ρ_{ji}} ) = x_{ji}^t \beta + z_d \gamma.
+$$
+
+Los coeficientes $\beta$ hacen referencia a los efectos aleatorios de las variables $x_{ji}^t$  sobre las probabilidades de que la $i$-ésima persona haga uso de métodos anticonceptivos; por otro lado, los coeficientes $\gamma$ expresan los efectos fijos sobre las covariables a nivel departamental, $z_d$. Ahora, es posible asumir distribuciones no informativas para $\beta$ y $\gamma$. 
+
+$$
+\begin{eqnarray*}
+\beta  & \sim & N(0,\sigma^2_1) \\
+\gamma & \sim & N(0,\sigma^2_2) 
+\end{eqnarray*}
+$$
+
+## Estandarización de la encuesta
+
+Se presentan las variables provenientes de la Encuesta Nacional de Salud Materno Infantil (ENSMI), que fueron empleadas para la construcción de los datos que son utilizadas en este estudio e incluidas en el ajuste del modelo.
+
+#### Covariables 
+
+```{r echo=FALSE, out.width = "800px", out.height="650px",fig.align='center'}
+
+knitr::include_graphics("0Recursos/UNFPA_cov1.png")
+```
+
+#### Indicadores 
+
+```{r echo=FALSE, out.width = "800px", out.height="650px",fig.align='center'}
+knitr::include_graphics("0Recursos/UNFPA_Indicadores.png")
+```
+
+
+El indicador de necesidades satisfechas de planificación por métodos modernos (D7) no se crea a partir de las variables originales de la encuesta, ya que es una razón entre los otros tres indicadores creados
+
+
+#### 	Variables para el diseño muestral
+
+-   Unidad primaria de muestreo - UPM
+    
+    Para la definifición de esta variable, se emplea la variable original de la encuesta “hv021”. 
+    
+-   Estrato
+
+    Para la definifición de esta variable, se emplea la variable original de la encuesta “hv023”.
+    
+-   Factor de expansión - fexp
+
+    El factor de expansión para el cual se emplea la variable original “V005” el cual requiere que al valor de la variable se le multiplique una constante (4.641.986) la cual hace referencia al número de mujeres en edad fértil; y, a ese valor se divide por la suma de la variable(V005).  
+
+La tabla resultante se muestra en la siguiente tabla. 
+
+```{r}
+encuesta_mrp <- readRDS("UNFPA/D6/encuesta_mrp.rds")
+tba(encuesta_mrp %>% head(10))
+```
+
+
+## Censos de población y vivienda
+
+Es necesario definir las variables del país con los que se desea trabajar. De acuerdo a esto, como primer paso se debe tener acceso al censo del país, para ello puede acceder desde el siguiente enlace <https://redatam.org/en/microdata> en el cual dispondrá de un archivo *.zip* con los microdatos del país. Ahora bien, para leer el conjunto de datos, es necesario emplear la función redatam.open de la librería `redatam`, la cual depende directamente del diccionario censal del software REDATAM, este es un archivo con extensión dicx y que debe encontrarse en la carpeta sobre los datos que se están leyendo. Así, es como se crea un objeto dentro de `R` que hace la respectiva unión del diccionario con los microdatos de la base de datos censal. La siguiente sintaxis muestra la lectura del diccionario en `R` y los cálculos iniciales
+
+ 
+
+```{r, eval=FALSE}
+library(redatam)
+guatemala <-  redatam.open( "UNFPA/D6/Data/cpv2018gtm-cde.dicx")
+
+CONTEOS <- redatam.query(guatemala, "freq DEPTO.IDEPTO
+                              by VIVIENDA.PLG11
+                              by  PERSONA.PCP7
+                              by PERSONA.PCP6
+                              by PERSONA.ANEDUCA
+                              by PERSONA.PCP34
+                              by PERSONA.PBLOPER",tot.omit = FALSE)
+# Eliminando totales de la tabla
+CONTEOS2 <- CONTEOS %>% filter_at(vars(matches("_label")),all_vars(. !=  "__tot__"))
+
+#### elimando las edades menores a 10 años 
+
+CONTEOS2 <- CONTEOS2 %>%  filter(PCP73_value >= 10)
+```
+
+Después de realizar algunas validaciones se estandarizan las variables como muestra el siguiente código.
+
+```{r, eval=FALSE}
+
+censo_mrp <- CONTEOS2 %>% transmute(
+  depto = str_pad(
+    string = IDEPTO1_value,
+    width = 2,
+    pad = "0"
+  ),
+  area = case_when(PLG112_value == 1 ~ "1", # 1 = Urbana
+                   TRUE ~ "0"),
+  # 0 = Rural
+  sexo = as.character(PCP64_value),
+  
+  edad = case_when(
+    PCP73_value %in% 0:14 ~  "1",       # 0 a 14
+    PCP73_value %in% 15:20 ~ "2",      # 15 a 20
+    PCP73_value %in% 21:30 ~ "3",      # 21 a 30
+    PCP73_value %in% 31:39 ~ "4",      # 31 a 39
+    PCP73_value %in% 40:49 ~ "5",      # 40 a 49
+    TRUE ~ "6"                         # 50 o mas
+  ),     
+  
+  anoest = case_when(
+    
+    is.na(ANEDUCA5_value) | PCP73_value < 7 ~ "98",     # No aplica
+    ANEDUCA5_value == 99 ~ "99", #NS/NR
+    ANEDUCA5_value %in% 0 ~ "1",  # Sin educacion
+    ANEDUCA5_value %in% c(1:6) ~ "2",  # 1-6
+    ANEDUCA5_value %in% c(7:12) ~ "3",  # 7-12
+    ANEDUCA5_value > 12 ~ "4" ,  # 12 o mas
+    TRUE ~ "Error"
+  ),    
+  etnia = case_when(
+    PBLOPER7_value %in% c(2:3) ~ "2",    # Afro
+    PBLOPER7_value == 1  ~ "1", # Indigena,
+    TRUE ~ "3" # Otro
+  ),
+  
+  unida = case_when(
+    PCP346_value %in% c(2:3) ~ "1",# Unido
+    TRUE ~ "2" # Otro
+  ),
+  
+  value
+) %>% group_by(depto, area, etnia, sexo, edad, anoest, unida) %>%
+  summarise(n = sum(value), .groups = "drop")
+```
+
+La tabla resultante se muestra en la siguiente tabla. 
+
+```{r}
+censo_mrp <- readRDS("UNFPA/D6/censo_mrp.rds")
+tba(censo_mrp %>% head(10))
+```
+
+
+## Imagenes satelitales como información auxiliar
+
+En la actualidad los datos satelitales que se usan para los diferentes estudios realizados por CEPAL, se obtienen de la plataforma Google Earth Engine ; la cual, integra diferentes lenguajes de programación como Javascript, Python y R mediante el paquete rgee, recientemente vinculado (2021). Todas estas herramientas juntas, permiten obtener imágenes satelitales de los lugares de interés para integrar a la información que ya se tiene disponible y así mejorar la calidad de las estimaciones.
+
+La información satelital empleada para el calculo de los indicadores es la siguiente: 
+
+
+-   Luces nocturnas 
+    
+    En su nombre original “Nighttime Lights Time Series Version 4, Defense Meteorological Program Operational Linescan System”. Este es un sistema de datos de uso público, recopilados por la Agencia Meteorológica de la Fuerza Aérea de EE. UU. Pero el procesamiento de las imágenes y los datos es realizado por el Centro Nacional de Datos Geofísicos de la NOAA.
+
+-   Urbanismo y evolución de superficie terrestre
+ 
+    En su nombre original “Copernicus Global Land Cover Layers: CGLS-LC100 Collection 3” Estos mapas se encuentran disponibles para los periodos 2015-2019 en todo el mundo. Este esquema de clasificación según Google, puede representar áreas de cobertura terrestre heterogénea mejor que el esquema de clasificación estándar y, como tal, se puede adaptar para el uso de diferentes aplicaciones, por ejemplo, monitoreo forestal, monitoreo de cultivos, biodiversidad y conservación, monitoreo ambiental y seguridad en África, modelado climático, entre muchos otros.
+
+La base consolidada es se muestra a continuación:  
+
+```{r}
+statelevel_predictors_df <- readRDS("UNFPA/D6/statelevel_predictors_df.rds")
+tba(statelevel_predictors_df %>% head(10))
+```
+
+
+## Estimación del modelo para D6
+
+Se debe cargar el archivo `encuesta_mrp.rds` y el archivo `statelevel_predictors_df.rds` creado previamente. A continuaciones preparamos los datos para el indicador *D6*
+
+```{r}
+byAgrega <- c( "depto", "area", "edad", "etnia",  
+               "anoest", "unida" )  
+
+encuesta_df_agg <-
+  encuesta_mrp %>%
+  group_by_at(all_of(byAgrega)) %>%
+  summarise(n = n(),
+            pobres = sum(usametodo), #D6
+            nopobres = n - usametodo, .groups = "drop") 
+
+encuesta_df_agg %<>% inner_join(statelevel_predictors_df, 
+                         by = "depto") 
+
+```
+
+
+Con la información ordenada ajustamos el siguiente modelo 
+
+```{r, eval=FALSE}
+library(rstan)
+library(rstantools)
+library(rstanarm)
+fit <- stan_glmer(
+  cbind(pobres, nopobres) ~  (1 | depto) +
+    (1 | edad) +
+    (1 | area) +
+    (1 | anoest) +
+    (1 | etnia) +
+    (1 | depto:area) +
+    (1 | depto:etnia) +
+    (1 | depto:edad) +
+    (1 | depto:anoest) +
+    (1 | area:anoest) +
+    (1 | etnia:edad) +
+    (1 | etnia:anoest) +
+    (1 | edad:anoest) +
+    tasa_desocupacion +
+    stable_lights +
+    crops.coverfraction +
+    urban.coverfraction +
+    unida,
+  family = binomial(link = "logit"),         
+                 data = encuesta_df_agg,
+                  verbose = TRUE,
+                 cores = 7,
+                 chains = 4,
+                 iter = 1000
+  )
+
+
+```
+El resultado del modelo es el siguiente. 
+```{r}
+fit<-readRDS("UNFPA/D6/fit_bayes.rds")
+tba(coef(fit)$depto %>% head(10))
+```
+
+## Validación del modelo 
+
+```{r}
+library(posterior)
+library(bayesplot)
+posterior <- as.array(fit)
+parameters <- dimnames(posterior)$parameters
+var_names <- grep(pattern = "depto:\\d",x = parameters,value = TRUE)
+mcmc_areas(fit, pars = var_names)
+```
+
+
+```{r}
+mcmc_trace(fit,pars = var_names)
+```
+
+
+```{r}
+encuesta_mrp2 <- inner_join(encuesta_mrp, statelevel_predictors_df)
+y_pred_B <- posterior_epred(fit, newdata = encuesta_mrp2)
+rowsrandom <- sample(nrow(y_pred_B), 100)
+y_pred2 <- y_pred_B[rowsrandom, ]
+ppc_dens_overlay(y = as.numeric(encuesta_mrp2$usametodo), y_pred2) 
+  
+```
+
+
+
+
+
+
+### Predicción en el censo
+
+```{r}
+poststrat_df <- censo_mrp %>%  
+            group_by_at(byAgrega) %>%
+            summarise(n = sum(n), .groups = "drop")
+
+poststrat_df <- left_join(poststrat_df, statelevel_predictors_df,
+                          by = "depto")
+
+epred_mat <- posterior_epred(fit, newdata = poststrat_df, 
+                     type = "response", allow.new.levels = TRUE)
+```
+
+Validación de las predicciones 
+
+```{r}
+sum(is.na(epred_mat))
+sum(epred_mat < 0)
+```
+
+Asignar la predicción a la base de `poststrat_df`
+
+```{r}
+poststrat_df$epred_mat <- colMeans(epred_mat)
+```
+
+
+# Metodología de Benchmarking
+
+1.  Validarse los nombres de las covariables disponibles en censo y encuesta, que deben ser las mismas con las que se han venido trabajando, para este caso resultaron 
+
+```{r}
+names_cov <- c("depto" , "area" ,  "etnia" , "edad" ,  "anoest", "unida" )
+```
+
+2. Calcular las estimaciones para cada una de las variables de la base de datos de `encuesta_mrp` utilizando el indicador de interés. 
+
+```{r}
+encuesta_mrp %<>% mutate(pobreza = usametodo)
+
+paso <- sapply(names_cov, function(byi){
+    encuesta_mrp %>% 
+    group_by_at(all_of(byi)) %>% 
+    summarise(Nhat = sum(fexp),
+              t_pobreza = sum(pobreza*fexp),
+              medias = weighted.mean(pobreza,fexp))
+})
+
+data.frame( Categoría = unlist(paso["depto",]),
+           Total = unlist(paso["t_pobreza",]),
+           Hat_Media = unlist(paso["medias",])) %>% slice(1:10) %>% 
+  tba()
+
+```
+
+3.    Crear variables dummys en `poststrat_df` y multiplicar cada variable por la predicción `epred_mat`
+
+```{r}
+poststrat_df %<>%
+  fastDummies::dummy_cols(select_columns = names_cov,
+                          remove_selected_columns = FALSE)
+poststrat_df %<>% 
+       mutate_at(vars(matches("\\d$")) ,~.*poststrat_df$epred_mat)
+
+tba( poststrat_df %>% select(starts_with("anoest"),epred_mat) %>% head(10))
+```
+
+
+4. Con la función `calib` se procede a calcular los $g_k$, verificando que el proceso se haya realizado con éxito y exista convergencia
+
+
+```{r}
+library(sampling)
+
+poststrat_df$gk <- calib(
+  Xs = poststrat_df %>% select(matches("\\d$")), ## Variable dummys 
+  d = poststrat_df$n,                            ## Conteos en el post-estrato
+  total = unlist(paso["t_pobreza",]),            ## Valores objetivo
+  method="logit")                                ## Método empleado
+
+checkcalibration(Xs = poststrat_df %>% 
+                 select(matches("\\d$")), 
+                 d = poststrat_df$n,
+                 total = unlist(paso["t_pobreza",]),
+                 g = poststrat_df$gk)
+```
+
+5. Realizar validación sobre los resultados obtenidos. 
+
+```{r}
+hist(poststrat_df$gk)
+```
+
+Continuando con la validación se define define la columna `pobreza2`
+
+```{r}
+poststrat_df %<>%
+  mutate(pobreza2 = epred_mat *gk,
+         pobreza2 = ifelse(pobreza2>1, 1, pobreza2),
+         pobreza2 = ifelse(pobreza2<0, 0, pobreza2)) 
+
+```
+
+Paso seguido realizamos el calculo de los totales calibrados. 
+```{r}
+temp <- map_df(names_cov ,~ poststrat_df %>% 
+              group_by_at(all_of(.x)) %>%
+              summarise(
+              Nhat = sum(n),
+              t_pobreza = sum(n*pobreza2)) %>% 
+              transmute(
+                Cal_Media = t_pobreza/Nhat,
+                Variable = paste0(.x, get(.x) ))) 
+
+data.frame( Categoría = unlist(paso["depto",]),
+            Hat_Media = unlist(paso["medias",])) %>% 
+  cbind(temp) %>% head(10) %>% tba()
+```
+
+También es posible hacer validaciones visuales. 
+
+```{r, fig.align='center'}
+library(survey)
+library(srvyr)
+library(patchwork)
+source("0Recursos/funciones_mrp.R")
+
+poststrat_df %<>% mutate(yk_lmer = epred_mat, 
+                         yk_bench = pobreza2)
+
+diseno <- encuesta_mrp %>%
+  mutate(yk_dir = pobreza) %>% 
+  as_survey_design(weights = fexp)
+
+bynames <- c("area", "anoest", "edad", "depto", "etnia")
+plot_uni <- map(
+  .x = setNames(bynames, bynames),
+  ~ plot_compare2(
+    sample_diseno = diseno,
+    poststrat = poststrat_df,
+    by1 = .x
+  )
+)
+
+plot_uni$depto$Plot$plot1
+
+(plot_uni$anoest$Plot$plot1 +  plot_uni$edad$Plot$plot1) /
+(plot_uni$area$Plot$plot1+ plot_uni$etnia$Plot$plot1)
+
+```
+
+
+## Estimación y mapa del indicador. 
+
+Después de todos el proceso de estandarización, creación de variables covariables, estimación del modelo y validaciones realizadas, la estimación puntual se reduce a operaciones algebraicas simples. 
+
+```{r}
+poststrat_df2 <-  poststrat_df %>% filter(anoest != "99")
+
+dat_depto <- poststrat_df2 %>% group_by(depto) %>%
+    summarise(
+      Benchmarking_estimate = sum(n * pobreza2) / sum(n),
+      .groups = "drop"
+    )
+```
+
+En este paso validamos que las estimaciones no superen el valor de 1 o sean menores o iguales a creo. 
+```{r}
+dat_depto %>% summarise(Validar = sum(Benchmarking_estimate >= 1 |
+                                            Benchmarking_estimate < 0  ))
+  
+```
+
+El cuadrado medio del error lo obtenemos con la función `Aux_Agregado` que hemos usado previamente. 
+
+```{r}
+mrp_cme <-
+  Aux_Agregado(poststrat = poststrat_df,
+             epredmat = epred_mat,
+             byMap = "depto") %>% 
+  select(-mrp_estimate)
+
+dat_depto <- dat_depto %>% left_join(mrp_cme) %>% 
+  mutate(mrp_cv = mrp_estimate_se/Benchmarking_estimate*100) %>% 
+  arrange(desc(mrp_cv))
+
+tba(dat_depto %>% slice(1:10))
+
+```
+
+
+
+### Mapas para el indicador D6
+
+
+```{r}
+library(sp)
+library(sf)
+library(tmap)
+
+ShapeSAE <- read_sf("Shape/departamentos_gtm.shp")
+ShapeSAE %<>% mutate(depto = str_pad(departamen, pad = "0", width = 2), area = NULL)
+
+P1_ingresolp <- tm_shape(ShapeSAE %>%
+                           left_join(dat_depto,  by = "depto"))
+
+brks_lp <- c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1)
+tmap_options(check.and.fix = TRUE)
+Mapa_lp <-
+  P1_ingresolp + tm_polygons(
+    "Benchmarking_estimate",
+    breaks = brks_lp,
+    title = "D6",
+    palette = "-YlOrRd"
+  ) + tm_layout(asp = 0)
+Mapa_lp
+```
+
+
+# Estimación del indicador D6m (Uso de métodos anticonceptivos) 
+
+El procedimiento descrito previamente se repite para los indicadores *D6m* y *NI*. 
+
+Lectura de insumos 
+
+```{r}
+encuesta_mrp <- readRDS("UNFPA/D6m/encuesta_mrp.rds") 
+statelevel_predictors_df <- readRDS("UNFPA/D6m/statelevel_predictors_df.rds")
+censo_mrp <- readRDS("UNFPA/D6m/censo_mrp.rds")
+fit <- readRDS("UNFPA/D6m/fit_bayes.rds")
+```
+
+Por el proceso de estandarizado realizado es renombrado el indicador _usamoderno_ como _probreza_, el modelo contemplado para el indicador es:  
+
+```{r}
+fit$call
+```
+
+El resultado del modelo es el siguiente. 
+```{r}
+tba(coef(fit)$depto %>% head(10))
+```
+
+## Validación del modelo 
+
+```{r}
+library(posterior)
+library(bayesplot)
+posterior <- as.array(fit)
+parameters <- dimnames(posterior)$parameters
+var_names <- grep(pattern = "depto:\\d",x = parameters,value = TRUE)
+mcmc_areas(fit, pars = var_names)
+```
+
+
+```{r}
+mcmc_trace(fit,pars = var_names)
+```
+
+
+```{r}
+encuesta_mrp2 <- inner_join(encuesta_mrp, statelevel_predictors_df)
+y_pred_B <- posterior_epred(fit, newdata = encuesta_mrp2)
+rowsrandom <- sample(nrow(y_pred_B), 100)
+y_pred2 <- y_pred_B[rowsrandom, ]
+ppc_dens_overlay(y = as.numeric(encuesta_mrp2$usamoderno), y_pred2) 
+  
+```
+
+
+### Predicción en el censo
+
+```{r}
+ byAgrega <- c("depto", "area", "edad", "etnia",
+               "anoest", "unida")
+
+poststrat_df <- censo_mrp %>%  
+            group_by_at(byAgrega) %>%
+            summarise(n = sum(n), .groups = "drop")
+
+poststrat_df <- left_join(poststrat_df, statelevel_predictors_df,
+                          by = "depto")
+
+epred_mat <- posterior_epred(fit, newdata = poststrat_df, 
+                     type = "response", allow.new.levels = TRUE)
+```
+
+Validación de las predicciones 
+
+```{r}
+sum(is.na(epred_mat))
+sum(epred_mat < 0)
+```
+
+Asignar la predicción a la base de `poststrat_df`
+
+```{r}
+poststrat_df$epred_mat <- colMeans(epred_mat)
+```
+
+
+### Benchmarking
+
+1.  Validarse los nombres de las covariables disponibles en censo y encuesta, que deben ser las mismas con las que se han venido trabajando, para este caso resultaron 
+
+```{r}
+names_cov <- c("depto" , "area" ,  "etnia" , "edad" ,  "anoest", "unida" )
+```
+
+2. Calcular las estimaciones para cada una de las variables de la base de datos de `encuesta_mrp` utilizando el indicador de interés. 
+
+```{r}
+encuesta_mrp %<>% mutate(pobreza = usamoderno)
+
+paso <- sapply(names_cov, function(byi){
+    encuesta_mrp %>% 
+    group_by_at(all_of(byi)) %>% 
+    summarise(Nhat = sum(fexp),
+              t_pobreza = sum(pobreza*fexp),
+              medias = weighted.mean(pobreza,fexp))
+})
+
+data.frame( Categoría = unlist(paso["depto",]),
+           Total = unlist(paso["t_pobreza",]),
+           Hat_Media = unlist(paso["medias",])) %>% head(10) %>% 
+  tba()
+
+```
+
+3.    Crear variables dummys en `poststrat_df` y multiplicar cada variable por la predicción `epred_mat`
+
+```{r}
+poststrat_df %<>%
+  fastDummies::dummy_cols(select_columns = names_cov,
+                          remove_selected_columns = FALSE)
+poststrat_df %<>% 
+       mutate_at(vars(matches("\\d$")) ,~.*poststrat_df$epred_mat)
+
+```
+
+
+4. Con la función `calib` se procede a calcular los $g_k$, verificando que el proceso se haya realizado con éxito y exista convergencia
+
+
+```{r}
+library(sampling)
+
+poststrat_df$gk <- calib(
+  Xs = poststrat_df %>% select(matches("\\d$")), ## Variable dummys 
+  d = poststrat_df$n,                            ## Conteos en el post-estrato
+  total = unlist(paso["t_pobreza",]),            ## Valores objetivo
+  method="logit")                                ## Método empleado
+
+checkcalibration(Xs = poststrat_df %>% 
+                 select(matches("\\d$")), 
+                 d = poststrat_df$n,
+                 total = unlist(paso["t_pobreza",]),
+                 g = poststrat_df$gk)
+```
+
+5. Realizar validación sobre los resultados obtenidos. 
+
+```{r}
+hist(poststrat_df$gk)
+```
+
+Continuando con la validación se define define la columna `pobreza2`
+
+```{r}
+poststrat_df %<>%
+  mutate(pobreza2 = epred_mat *gk,
+         pobreza2 = ifelse(pobreza2>1, 1, pobreza2),
+         pobreza2 = ifelse(pobreza2<0, 0, pobreza2)) 
+
+```
+
+Paso seguido realizamos el calculo de los totales calibrados. 
+```{r}
+temp <- map_df(names_cov ,~ poststrat_df %>% 
+              group_by_at(all_of(.x)) %>%
+              summarise(
+              Nhat = sum(n),
+              t_pobreza = sum(n*pobreza2)) %>% 
+              transmute(
+                Cal_Media = t_pobreza/Nhat,
+                Variable = paste0(.x, get(.x) ))) 
+
+data.frame( Categoría = unlist(paso["depto",]),
+            Hat_Media = unlist(paso["medias",])) %>% 
+  cbind(temp) %>% head(10) %>% tba()
+```
+
+También es posible hacer validaciones visuales. 
+
+```{r}
+library(survey)
+library(srvyr)
+library(patchwork)
+source("0Recursos/funciones_mrp.R")
+
+poststrat_df %<>% mutate(yk_lmer = epred_mat, 
+                         yk_bench = pobreza2)
+
+diseno <- encuesta_mrp %>%
+  mutate(yk_dir = pobreza) %>% 
+  as_survey_design(weights = fexp)
+
+
+bynames <- c("area", "anoest", "edad", "depto", "etnia")
+plot_uni <- map(
+  .x = setNames(bynames, bynames),
+  ~ plot_compare2(
+    sample_diseno = diseno,
+    poststrat = poststrat_df,
+    by1 = .x
+  )
+)
+
+plot_uni$depto$Plot$plot1
+
+(plot_uni$anoest$Plot$plot1 +  plot_uni$edad$Plot$plot1) /
+(plot_uni$area$Plot$plot1+ plot_uni$etnia$Plot$plot1)
+
+```
+
+
+## Estimación y mapa del indicador D6m. 
+
+Después de todos el proceso de estandarización, creación de variables covariables, estimación del modelo y validaciones realizadas, la estimación puntual se reduce a operaciones algebraicas simples. 
+
+```{r}
+poststrat_df2 <-  poststrat_df %>% filter(anoest != "99")
+
+dat_depto <- poststrat_df2 %>% group_by(depto) %>%
+    summarise(
+      Benchmarking_estimate = sum(n * pobreza2) / sum(n),
+      .groups = "drop"
+    )
+```
+
+En este paso validamos que las estimaciones no superen el valor de 1 o sean menores o iguales a creo. 
+```{r}
+dat_depto %>% summarise(Validar = sum(Benchmarking_estimate >= 1 |
+                                            Benchmarking_estimate < 0  ))
+  
+```
+
+El cuadrado medio del error lo obtenemos con la función `Aux_Agregado` que hemos usado previamente. 
+
+```{r}
+mrp_cme <-
+  Aux_Agregado(poststrat = poststrat_df,
+             epredmat = epred_mat,
+             byMap = "depto") %>% 
+  select(-mrp_estimate)
+
+dat_depto <- dat_depto %>% left_join(mrp_cme) %>% 
+  mutate(mrp_cv = mrp_estimate_se/Benchmarking_estimate*100) %>% 
+  arrange(desc(mrp_cv))
+
+tba(dat_depto %>% slice(1:10))
+
+```
+
+
+### Mapas para el indicador D6m
+
+
+```{r}
+library(sp)
+library(sf)
+library(tmap)
+ShapeSAE <- read_sf("Shape/departamentos_gtm.shp")
+ShapeSAE %<>% mutate(depto = str_pad(departamen, pad = "0", width = 2), area = NULL)
+
+P1_ingresolp <- tm_shape(ShapeSAE %>%
+                           left_join(dat_depto,  by = "depto"))
+
+brks_lp <- c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1)
+tmap_options(check.and.fix = TRUE)
+Mapa_lp <-
+  P1_ingresolp + tm_polygons(
+    "Benchmarking_estimate",
+    breaks = brks_lp,
+    title = "D6m",
+    palette = "-YlOrRd"
+  ) + tm_layout(asp = 0)
+Mapa_lp
+```
+
+
+# Estimación del indicador NI (Necesidades Insatisfechas) 
+
+Lectura de insumos 
+
+```{r}
+encuesta_mrp <- readRDS("UNFPA/NI/encuesta_mrp.rds") 
+statelevel_predictors_df <- readRDS("UNFPA/NI/statelevel_predictors_df.rds")
+censo_mrp <- readRDS("UNFPA/NI/censo_mrp.rds")
+fit <- readRDS("UNFPA/NI/fit_bayes.rds")
+```
+
+Por el proceso de estandarizado realizado es renombrado el indicador _necesInst_ como _probreza_, el modelo contemplado para el indicador es:  
+
+```{r}
+fit$call
+```
+
+El resultado del modelo es el siguiente. 
+```{r}
+tba(coef(fit)$depto %>% head(10))
+```
+
+## Validación del modelo 
+
+```{r}
+library(posterior)
+library(bayesplot)
+posterior <- as.array(fit)
+parameters <- dimnames(posterior)$parameters
+var_names <- grep(pattern = "depto:\\d",x = parameters,value = TRUE)
+mcmc_areas(fit, pars = var_names)
+```
+
+
+```{r}
+mcmc_trace(fit,pars = var_names)
+```
+
+
+```{r}
+encuesta_mrp2 <- inner_join(encuesta_mrp, statelevel_predictors_df)
+y_pred_B <- posterior_epred(fit, newdata = encuesta_mrp2)
+rowsrandom <- sample(nrow(y_pred_B), 100)
+y_pred2 <- y_pred_B[rowsrandom, ]
+ppc_dens_overlay(y = as.numeric(encuesta_mrp2$necesInst), y_pred2) 
+  
+```
+
+
+
+### Predicción en el censo
+
+```{r}
+byAgrega <- c("depto", "area", "edad", "etnia",
+               "anoest",  "unida")
+
+poststrat_df <- censo_mrp %>%  
+            group_by_at(byAgrega) %>%
+            summarise(n = sum(n), .groups = "drop")
+
+poststrat_df <- left_join(poststrat_df, statelevel_predictors_df,
+                          by = "depto")
+
+epred_mat <- posterior_epred(fit, newdata = poststrat_df, 
+                     type = "response", allow.new.levels = TRUE)
+```
+
+Validación de las predicciones 
+
+```{r}
+sum(is.na(epred_mat))
+sum(epred_mat < 0)
+```
+
+Asignar la predicción a la base de `poststrat_df`
+
+```{r}
+poststrat_df$epred_mat <- colMeans(epred_mat)
+```
+
+
+### Benchmarking
+
+1.  Validarse los nombres de las covariables disponibles en censo y encuesta, que deben ser las mismas con las que se han venido trabajando, para este caso resultaron 
+
+```{r}
+names_cov <- c("depto" , "area" ,  "etnia" , "edad" ,  "anoest", "unida" )
+```
+
+2. Calcular las estimaciones para cada una de las variables de la base de datos de `encuesta_mrp` utilizando el indicador de interés. 
+
+```{r}
+encuesta_mrp %<>% mutate(pobreza = necesInst)
+
+paso <- sapply(names_cov, function(byi){
+    encuesta_mrp %>% 
+    group_by_at(all_of(byi)) %>% 
+    summarise(Nhat = sum(fexp),
+              t_pobreza = sum(pobreza*fexp),
+              medias = weighted.mean(pobreza,fexp))
+})
+
+data.frame( Categoría = unlist(paso["depto",]),
+           Total = unlist(paso["t_pobreza",]),
+           Hat_Media = unlist(paso["medias",])) %>% 
+  head(10) %>% tba()
+
+```
+
+3.    Crear variables dummys en `poststrat_df` y multiplicar cada variable por la predicción `epred_mat`
+
+```{r}
+poststrat_df %<>%
+  fastDummies::dummy_cols(select_columns = names_cov,
+                          remove_selected_columns = FALSE)
+poststrat_df %<>% 
+       mutate_at(vars(matches("\\d$")) ,~.*poststrat_df$epred_mat)
+
+```
+
+
+4. Con la función `calib` se procede a calcular los $g_k$, verificando que el proceso se haya realizado con éxito y exista convergencia
+
+
+```{r}
+library(sampling)
+
+poststrat_df$gk <- calib(
+  Xs = poststrat_df %>% select(matches("\\d$")), ## Variable dummys 
+  d = poststrat_df$n,                            ## Conteos en el post-estrato
+  total = unlist(paso["t_pobreza",]),            ## Valores objetivo
+  method="logit")                                ## Método empleado
+
+checkcalibration(Xs = poststrat_df %>% 
+                 select(matches("\\d$")), 
+                 d = poststrat_df$n,
+                 total = unlist(paso["t_pobreza",]),
+                 g = poststrat_df$gk)
+```
+
+5. Realizar validación sobre los resultados obtenidos. 
+
+```{r}
+hist(poststrat_df$gk)
+```
+
+Continuando con la validación se define define la columna `pobreza2`
+
+```{r}
+poststrat_df %<>%
+  mutate(pobreza2 = epred_mat *gk,
+         pobreza2 = ifelse(pobreza2>1, 1, pobreza2),
+         pobreza2 = ifelse(pobreza2<0, 0, pobreza2)) 
+
+```
+
+Paso seguido realizamos el calculo de los totales calibrados. 
+```{r}
+temp <- map_df(names_cov ,~ poststrat_df %>% 
+              group_by_at(all_of(.x)) %>%
+              summarise(
+              Nhat = sum(n),
+              t_pobreza = sum(n*pobreza2)) %>% 
+              transmute(
+                Cal_Media = t_pobreza/Nhat,
+                Variable = paste0(.x, get(.x) ))) 
+
+data.frame( Categoría = unlist(paso["depto",]),
+            Hat_Media = unlist(paso["medias",])) %>% 
+  cbind(temp) %>% head(10) %>% tba()
+```
+
+También es posible hacer validaciones visuales. 
+
+```{r}
+library(survey)
+library(srvyr)
+library(patchwork)
+source("0Recursos/funciones_mrp.R")
+
+poststrat_df %<>% mutate(yk_lmer = epred_mat, 
+                         yk_bench = pobreza2)
+
+diseno <- encuesta_mrp %>%
+  mutate(yk_dir = pobreza) %>% 
+  as_survey_design(weights = fexp)
+
+bynames <- c("area", "anoest", "edad", "depto", "etnia","unida")
+plot_uni <- map(
+  .x = setNames(bynames, bynames),
+  ~ plot_compare2(
+    sample_diseno = diseno,
+    poststrat = poststrat_df,
+    by1 = .x
+  )
+)
+
+plot_uni$depto$Plot$plot1
+
+(plot_uni$anoest$Plot$plot1 +  plot_uni$edad$Plot$plot1) /
+(plot_uni$area$Plot$plot1+ plot_uni$etnia$Plot$plot1)
+
+```
+
+## Estimación y mapa del indicador. 
+
+Después de todos el proceso de estandarización, creación de variables covariables, estimación del modelo y validaciones realizadas, la estimación puntual se reduce a operaciones algebraicas simples. 
+
+```{r}
+poststrat_df2 <-  poststrat_df %>% filter(anoest != "99")
+
+dat_depto <- poststrat_df2 %>% group_by(depto) %>%
+    summarise(
+      Benchmarking_estimate = sum(n * pobreza2) / sum(n),
+      .groups = "drop"
+    )
+```
+
+En este paso validamos que las estimaciones no superen el valor de 1 o sean menores o iguales a creo. 
+```{r}
+dat_depto %>% summarise(Validar = sum(Benchmarking_estimate >= 1 |
+                                            Benchmarking_estimate < 0  ))
+  
+```
+
+
+
+El cuadrado medio del error lo obtenemos con la función `Aux_Agregado` que hemos usado previamente. 
+
+```{r}
+mrp_cme <-
+  Aux_Agregado(poststrat = poststrat_df,
+             epredmat = epred_mat,
+             byMap = "depto") %>% 
+  select(-mrp_estimate)
+
+dat_depto <- dat_depto %>% left_join(mrp_cme) %>% 
+  mutate(mrp_cv = mrp_estimate_se/Benchmarking_estimate*100) %>% 
+  arrange(desc(mrp_cv))
+
+tba(dat_depto %>% slice(1:10))
+
+```
+
+### Mapas para el indicador NI
+
+
+```{r}
+library(sp)
+library(sf)
+library(tmap)
+
+ShapeSAE <- read_sf("Shape/departamentos_gtm.shp")
+ShapeSAE %<>% mutate(depto = str_pad(departamen, pad = "0", width = 2), area = NULL)
+
+P1_ingresolp <- tm_shape(ShapeSAE %>%
+                           left_join(dat_depto,  by = "depto"))
+
+tmap_options(check.and.fix = TRUE)
+Mapa_lp <-
+  P1_ingresolp + tm_polygons(
+    "Benchmarking_estimate",
+    title = "NI",
+    palette = "YlOrRd"
+  ) + tm_layout(asp = 0)
+Mapa_lp
+```
+
+# Estimación del indicador D7  
+
+Este indicador, hace referencia a la proporción de mujeres en edad de procrear (15 a 49 años), sexualmente activas y/o unidas que han decidido por voluntad propia no tener hijos (adicionales) o posponer su siguiente hijo y para ello se encuentran utilizando métodos anticonceptivos modernos. 
+
+Lectura de insumos 
+
+```{r}
+encuesta_mrp <- readRDS("UNFPA/NI/encuesta_mrp.rds") 
+censo_mrp <- readRDS("UNFPA/NI/censo_mrp.rds")
+statelevel_predictors_df <- readRDS("UNFPA/NI/statelevel_predictors_df.rds")
+
+fit_mrp_logit_D6  <- readRDS("UNFPA/D6/fit_bayes.rds")
+fit_mrp_logit_D6m <- readRDS("UNFPA/D6m/fit_bayes.rds")
+fit_mrp_logit_NI  <- readRDS("UNFPA/NI/fit_bayes.rds")
+```
+
+### Predicción en el censo
+
+```{r}
+byAgrega <- c("depto", "area", "edad", "etnia",
+               "anoest", "unida")
+
+poststrat_df <- censo_mrp %>%  
+            group_by_at(byAgrega) %>%
+            summarise(n = sum(n), .groups = "drop")
+
+poststrat_df <- left_join(poststrat_df, statelevel_predictors_df,
+                          by = "depto")
+```
+
+Ahora debemos hacer la predicción sobre la base _poststrat_df_ con los tres modelos 
+```{r}
+### Creando epredmat Para D6
+epred_mat_D6 <- posterior_epred(fit_mrp_logit_D6, newdata = poststrat_df, 
+                     type = "response", allow.new.levels = TRUE)
+
+### Creando epredmat Para D6m
+epred_mat_D6m <- posterior_epred(fit_mrp_logit_D6m, newdata = poststrat_df, 
+                        type = "response", allow.new.levels = TRUE)
+
+### Creando epredmat Para NI
+epred_mat_NI <- posterior_epred(fit_mrp_logit_NI, newdata = poststrat_df, 
+                        type = "response", allow.new.levels = TRUE)
+
+```
+
+El indicador  *D7* se construye a partir de las predicciones 
+```{r}
+epred_mat_D7<- (epred_mat_D6m /(epred_mat_D6 + epred_mat_NI))
+```
+
+## Estimación y mapa del indicador. 
+
+Después de todos el proceso de estandarización, creación de variables covariables, estimación del modelo y validaciones realizadas, la estimación puntual se reduce a operaciones algebraicas simples. 
+
+```{r}
+poststrat_df2 <-  poststrat_df %>% filter(anoest != "99")
+
+dat_depto <- Aux_Agregado(poststrat = poststrat_df,
+                 epredmat = epred_mat_D7,
+                 byMap = "depto") %>% 
+  mutate(mrp_cv = mrp_estimate_se/mrp_estimate *100)
+        
+dat_depto %>% arrange(desc(mrp_cv)) %>% head(10) %>% tba()
+```
+
+En este paso validamos que las estimaciones no superen el valor de 1 o sean menores o iguales a creo. 
+```{r}
+dat_depto %>% summarise(Validar = sum(mrp_estimate >= 1 |
+                                            mrp_estimate < 0  ))
+  
+```
+
+### Mapas para el indicador D7
+
+
+```{r}
+library(sp)
+library(sf)
+library(tmap)
+
+ShapeSAE <- read_sf("Shape/departamentos_gtm.shp")
+ShapeSAE %<>% mutate(depto = str_pad(departamen, pad = "0", width = 2), area = NULL)
+
+P1_ingresolp <- tm_shape(ShapeSAE %>%
+                           left_join(dat_depto,  by = "depto"))
+
+brks_lp <- c(0, 0.20,  0.4, 0.6,  0.8 , 1)
+tmap_options(check.and.fix = TRUE)
+Mapa_lp <-
+  P1_ingresolp + tm_polygons(
+    "mrp_estimate",
+    breaks = brks_lp,
+    title = "D7",
+    palette = "-YlOrRd"
+  ) + tm_layout(asp = 0)
+Mapa_lp
+```
+
+
+
