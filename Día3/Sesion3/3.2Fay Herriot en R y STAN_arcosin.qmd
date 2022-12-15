@@ -1,0 +1,267 @@
+---
+title: "Fay Herriot en R y STAN transformación arcoseno "
+subtitle: "CEPAL - Unidad de Estadísticas Sociales"
+author: "Andrés Gutiérrez - Stalyn Guerrero"
+format: html
+project:
+  type: website
+  output-dir: docs
+---
+
+```{r setup, include=FALSE, message=FALSE, error=FALSE, warning=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  cache = TRUE,
+  cache.path = "0Recursos/3.2arcoseno/",
+  fig.path = "0Recursos/3.2arcoseno/"
+)
+library(printr)
+library(kableExtra)
+library(tidyverse)
+tba <- function(dat, cap = NA){
+  kable(dat,
+      format = "html", digits =  4,
+      caption = cap) %>% 
+     kable_styling(bootstrap_options = "striped", full_width = F)%>%
+         kable_classic(full_width = F, html_font = "Arial Narrow")
+}
+
+```
+
+
+En su concepción más básica, el modelo de **Fay-Herriot** es una combinación lineal de covariables. Sin embargo, el resultado de esta combinación pueden tomar valores que se salen del rango aceptable en el que puede estar una proporción; es decir, en general el estimador de Fay-Herriot $\theta \in R$, mientras que el estimador directo $\theta \in (0,1)$. La transformación arcoseno esta dada por: 
+
+$$
+\hat{z}_d = arcsin\left( \sqrt{ \hat{\theta}_d} \right)
+$$ donde
+
+$$
+Var\left( \hat{z}_d \right) = \frac{\widehat{DEFF}_d}{4\times n_d} = \frac{1}{4\times n_{d,efectivo} }
+$$
+
+El modelo de Fay-Herriot  estaría definido de la siguiente forma:
+
+$$
+\begin{eqnarray*}
+Z \mid \mu,\sigma_e &  \sim  & N(\mu, \sigma_e)\\
+\mu & = & \boldsymbol{X\beta} + V \\
+\theta & = &  \left(sin(\mu)\right)^2
+\end{eqnarray*}
+$$ donde $V \sim N(0 , \sigma_v)$.
+
+
+Suponga de las distribuciones previas para 
+$\boldsymbol{\beta}$ y $\sigma_{v}^{2}$ son dadas por 
+$$
+\begin{eqnarray*}
+\boldsymbol{\beta}	\sim	N\left(\mu_{0},\tau_{0}\right)\\
+\sigma_{v}^{2}	\sim	IG\left(\alpha_{1},\alpha_{2}\right)
+\end{eqnarray*}
+$$
+
+## Procesamiento en R
+
+Lectura de la base de datos que resultó en el paso anterior y selección de las columnas de interés
+```{r}
+library(tidyverse)
+library(magrittr)
+
+base_FH <- readRDS("Data/base_FH_2014.rds") %>% 
+  transmute(dam2,                            ## id dominios
+            pobreza,
+            T_pobreza = asin(sqrt(pobreza)),  ## creando zd
+            n_effec = n_eff_FGV,              ## n efectivo
+            varhat = 1/(4*n_effec)            ## varianza para zd
+            )
+```
+
+Lectura de las covariables, las cuales son obtenidas previamente. Dado la diferencia entre las escalas de las variables  es necesario hacer un ajuste a estas. 
+
+```{r}
+statelevel_predictors_df <- readRDS("Data/statelevel_predictors_df_dam2.rds") %>% 
+    mutate_at(.vars = c("luces_nocturnas",
+                      "suelo_cultivos",
+                      "suelo_urbanos",
+                      "modifica_humana",
+                      "tiempo_hospital",
+                      "tiempo_hospital_no_motor"),
+            function(x) scale(x)*2+5)
+```
+
+Uniendo las dos bases de datos. 
+
+```{r}
+base_FH <- full_join(base_FH,statelevel_predictors_df, by = "dam2" )
+tba(base_FH[,1:8] %>% head(10))
+```
+
+Seleccionando las covariables para el modelo. 
+
+```{r}
+# names_cov <-
+#    statelevel_predictors_df %>%
+#   data.frame() %>% select_if(is.numeric) %>% names()
+names_cov <- c("luces_nocturnas", "tiene_alcantarillado", 
+               "tiene_electricidad",    "tiene_acueducto",
+               "tiene_gas", "tiene_internet", "piso_tierra",
+               "material_paredes", "material_techo",
+               "rezago_escolar", "alfabeta",
+               "tasa_desocupacion" )
+
+```
+
+# Preparando los insumos para `STAN`
+
+Dividir la base de datos en dominios observados y no observados
+
+### Dominios observados.
+```{r}
+data_dir <- base_FH %>% filter(!is.na(T_pobreza))
+```
+
+### Dominios NO observados.
+```{r}
+data_syn <-
+  base_FH %>% anti_join(data_dir %>% select(dam2))
+tba(data_syn[,1:8] %>% slice(1:10))
+```
+
+### Matrix de covariables (Efectos fijos) 
+
+```{r}
+## Dominios observados
+Xdat <- cbind(inter = 1,data_dir[,names_cov])
+
+## Dominios no observados
+Xs <-  cbind(inter = 1,data_syn[,names_cov])
+```
+
+Creando lista de parámetros para `STAN`
+
+```{r}
+sample_data <- list(
+  N1 = nrow(Xdat),       # Observados.
+  N2 = nrow(Xs),         # NO Observados.
+  p  = ncol(Xdat),       # Número de regresores.
+  X  = as.matrix(Xdat),  # Covariables Observados.
+  Xs = as.matrix(Xs),    # Covariables NO Observados
+  y  = as.numeric(data_dir$T_pobreza),
+  sigma_e = sqrt(data_dir$varhat)
+)
+```
+
+ Compilando el modelo en `STAN`
+```{r}
+library(cmdstanr)
+# file.edit("Data/modelosStan/15FH_arcsin_normal.stan")
+fit_FH_arcoseno <- cmdstan_model("Data/modelosStan/15FH_arcsin_normal.stan")
+
+model_FH_arcoseno <-
+  fit_FH_arcoseno$sample(
+    data = sample_data,
+    chains = 4,
+    parallel_chains = 4,
+    iter_warmup = 2000,
+    iter_sampling = 1000,
+    seed = 1234,
+    refresh = 1000
+  )
+
+```
+
+### Resultados del modelo para los dominios observados. 
+
+```{r}
+library(bayesplot)
+library(patchwork)
+y_pred_B <- model_FH_arcoseno$draws(variables = "theta", format = "matrix")
+rowsrandom <- sample(nrow(y_pred_B), 100)
+y_pred2 <- y_pred_B[rowsrandom, ]
+ppc_dens_overlay(y = as.numeric(data_dir$pobreza), y_pred2)
+```
+
+Análisis gráfico de la convergencia de las cadenas. 
+
+```{r}
+(mcmc_dens_chains(model_FH_arcoseno$draws("sigma_v")) +
+    mcmc_areas(model_FH_arcoseno$draws("sigma_v")))/ 
+  mcmc_trace(model_FH_arcoseno$draws("sigma_v"))
+```
+
+Estimación del FH de la pobreza en los dominios observados. 
+
+```{r}
+theta_FH <- model_FH_arcoseno$summary(variables =  "theta")
+data_dir %<>% mutate(pred_arcoseno = theta_FH$mean, 
+                     pred_arcoseno_EE = theta_FH$sd,
+                     Cv_pred = pred_arcoseno_EE/pred_arcoseno)
+```
+
+Estimación del FH de la pobreza en los dominios NO observados. 
+
+```{r}
+theta_FH_pred <- model_FH_arcoseno$summary(variables =  "theta_pred")
+
+data_syn <- data_syn %>% 
+  mutate(pred_arcoseno = theta_FH_pred$mean,
+         pred_arcoseno_EE = theta_FH_pred$sd,
+         Cv_pred = pred_arcoseno_EE/pred_arcoseno)
+
+
+```
+
+# Mapa de pobreza
+
+```{r, out.height= "120%"}
+library(sp)
+library(sf)
+library(tmap)
+
+data_map <- rbind(data_dir, data_syn) %>% 
+  select(dam2, pobreza, pred_arcoseno, pred_arcoseno_EE,Cv_pred ) 
+
+
+## Leer Shapefile del país
+ShapeSAE <- read_sf("Shape/Guatemala_adm2_uscb_2020.shp") %>% 
+  mutate(temp = gsub(pattern = "\\D", replacement = "",x = GEO_MATCH),
+         dam = substr(temp, 1,2),
+         dam2 = paste0(dam,str_pad(str_sub(temp,3,4), width = 3,pad = "0"))
+         )
+
+
+
+mapa <- tm_shape(ShapeSAE %>%
+                   left_join(data_map,  by = "dam2"))
+
+brks_lp <- c(0,0.025,0.05, 0.1, 0.15, 0.2,0.4, 1)
+tmap_options(check.and.fix = TRUE)
+Mapa_lp <-
+  mapa + tm_polygons(
+    c("pobreza", "pred_arcoseno"),
+    breaks = brks_lp,
+    title = "Mapa de pobreza",
+    palette = "YlOrRd",
+    colorNA = "white"
+  ) + tm_layout(asp = 1.5)
+
+Mapa_lp
+```
+
+Coeficiente de variación.  
+
+```{r, out.height= "120%"}
+Mapa_cv <-
+  mapa + tm_polygons(
+    c("Cv_pred"),
+     title = "Mapa de pobreza(cv)",
+    palette = "YlOrRd",
+    colorNA = "white"
+  ) + tm_layout(asp = 2.5)
+
+Mapa_cv
+
+```
+
+
