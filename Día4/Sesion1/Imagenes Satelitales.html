@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.165">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Andrés Gutiérrez - Stalyn Guerrero">
+
+<title>Información auxiliar (Imágenes satelitales),</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="Imagenes Satelitales_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Imagenes Satelitales_files/libs/quarto-html/quarto.js"></script>
+<script src="Imagenes Satelitales_files/libs/quarto-html/popper.min.js"></script>
+<script src="Imagenes Satelitales_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Imagenes Satelitales_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Imagenes Satelitales_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Imagenes Satelitales_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Imagenes Satelitales_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Imagenes Satelitales_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Imagenes Satelitales_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+<script src="Imagenes Satelitales_files/libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="Imagenes Satelitales_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Información auxiliar (Imágenes satelitales),</h1>
+<p class="subtitle lead">CEPAL - Unidad de Estadísticas Sociales</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Andrés Gutiérrez - Stalyn Guerrero </p>
+          </div>
+  </div>
+    
+    
+  </div>
+  
+
+</header>
+
+<section id="uso-de-imágenes-satelitales-y-sae" class="level1">
+<h1>Uso de imágenes satelitales y SAE</h1>
+<p>Uno de los artículo pioneros de estimación de áreas pequeñas fue el artículo de Singh, R, et. al.&nbsp;(2002) el cual abordó la estimación del rendimiento de cultivos para los tehsil (unidad subadministrativa) del distriyo Rohtak district en Haryana (India).</p>
+<p>Las imágenes raster representan el mundo mediante un conjunto de celdas contiguas igualmente espaciadas conocidas como pixeles, estas imágenes tienen información como un sistema de información geográfico, Un sistema de referencia de coordenadas. Las imágenes almacenan un identificador, un valor en cada pixel (o un vector con diferentes valores) y cada celda tiene asociada una escala de colores.</p>
+<p>Las imágenes pueden obtenerse crudas y procesadas, estas primeras contienen solamente las capas de colores, las segundas contienen también valores que han sido procesados en cada celda (índices de vegetación, intensidad lumínica, tipo de vegetación).</p>
+<p>La información cruda puede utilizarse para entrenar características que se desean entrenar (carreteras, tipo de cultivo, bosque / no bosque), afortunadamente en Google Earth Engine encontramos muchos indicadores procesadas asociadas a un pixel. Estos indicadores pueden agregarse a nivel de un área geográfica.</p>
+<section id="fuentes-de-datos-de-imágenes-satelitales" class="level3">
+<h3 class="anchored" data-anchor-id="fuentes-de-datos-de-imágenes-satelitales">Fuentes de datos de imágenes satelitales</h3>
+<p>Algunas de las principales fuentes de imágenes satelitales son:</p>
+<ul>
+<li><p>http://earthexplorer.usgs.gov/</p></li>
+<li><p>https://lpdaacsvc.cr.usgs.gov/appeears/</p></li>
+<li><p>https://search.earthdata.nasa.gov/search</p></li>
+<li><p>https://scihub.coGTMnicus.eu/</p></li>
+<li><p>https://aws.amazon.com/public-data-sets/landsat/</p></li>
+</ul>
+<p>Sin embargo la mayor parte de estas fuentes están centralizadas en <strong>Google Earth Engine</strong> que GTMmite buscar fuentes de datos provenientes de imágenes satelitales. GEE se puede manejar porm medio de APIS en diferentes lenguajes de programación: Javascript (por defecto), Python y R (paquete rgee).</p>
+</section>
+</section>
+<section id="google-earth-eninge" class="level1">
+<h1>Google Earth Eninge</h1>
+<p>Crear una cuenta en <a href="https://earthengine.google.com/">link</a>, una vez que se ingrese a la cuenta puede buscarse los conjuntos de datos de interés:</p>
+<div class="cell" data-layout-align="center" data-hash="0Recursos/3.0Satelite/unnamed-chunk-1_54672049b1dfba077746347774a9f680">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="0Recursos/lights.png" width="500" height="250" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li><p>Una vez se busque el conjunto de datos se puede abrir un editor de código brindado por google en Javascript.</p></li>
+<li><p>Copiar y pegar la sintaxis que brinda el buscador de conjunto de datos para visualizar la imagen raster y disponer de sentencias que GTMmitan la obtención del conjunto de datos de interés posteriormente en R</p></li>
+</ul>
+<div class="cell" data-layout-align="center" data-hash="0Recursos/3.0Satelite/unnamed-chunk-2_adc495bbcaaa9b0cefd69e4e3df0aa8d">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="0Recursos/query.png" width="500" height="250" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="instalación-de-rgee" class="level1">
+<h1>Instalación de rgee</h1>
+<ul>
+<li><p>Descargar e instalar anaconda o conda. (<a href="https://www.anaconda.com/products/individual" class="uri">https://www.anaconda.com/products/individual</a>)</p></li>
+<li><p>Abrir Anaconda prompt y configurar ambiente de trabajo (ambiente python rgee_py) con las siguientes sentencias:</p></li>
+</ul>
+<div class="cell" data-hash="0Recursos/3.0Satelite/unnamed-chunk-3_24fa28b78934a9de25c328dd864e5a64">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>conda create <span class="op">-</span>n rgee_py python<span class="op">=</span><span class="fl">3.9</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>activate rgee_py</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>pip install google<span class="op">-</span>api<span class="op">-</span>python<span class="op">-</span>client</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>pip install earthengine<span class="op">-</span>api</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>pip install numpy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>Listar los ambientes de Python disponibles en anaconda prompt</li>
+</ul>
+<div class="cell" data-hash="0Recursos/3.0Satelite/unnamed-chunk-4_eeb7655b184afb2463566d9d507813a8">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>conda env <span class="bu">list</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>Una vez identificado la ruta del ambiente ambiente rgee_py definirla en R (<strong>no se debe olvidar cambiar \ por /</strong>).</li>
+<li>Instalar <code>reticulate</code> y <code>rgee</code>, cargar paquetes para procesamiento espacial y configurar el ambiente de trabajo como sigue:</li>
+</ul>
+<div class="cell" data-hash="0Recursos/3.0Satelite/unnamed-chunk-5_4152777ebfdd975677b0b9d36ecbf0af">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reticulate) <span class="co"># Conexión con Python</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rgee) <span class="co"># Conexión con Google Earth Engine</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf) <span class="co"># Paquete para manejar datos geográficos</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr) <span class="co"># Paquete para procesamiento de datos</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>rgee_environment_dir <span class="ot">=</span> <span class="st">"C://Users//guerr//.conda//envs//rgee_py"</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Configurar python (Algunas veces no es detectado y se debe reiniciar R)</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>reticulate<span class="sc">::</span><span class="fu">use_python</span>(rgee_environment_dir, <span class="at">required=</span>T)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>rgee<span class="sc">::</span><span class="fu">ee_install_set_pyenv</span>(<span class="at">py_path =</span> rgee_environment_dir, <span class="at">py_env =</span> <span class="st">"rgee_py"</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">RETICULATE_PYTHON =</span> rgee_environment_dir)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">EARTHENGINE_PYTHON =</span> rgee_environment_dir)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>Una vez configurado el ambiente puede iniciarlizarse una sesión de Google Earth Engine como sigue:</li>
+</ul>
+<div class="cell" data-hash="0Recursos/3.0Satelite/unnamed-chunk-6_b78220441781820957b2fe9ec65cfa5b">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>rgee<span class="sc">::</span><span class="fu">ee_Initialize</span>(<span class="at">drive =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Notas:</strong></p>
+<ul>
+<li><p>Se debe inicializar cada sesión con el comando <code>rgee::ee_Initialize(drive = T)</code>.</p></li>
+<li><p>Los comandos de javascript que invoquen métodos con “.” se sustituyen por signo peso ($), por ejemplo:</p></li>
+</ul>
+<div class="cell" data-hash="0Recursos/3.0Satelite/unnamed-chunk-7_f46de1f4553632dde6f21776722e073a">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ee.ImageCollection</span>()<span class="fu">.filterDate</span>()  <span class="co"># Javascript</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>ee<span class="sc">$</span><span class="fu">ImageCollection</span>()<span class="sc">$</span><span class="fu">filterDate</span>()  <span class="co"># R</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="descargar-información-satelital" class="level2">
+<h2 class="anchored" data-anchor-id="descargar-información-satelital">Descargar información satelital</h2>
+<ul>
+<li><strong>Paso 1</strong>: disponer de los shapefile</li>
+</ul>
+<div class="cell" data-hash="0Recursos/3.0Satelite/unnamed-chunk-8_49cbc79b60ecfd1d4d98722d5137ab30">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>GTM <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="st">"Shape/Guatemala_adm2_uscb_2020.shp"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">temp =</span> <span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">D"</span>, <span class="at">replacement =</span> <span class="st">""</span>,<span class="at">x =</span> GEO_MATCH),</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">dam =</span> <span class="fu">substr</span>(temp, <span class="dv">1</span>,<span class="dv">2</span>),</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">dam2 =</span> <span class="fu">paste0</span>(dam,<span class="fu">str_pad</span>(<span class="fu">str_sub</span>(temp,<span class="dv">3</span>,<span class="dv">4</span>), <span class="at">width =</span> <span class="dv">3</span>,<span class="at">pad =</span> <span class="st">"0"</span>))</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>         )</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(GTM[<span class="st">"geometry"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="0Recursos/3.0Satelite/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<ul>
+<li><strong>Paso 2</strong>: Seleccionar el archivo de imágenes que desea procesar, para nuestro ejemplo <strong>luces nocturnas</strong>.</li>
+</ul>
+<div class="cell" data-hash="0Recursos/3.0Satelite/unnamed-chunk-9_5f0c5f575dd39d0be2c4021739c99f1e">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>luces <span class="ot">&lt;-</span> ee<span class="sc">$</span><span class="fu">ImageCollection</span>(<span class="st">"NOAA/DMSP-OLS/NIGHTTIME_LIGHTS"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  ee<span class="sc">$</span>ImageCollection<span class="sc">$</span><span class="fu">filterDate</span>(<span class="st">"2013-01-01"</span>, <span class="st">"2014-01-01"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  ee<span class="sc">$</span>ImageCollection<span class="sc">$</span><span class="fu">map</span>(<span class="cf">function</span>(x) x<span class="sc">$</span><span class="fu">select</span>(<span class="st">"stable_lights"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  ee<span class="sc">$</span>ImageCollection<span class="sc">$</span><span class="fu">toBands</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li><strong>Paso 3</strong>: Descargar la información</li>
+</ul>
+<div class="cell" data-hash="0Recursos/3.0Satelite/unnamed-chunk-10_c35e40cd0de908d640e82833831db3e3">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Tiempo 10 minutos </span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>GTM_luces <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="fu">unique</span>(GTM<span class="sc">$</span>dam2),</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                 <span class="sc">~</span><span class="fu">tryCatch</span>(<span class="fu">ee_extract</span>(</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">x =</span> luces,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>                   <span class="at">y =</span> GTM[<span class="st">"dam2"</span>] <span class="sc">%&gt;%</span> <span class="fu">filter</span>(dam2 <span class="sc">==</span> .x),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>                   ee<span class="sc">$</span>Reducer<span class="sc">$</span><span class="fu">sum</span>(),</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">sf =</span> <span class="cn">FALSE</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>                 ) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">dam2 =</span> .x),</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>                 <span class="at">error =</span> <span class="cf">function</span>(e)<span class="fu">data.frame</span>(<span class="at">dam2 =</span> .x)))</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>GTM_luces <span class="sc">%&lt;&gt;%</span> <span class="fu">bind_rows</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="repetir-la-rutina-para" class="level2">
+<h2 class="anchored" data-anchor-id="repetir-la-rutina-para">Repetir la rutina para:</h2>
+<ul>
+<li><p>Tipo de suelo: <strong>crops-coverfraction</strong> (Porcentaje de cobertura vegetal para tierras de cultivo clase de cobertura terrestre) y <strong>urban-coverfraction</strong> (Porcentaje de cobertura del suelo para la clase de cobertura del suelo edificada) disponibles en <a href="https://develoGTMs.google.com/earth-engine/datasets/catalog/COGTMNICUS_Landcover_100m_Proba-V-C3_Global#description" class="uri">https://develoGTMs.google.com/earth-engine/datasets/catalog/COGTMNICUS_Landcover_100m_Proba-V-C3_Global#description</a></p></li>
+<li><p>Tiempo de viaje al hospital o clínica más cercana (<strong>accessibility</strong>) y tiempo de viaje al hospital o clínica más cercana utilizando transporte no motorizado (<strong>accessibility_walking_only</strong>) información disponible en <a href="https://develoGTMs.google.com/earth-engine/datasets/catalog/Oxford_MAP_accessibility_to_healthcare_2019" class="uri">https://develoGTMs.google.com/earth-engine/datasets/catalog/Oxford_MAP_accessibility_to_healthcare_2019</a></p></li>
+<li><p>Modificación humana, donde se consideran los asentamiento humano, la agricultura, el transporte, la minería y producción de energía e infraestructura eléctrica. En el siguiente link encuentra la información satelital <a href="https://develoGTMs.google.com/earth-engine/datasets/catalog/CSP_HM_GlobalHumanModification#description" class="uri">https://develoGTMs.google.com/earth-engine/datasets/catalog/CSP_HM_GlobalHumanModification#description</a></p></li>
+<li><p><strong>Paso 4</strong> consolidar la información.</p></li>
+</ul>
+<div class="cell" data-hash="0Recursos/3.0Satelite/unnamed-chunk-11_63296d4a8c1389c678f295a22ab0eb5d">
+<div class="cell-output-display">
+
+<table class="table table-striped lightable-classic" style="width: auto !important; margin-left: auto; margin-right: auto; font-family: Arial Narrow; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> dam </th>
+   <th style="text-align:left;"> dam2 </th>
+   <th style="text-align:right;"> luces_nocturnas </th>
+   <th style="text-align:right;"> suelo_cultivos </th>
+   <th style="text-align:right;"> suelo_urbanos </th>
+   <th style="text-align:right;"> modifica_humana </th>
+   <th style="text-align:right;"> tiempo_hospital </th>
+   <th style="text-align:right;"> tiempo_hospital_no_motor </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 16 </td>
+   <td style="text-align:left;"> 16012 </td>
+   <td style="text-align:right;"> 3.505455 </td>
+   <td style="text-align:right;"> 4.478813 </td>
+   <td style="text-align:right;"> 4.512089 </td>
+   <td style="text-align:right;"> 7.155022 </td>
+   <td style="text-align:right;"> 5.064494 </td>
+   <td style="text-align:right;"> 5.070847 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 16 </td>
+   <td style="text-align:left;"> 16014 </td>
+   <td style="text-align:right;"> 3.512824 </td>
+   <td style="text-align:right;"> 4.885733 </td>
+   <td style="text-align:right;"> 4.415839 </td>
+   <td style="text-align:right;"> 5.777646 </td>
+   <td style="text-align:right;"> 5.326140 </td>
+   <td style="text-align:right;"> 5.161751 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 16 </td>
+   <td style="text-align:left;"> 16013 </td>
+   <td style="text-align:right;"> 4.050201 </td>
+   <td style="text-align:right;"> 6.436918 </td>
+   <td style="text-align:right;"> 4.897607 </td>
+   <td style="text-align:right;"> 7.394918 </td>
+   <td style="text-align:right;"> 5.320913 </td>
+   <td style="text-align:right;"> 5.906047 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 16 </td>
+   <td style="text-align:left;"> 16001 </td>
+   <td style="text-align:right;"> 8.166690 </td>
+   <td style="text-align:right;"> 5.432071 </td>
+   <td style="text-align:right;"> 6.662472 </td>
+   <td style="text-align:right;"> 12.783165 </td>
+   <td style="text-align:right;"> 5.936275 </td>
+   <td style="text-align:right;"> 6.472338 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 16 </td>
+   <td style="text-align:left;"> 16015 </td>
+   <td style="text-align:right;"> 3.914447 </td>
+   <td style="text-align:right;"> 7.543074 </td>
+   <td style="text-align:right;"> 5.749064 </td>
+   <td style="text-align:right;"> 7.564085 </td>
+   <td style="text-align:right;"> 5.237726 </td>
+   <td style="text-align:right;"> 5.509034 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 16 </td>
+   <td style="text-align:left;"> 16011 </td>
+   <td style="text-align:right;"> 3.674836 </td>
+   <td style="text-align:right;"> 4.266054 </td>
+   <td style="text-align:right;"> 4.154494 </td>
+   <td style="text-align:right;"> 5.010302 </td>
+   <td style="text-align:right;"> 4.707537 </td>
+   <td style="text-align:right;"> 4.777587 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 16 </td>
+   <td style="text-align:left;"> 16007 </td>
+   <td style="text-align:right;"> 3.810438 </td>
+   <td style="text-align:right;"> 6.130320 </td>
+   <td style="text-align:right;"> 5.216818 </td>
+   <td style="text-align:right;"> 6.364041 </td>
+   <td style="text-align:right;"> 6.224244 </td>
+   <td style="text-align:right;"> 6.106299 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 16 </td>
+   <td style="text-align:left;"> 16017 </td>
+   <td style="text-align:right;"> 3.749051 </td>
+   <td style="text-align:right;"> 5.920236 </td>
+   <td style="text-align:right;"> 4.168912 </td>
+   <td style="text-align:right;"> 5.619470 </td>
+   <td style="text-align:right;"> 5.009758 </td>
+   <td style="text-align:right;"> 5.413611 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 16 </td>
+   <td style="text-align:left;"> 16003 </td>
+   <td style="text-align:right;"> 4.497657 </td>
+   <td style="text-align:right;"> 4.271988 </td>
+   <td style="text-align:right;"> 4.594661 </td>
+   <td style="text-align:right;"> 5.305362 </td>
+   <td style="text-align:right;"> 4.883500 </td>
+   <td style="text-align:right;"> 4.979648 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 16 </td>
+   <td style="text-align:left;"> 16010 </td>
+   <td style="text-align:right;"> 3.958993 </td>
+   <td style="text-align:right;"> 4.331455 </td>
+   <td style="text-align:right;"> 4.180705 </td>
+   <td style="text-align:right;"> 4.504789 </td>
+   <td style="text-align:right;"> 4.598833 </td>
+   <td style="text-align:right;"> 4.619727 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<p>Los resultados se muestran en los siguientes mapas</p>
+<div class="cell" data-hash="0Recursos/3.0Satelite/unnamed-chunk-12_76731ca3e8db6aac7e9e63fde25a408b">
+
+</div>
+</section>
+<section id="luces-nocturnas" class="level2">
+<h2 class="anchored" data-anchor-id="luces-nocturnas">Luces nocturnas</h2>
+<div class="cell" data-layout-align="center" data-hash="0Recursos/3.0Satelite/unnamed-chunk-13_79ecdf65ba3131c7669df5af3439252c">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="0Recursos/luces_nocturnas.png" width="500" height="250" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="0Recursos/3.0Satelite/unnamed-chunk-13-2.png" width="500" height="250" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="suelos-cultivos" class="level2">
+<h2 class="anchored" data-anchor-id="suelos-cultivos">Suelos cultivos</h2>
+<div class="cell" data-layout-align="center" data-hash="0Recursos/3.0Satelite/unnamed-chunk-14_499f122915eaa62f98ad0d2fd73c6bff">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="0Recursos/suelo_cultivos.png" width="500" height="250" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="0Recursos/3.0Satelite/unnamed-chunk-14-2.png" width="500" height="250" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="suelos-urbanos" class="level2">
+<h2 class="anchored" data-anchor-id="suelos-urbanos">Suelos urbanos</h2>
+<div class="cell" data-layout-align="center" data-hash="0Recursos/3.0Satelite/unnamed-chunk-15_c6ade46d1df739e8a6d7ad10e9c8be8f">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="0Recursos/suelo_urbanos.png" width="500" height="250" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="0Recursos/3.0Satelite/unnamed-chunk-15-2.png" width="500" height="250" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="modificación-humana" class="level2">
+<h2 class="anchored" data-anchor-id="modificación-humana">Modificación humana</h2>
+<div class="cell" data-layout-align="center" data-hash="0Recursos/3.0Satelite/unnamed-chunk-16_a1a113c9c7911bcb4fa60064130f7a71">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="0Recursos/modifica_humana.png" width="500" height="250" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="0Recursos/3.0Satelite/unnamed-chunk-16-2.png" width="500" height="250" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="tiempo-promedio-al-hospital" class="level2">
+<h2 class="anchored" data-anchor-id="tiempo-promedio-al-hospital">Tiempo promedio al hospital</h2>
+<div class="cell" data-layout-align="center" data-hash="0Recursos/3.0Satelite/unnamed-chunk-17_ded02b4a0375862060f52e935429d9db">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="0Recursos/tiempo_hospital.png" width="500" height="250" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="0Recursos/3.0Satelite/unnamed-chunk-17-2.png" width="500" height="250" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="tiempo-promedio-al-hospital-en-vehiculo-no-motorizado" class="level2">
+<h2 class="anchored" data-anchor-id="tiempo-promedio-al-hospital-en-vehiculo-no-motorizado">Tiempo promedio al hospital en vehiculo no motorizado</h2>
+<div class="cell" data-layout-align="center" data-hash="0Recursos/3.0Satelite/unnamed-chunk-18_2435aa1d4b0d09b53c5fcb6b36a05911">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="0Recursos/tiempo_hospital_no_motor.png" width="500" height="250" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="0Recursos/3.0Satelite/unnamed-chunk-18-2.png" width="500" height="250" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
