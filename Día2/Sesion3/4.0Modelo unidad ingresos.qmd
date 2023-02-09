@@ -301,9 +301,11 @@ mcmc_trace(fit,pars = var_names)
 ```{r}
 encuesta_mrp2 <- inner_join(encuesta_mrp, statelevel_predictors_df)
 y_pred_B <- posterior_epred(fit, newdata = encuesta_mrp2)
+y_pred_B <- exp(y_pred_B) - 1
 rowsrandom <- sample(nrow(y_pred_B), 100)
 y_pred2 <- y_pred_B[rowsrandom, ]
-ppc_dens_overlay(y = as.numeric(encuesta_mrp2$logingreso), y_pred2) 
+ppc_dens_overlay(y = as.numeric(encuesta_mrp2$ingreso), y_pred2) +
+  xlim(0,10000)
   
 ```
 
@@ -326,6 +328,7 @@ Para obtener una distribución posterior de cada observación se hace uso de la 
 
 ```{r}
 epred_mat <- posterior_epred(fit, newdata = poststrat_df, type = "response")
+epred_mat <- (exp(epred_mat)-1)
 dim(epred_mat)
 dim(poststrat_df)
 ```
@@ -335,10 +338,10 @@ Por ser una predicción en dominios no observados, es posible obtener valores po
 ```{r, eval=TRUE}
 ## validación de los valores posteriores
 ggplot(data = data.frame(
-  logingreso = colMeans(epred_mat),
+  ingreso = colMeans(epred_mat),
   n = poststrat_df$n
   )) + 
-  geom_histogram(aes(x=logingreso, weights = n)) +
+  geom_histogram(aes(x=ingreso, weights = n)) +
   theme_bw(10)
 
 ```
@@ -367,7 +370,8 @@ Como el interés es realizar comparaciones entre los países de la región se pr
 
 ```{r}
 lp <- inner_join(poststrat_df,lp,by = "area") %>% select(lp)
-epred_mat <- (exp(epred_mat)-1)/lp$lp
+epred_mat <- t(t(epred_mat)/lp$lp)
+
 ```
 
 ## Estimación del ingreso medio
