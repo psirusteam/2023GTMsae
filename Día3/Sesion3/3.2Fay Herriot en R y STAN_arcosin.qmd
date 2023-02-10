@@ -186,7 +186,7 @@ Análisis gráfico de la convergencia de las cadenas.
 
 ```{r}
 (mcmc_dens_chains(model_FH_arcoseno$draws("sigma_v")) +
-    mcmc_areas(model_FH_arcoseno$draws("sigma_v")))/ 
+    mcmc_areas(model_FH_arcoseno$draws("beta")))/ 
   mcmc_trace(model_FH_arcoseno$draws("sigma_v"))
 ```
 

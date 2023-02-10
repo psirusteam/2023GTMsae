@@ -61,18 +61,18 @@ Para los gobiernos y las organizaciones internacionales es muy importante conoce
 
 #	Modelo MRP
 
-De acuerdo con este modelo, como lo expone Gutiérrez y otros (2022), la probabilidad de hacer uso de métodos de planificación para la $i$-ésima persona en el $j$-ésimo post-estrato, puede ser definido para cada unidad de la encuesta. El modelo pretende establecer la relación entre la expectativa $\rho_{di}$  de la variable dicotómica con las covariables de información auxiliar disponibles para ser incluidas. El procedimiento correspondiente a este proceso, modela el logaritmo del cociente entre la probabilidad de usar algún método anticonceptivo a su complemento en relación al conjunto de covariables a nivel de unidad, $x_{ji}$, y el conjunto de covariables a nivel departamental, $Z_d$
+De acuerdo con este modelo, como lo expone Gutiérrez y otros (2022), la probabilidad de hacer uso de métodos de planificación para la $i$-ésima persona en el $j$-ésimo post-estrato, puede ser definido para cada unidad de la encuesta. El modelo pretende establecer la relación entre la expectativa $\rho_{di}$  de la variable dicotómica con las covariables de información auxiliar disponibles para ser incluidas. El procedimiento correspondiente a este proceso, modela el logaritmo del cociente entre la probabilidad de usar algún método anticonceptivo a su complemento en relación al conjunto de covariables a nivel de unidad, $x_{ji}$, y el efecto aleatorio, $u_d$
 
 $$
-\ln(\frac{ρ_{ji}}{1-ρ_{ji}} ) = x_{ji}^t \beta + z_d \gamma.
+\ln(\frac{ρ_{ji}}{1-ρ_{ji}} ) = x_{ji}^t \beta + u_d.
 $$
 
-Los coeficientes $\beta$ hacen referencia a los efectos aleatorios de las variables $x_{ji}^t$  sobre las probabilidades de que la $i$-ésima persona haga uso de métodos anticonceptivos; por otro lado, los coeficientes $\gamma$ expresan los efectos fijos sobre las covariables a nivel departamental, $z_d$. Ahora, es posible asumir distribuciones no informativas para $\beta$ y $\gamma$. 
+Los coeficientes $\beta$ hacen referencia a los efectos aleatorios de las variables $x_{ji}^t$  sobre las probabilidades de que la $i$-ésima persona haga uso de métodos anticonceptivos y $u_d \sim N(0,\sigma^2_u)$.
 
 $$
 \begin{eqnarray*}
-\beta  & \sim & N(0,\sigma^2_1) \\
-\gamma & \sim & N(0,\sigma^2_2) 
+\beta  & \sim & N(0,100) \\
+\sigma^2_u & \sim & IG(0.00001,0.00001) 
 \end{eqnarray*}
 $$
 

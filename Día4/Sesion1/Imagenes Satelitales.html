@@ -237,13 +237,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><strong>Paso 1</strong>: disponer de los shapefile</li>
 </ul>
-<div class="cell" data-hash="0Recursos/3.0Satelite/unnamed-chunk-8_49cbc79b60ecfd1d4d98722d5137ab30">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>GTM <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="st">"Shape/Guatemala_adm2_uscb_2020.shp"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">temp =</span> <span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">D"</span>, <span class="at">replacement =</span> <span class="st">""</span>,<span class="at">x =</span> GEO_MATCH),</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">dam =</span> <span class="fu">substr</span>(temp, <span class="dv">1</span>,<span class="dv">2</span>),</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">dam2 =</span> <span class="fu">paste0</span>(dam,<span class="fu">str_pad</span>(<span class="fu">str_sub</span>(temp,<span class="dv">3</span>,<span class="dv">4</span>), <span class="at">width =</span> <span class="dv">3</span>,<span class="at">pad =</span> <span class="st">"0"</span>))</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>         )</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(GTM[<span class="st">"geometry"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="0Recursos/3.0Satelite/unnamed-chunk-8_0f529fca36970441ee256367514e9898">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a> GTM <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="st">"Shape/Guatemala_adm2_uscb_2020.shp"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="at">temp =</span> <span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">D"</span>, <span class="at">replacement =</span> <span class="st">""</span>,<span class="at">x =</span> GEO_MATCH),</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">dam =</span> <span class="fu">substr</span>(temp, <span class="dv">1</span>,<span class="dv">2</span>),</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">dam2 =</span> <span class="fu">paste0</span>(dam,<span class="fu">str_pad</span>(<span class="fu">str_sub</span>(temp,<span class="dv">3</span>,<span class="dv">4</span>), <span class="at">width =</span> <span class="dv">3</span>,<span class="at">pad =</span> <span class="st">"0"</span>))</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>          )</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(GTM[<span class="st">"geometry"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="0Recursos/3.0Satelite/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -251,11 +252,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><strong>Paso 2</strong>: Seleccionar el archivo de imágenes que desea procesar, para nuestro ejemplo <strong>luces nocturnas</strong>.</li>
 </ul>
-<div class="cell" data-hash="0Recursos/3.0Satelite/unnamed-chunk-9_5f0c5f575dd39d0be2c4021739c99f1e">
+<div class="cell" data-hash="0Recursos/3.0Satelite/unnamed-chunk-9_a1a4570b66c8a753467c995dd299587b">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>luces <span class="ot">&lt;-</span> ee<span class="sc">$</span><span class="fu">ImageCollection</span>(<span class="st">"NOAA/DMSP-OLS/NIGHTTIME_LIGHTS"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  ee<span class="sc">$</span>ImageCollection<span class="sc">$</span><span class="fu">filterDate</span>(<span class="st">"2013-01-01"</span>, <span class="st">"2014-01-01"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  ee<span class="sc">$</span>ImageCollection<span class="sc">$</span><span class="fu">map</span>(<span class="cf">function</span>(x) x<span class="sc">$</span><span class="fu">select</span>(<span class="st">"stable_lights"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  ee<span class="sc">$</span>ImageCollection<span class="sc">$</span><span class="fu">toBands</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  ee<span class="sc">$</span>ImageCollection<span class="sc">$</span><span class="fu">toBands</span>()</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#ee_print(luces)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
 <li><strong>Paso 3</strong>: Descargar la información</li>

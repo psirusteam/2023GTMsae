@@ -251,7 +251,7 @@ Varianza suavizada para los dominios observados
 hat.sigma <- data.frame(dam2 = baseFGV$dam2,
                         hat_var = delta.hat * exp(fitted.values(FGV1)))
 
-baseFGV$ln_sigma2_pred <- hat.sigma$hat_var
+baseFGV$sigma2_pred <- hat.sigma$hat_var
 tba(head(hat.sigma, 10))
 ```
 
@@ -266,9 +266,9 @@ plot(FGV1)
 
 ```{r}
 ggplot(baseFGV, 
-       aes(x = ln_sigma2, y = ln_sigma2_pred)) + 
+       aes(x = vardir, y = sigma2_pred)) + 
   geom_point() +
-  geom_smooth(method = "loess")
+  geom_smooth(method = "lm")
 ```
 
 Predicción de la varianza suavizada

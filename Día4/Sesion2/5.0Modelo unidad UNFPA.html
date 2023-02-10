@@ -153,15 +153,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="modelo-mrp" class="level1">
 <h1>Modelo MRP</h1>
-<p>De acuerdo con este modelo, como lo expone Gutiérrez y otros (2022), la probabilidad de hacer uso de métodos de planificación para la <span class="math inline">\(i\)</span>-ésima persona en el <span class="math inline">\(j\)</span>-ésimo post-estrato, puede ser definido para cada unidad de la encuesta. El modelo pretende establecer la relación entre la expectativa <span class="math inline">\(\rho_{di}\)</span> de la variable dicotómica con las covariables de información auxiliar disponibles para ser incluidas. El procedimiento correspondiente a este proceso, modela el logaritmo del cociente entre la probabilidad de usar algún método anticonceptivo a su complemento en relación al conjunto de covariables a nivel de unidad, <span class="math inline">\(x_{ji}\)</span>, y el conjunto de covariables a nivel departamental, <span class="math inline">\(Z_d\)</span></p>
+<p>De acuerdo con este modelo, como lo expone Gutiérrez y otros (2022), la probabilidad de hacer uso de métodos de planificación para la <span class="math inline">\(i\)</span>-ésima persona en el <span class="math inline">\(j\)</span>-ésimo post-estrato, puede ser definido para cada unidad de la encuesta. El modelo pretende establecer la relación entre la expectativa <span class="math inline">\(\rho_{di}\)</span> de la variable dicotómica con las covariables de información auxiliar disponibles para ser incluidas. El procedimiento correspondiente a este proceso, modela el logaritmo del cociente entre la probabilidad de usar algún método anticonceptivo a su complemento en relación al conjunto de covariables a nivel de unidad, <span class="math inline">\(x_{ji}\)</span>, y el efecto aleatorio, <span class="math inline">\(u_d\)</span></p>
 <p><span class="math display">\[
-\ln(\frac{ρ_{ji}}{1-ρ_{ji}} ) = x_{ji}^t \beta + z_d \gamma.
+\ln(\frac{ρ_{ji}}{1-ρ_{ji}} ) = x_{ji}^t \beta + u_d.
 \]</span></p>
-<p>Los coeficientes <span class="math inline">\(\beta\)</span> hacen referencia a los efectos aleatorios de las variables <span class="math inline">\(x_{ji}^t\)</span> sobre las probabilidades de que la <span class="math inline">\(i\)</span>-ésima persona haga uso de métodos anticonceptivos; por otro lado, los coeficientes <span class="math inline">\(\gamma\)</span> expresan los efectos fijos sobre las covariables a nivel departamental, <span class="math inline">\(z_d\)</span>. Ahora, es posible asumir distribuciones no informativas para <span class="math inline">\(\beta\)</span> y <span class="math inline">\(\gamma\)</span>.</p>
+<p>Los coeficientes <span class="math inline">\(\beta\)</span> hacen referencia a los efectos aleatorios de las variables <span class="math inline">\(x_{ji}^t\)</span> sobre las probabilidades de que la <span class="math inline">\(i\)</span>-ésima persona haga uso de métodos anticonceptivos y <span class="math inline">\(u_d \sim N(0,\sigma^2_u)\)</span>.</p>
 <p><span class="math display">\[
 \begin{eqnarray*}
-\beta  &amp; \sim &amp; N(0,\sigma^2_1) \\
-\gamma &amp; \sim &amp; N(0,\sigma^2_2)
+\beta  &amp; \sim &amp; N(0,100) \\
+\sigma^2_u &amp; \sim &amp; IG(0.00001,0.00001)
 \end{eqnarray*}
 \]</span></p>
 <section id="estandarización-de-la-encuesta" class="level2">

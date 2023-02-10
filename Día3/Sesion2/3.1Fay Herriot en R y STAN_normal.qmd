@@ -342,12 +342,14 @@ comparando los resultados obtenidos en `STAN`
 theta <- model_FH_normal$summary(variables =  "theta")
 thetaSyn <- model_FH_normal$summary(variables =  "thetaSyn")
 theta_FH <- model_FH_normal$summary(variables =  "thetaFH")
+gammaj <- model_FH_normal$summary(variables =  "gammaj")
 
 data_dir %<>% mutate(
             thetadir = pobreza,
             theta_pred = theta$mean,
             thetaSyn = thetaSyn$mean,
             thetaFH = theta_FH$mean,
+            gammaj = gammaj$mean,
             theta_pred_EE = theta$sd,
             Cv_theta_pred = theta_pred_EE/theta_pred
             ) 
@@ -379,6 +381,8 @@ p22 <- ggplot(data_dir, aes(x = thetadir, y = thetaSyn)) +
 
 (p11+p12)/(p21+p22)
 
+plot(data_dir$nd, data_dir$gammaj)
+
 ```
 
 Estimación del FH de la pobreza en los dominios NO observados. 
@@ -392,7 +396,8 @@ data_syn <- data_syn %>%
     thetaSyn = theta_pred,
     thetaFH = theta_pred,
     theta_pred_EE = theta_syn_pred$sd,
-    Cv_theta_pred = theta_pred_EE/theta_pred)
+    Cv_theta_pred = theta_pred_EE/theta_pred,
+    gammaj = NA)
 
 tba(data_syn %>% slice(1:10) %>%
       select(dam2:hat_var,theta_pred:Cv_theta_pred))

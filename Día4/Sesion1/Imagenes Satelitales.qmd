@@ -22,7 +22,8 @@ library(printr)
 library(kableExtra)
 library(knitr)                              
 # Paquete que trae varios paquetes comunes en el tidyverse
-library(tidyverse)                          
+library(tidyverse)   
+library(magrittr)
 # Paquete que GTMmite compilar python desde R
 library(reticulate)
 # Paquete que nos GTMmite conectar con Google Earth Engine desde R
@@ -152,11 +153,12 @@ ee$ImageCollection()$filterDate()  # R
 *   **Paso 1**: disponer de los shapefile 
 
 ```{r}
-GTM <- read_sf("Shape/Guatemala_adm2_uscb_2020.shp") %>% 
-  mutate(temp = gsub(pattern = "\\D", replacement = "",x = GEO_MATCH),
-         dam = substr(temp, 1,2),
-         dam2 = paste0(dam,str_pad(str_sub(temp,3,4), width = 3,pad = "0"))
-         )
+ GTM <- read_sf("Shape/Guatemala_adm2_uscb_2020.shp") %>% 
+   mutate(temp = gsub(pattern = "\\D", replacement = "",x = GEO_MATCH),
+          dam = substr(temp, 1,2),
+          dam2 = paste0(dam,str_pad(str_sub(temp,3,4), width = 3,pad = "0"))
+          )
+
 plot(GTM["geometry"])
 ```
 
@@ -167,7 +169,7 @@ luces <- ee$ImageCollection("NOAA/DMSP-OLS/NIGHTTIME_LIGHTS") %>%
   ee$ImageCollection$filterDate("2013-01-01", "2014-01-01") %>%
   ee$ImageCollection$map(function(x) x$select("stable_lights")) %>%
   ee$ImageCollection$toBands()
-
+#ee_print(luces)
 ```
 
 * **Paso 3**: Descargar la información

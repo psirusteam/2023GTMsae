@@ -1,0 +1,542 @@
+---
+title: "Estimación del ingreso medio"
+subtitle: "CEPAL - Unidad de Estadísticas Sociales"
+author: "Andrés Gutiérrez - Stalyn Guerrero"
+format: html
+project:
+  type: website
+  output-dir: docs
+---
+
+```{r setup, include=FALSE, message=FALSE, error=FALSE, warning=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  cache = TRUE,
+  cache.path = "0Recursos/4.0Modelo_unidad_ingreso/",
+  fig.path = "0Recursos/4.0Modelo_unidad_ingreso/"
+)
+library(printr)
+library(kableExtra)
+library(tidyverse)
+tba <- function(dat, cap = NA){
+  kable(dat,
+      format = "html", digits =  4,
+      caption = cap) %>% 
+     kable_styling(bootstrap_options = "striped", full_width = F)%>%
+         kable_classic(full_width = F, html_font = "Arial Narrow")
+}
+```
+
+
+Uno de los primeros problemas a los que debemos enfrentarnos es la estimación del ingreso medio, la cual en una variable no simétrica que toma valores en los positivos. Sin embargo, empleando los métodos Bayesiano es posible obtener estimaciones de esta sin realizar una transformación 
+
+
+```{r, echo=FALSE, fig.cap="Distribución del ingreso medio por dam2"}
+library(ggplot2)
+library(dplyr)
+encuesta_agregada <- readRDS("Data/encuestaGTM14N.rds") %>% 
+  group_by(
+    dam = str_pad(dam_ee, width = 2, pad = "0"),
+    dam2 = str_pad(mupio, width = 3, pad = "0"),
+    dam2 = paste0(dam, dam2)) %>% 
+  summarise(ingreso = (mean(ingcorte)))
+
+ggplot(data = encuesta_agregada, aes(x = ingreso)) +
+  geom_density() + labs(y = "") +
+  theme_bw(base_size = 20) +
+  scale_x_continuous(labels = scales::dollar_format()) +
+  theme(axis.text.y = element_blank(),
+        axis.ticks = element_blank())
+
+```
+
+
+## Modelo bayesiano.
+
+Para realizar la predicción del ingreso medio en dam2s no observadas se asume que: 
+
+$$
+\begin{eqnarray*}
+Y_{di} &\sim & N\left(\mu_{di},\sigma_y^{2}\right)\\
+\mu_{di}&=&\boldsymbol{X}_{di}^{T}\boldsymbol{\beta}+u_{d}+e_{di} 
+\end{eqnarray*}
+$$
+
+
+
+
+Donde $Y_{di}$ representa el ingreso medio de la $i-ésima$ persona en el $d-ésimo$ domino, $\boldsymbol{X}$ es la información disponible para la $i-ésima$ persona del $d-ésimo$ domino, $\boldsymbol{\beta}$ es el vector de parámetros $u_d$ es el efecto introducido por el $d-ésimo$ dominio y $e_{di}$ es el error de estimación para la $i-ésima$ personas del $d-ésimo$ dominio.
+
+Note, que $u_{d}\sim N\left(0,\sigma_{u}\right)$ y $e_{di}\sim N\left(0,\sigma_{e}^{2}\right)$.
+
+Para este caso se asumen las distribuciones previas
+
+$$
+\begin{eqnarray*}
+\beta_k & \sim   & N(\mu_0, \tau^2_0)\\
+\sigma^2_y &\sim & Inversa-Gamma(\alpha_1,\alpha_2)
+\end{eqnarray*}
+$$ las cuales se toman no informativas.
+
+A continuación se muestra el proceso realizado para la obtención de la predicción del ingreso medio en dominios no observados.
+
+## Proceso de estimación en `R`
+
+Para desarrollar la metodología se hace uso de las siguientes librerías.
+
+
+```{r}
+# Interprete de STAN en R
+library(rstan)
+library(rstanarm)
+# Manejo de bases de datos.
+library(tidyverse)
+# Gráficas de los modelos. 
+library(bayesplot)
+library(patchwork)
+# Organizar la presentación de las tablas
+library(kableExtra)
+library(printr)
+```
+
+
+Un conjunto de funciones desarrolladas para realizar de forma simplificada los procesos están consignadas en la siguiente rutina.
+
+
+```{r}
+source("0Recursos/funciones_mrp.R")
+```
+
+
+Entre las funciones incluidas en el archivo encuentra
+
+-   *plot_interaction*: Esta crea un diagrama de lineas donde se estudia la interacción entre las variables, en el caso de presentar un traslape de las lineas se recomienda incluir el interacción en el modelo.
+
+-   *Plot_Compare* Puesto que es necesario realizar una homologar la información del censo y la encuesta es conveniente llevar a cabo una validación de las variables que han sido homologadas, por tanto, se espera que las proporciones resultantes del censo y la encuesta estén cercanas entre sí.
+
+-   *Aux_Agregado*: Esta es función permite obtener estimaciones a diferentes niveles de agregación, toma mucha relevancia cuando se realiza un proceso repetitivo.
+
+**Las funciones están diseñada específicamente  para este  proceso**
+
+### Encuesta de hogares
+
+Los datos empleados en esta ocasión corresponden a la ultima encuesta de hogares, la cual ha sido estandarizada por *CEPAL* y se encuentra disponible en *BADEHOG*
+
+
+```{r}
+encuesta <- readRDS("Data/encuestaGTM14N.rds")
+
+encuesta_mrp <- encuesta %>% 
+  transmute(
+  dam = str_pad(dam_ee, width = 2, pad = "0"),
+  dam2 = str_pad(mupio, width = 3, pad = "0"),
+  dam2 = paste0(dam, dam2),  
+  ingreso = ingcorte, lp, li,
+  area = case_when(area_ee == 1 ~ "1", TRUE ~ "0"),
+  logingreso = log(ingcorte + 1),
+  sexo = as.character(sexo),
+  anoest = case_when(
+    edad < 7 | anoest == -1   ~ "98"  , #No aplica
+    anoest == 99 | (edad>=7 & is.na(anoest)) ~ "99", #NS/NR
+    anoest == 0  ~ "1", # Sin educacion
+    anoest %in% c(1:6) ~ "2",       # 1 - 6
+    anoest %in% c(7:12) ~ "3",      # 7 - 12
+    anoest > 12 ~ "4",      # mas de 12
+    TRUE ~ "Error"  ),
+  edad = case_when(
+    edad < 15 ~ "1",
+    edad < 30 ~ "2",
+    edad < 45 ~ "3",
+    edad < 65 ~ "4",
+    TRUE ~ "5"),
+  
+  etnia = case_when(
+    etnia_ee == 1 ~ "1", # Indigena
+    etnia_ee == 2 ~ "2",   # Afro
+    TRUE ~ "3"         # Otra
+  ),
+fep = `_fep`
+) 
+
+tba(encuesta_mrp %>% head(10)) 
+```
+
+
+La base de datos de la encuesta tiene la siguientes columnas: 
+
+-   *dam*: Corresponde al código asignado a la división administrativa mayor del país.
+
+-   *dam2*: Corresponde al código asignado a la segunda división administrativa del país.
+
+-   *lp* y *li* lineas de pobreza y pobreza extrema definidas por CEPAL. 
+
+-   *área* división geográfica (Urbano y Rural). 
+
+-   *sexo* Hombre y Mujer. 
+
+-   *etnia* En estas variable se definen tres grupos:  afrodescendientes, indígenas y Otros. 
+
+-   Años de escolaridad (*anoest*) 
+
+-   Rangos de edad (*edad*) 
+
+-   Factor de expansión por persona (*fep*)
+
+
+Ahora, inspeccionamos el comportamiento de la variable de interés: 
+
+
+```{r, fig.cap= "Distribuición del ingreso de las personas encuestadas"}
+
+media <- mean(encuesta_mrp$logingreso)
+Sd <- sd(encuesta_mrp$logingreso)
+
+ggplot(data = encuesta_mrp, aes(x = logingreso)) +
+  geom_density(size =2, color = "blue") + labs(y = "") +
+  stat_function(fun = dnorm, 
+                args = list(mean = media, sd = Sd),
+                size =2) +
+  theme_bw(base_size = 20) +
+  theme(axis.text.y = element_blank(),
+        axis.ticks = element_blank())
+```
+
+
+
+La información auxiliar disponible ha sido extraída del censo  e imágenes satelitales
+
+
+```{r}
+statelevel_predictors_df <- readRDS("Data/statelevel_predictors_df_dam2.rds") %>% 
+    mutate_at(.vars = c("luces_nocturnas",
+                      "suelo_cultivos",
+                      "suelo_urbanos",
+                      "modifica_humana",
+                      "tiempo_hospital",
+                      "tiempo_hospital_no_motor"),
+            function(x) scale(x)*2+5)
+tba(statelevel_predictors_df  %>%  head(10))
+```
+
+
+
+### Niveles de agregación para colapsar la encuesta
+
+Después de realizar una investigación en la literatura especializada y realizar estudios de simulación fue posible evidenciar que las predicciones obtenidas con la muestra sin agregar y la muestra agregada convergen a la media del dominio. Sin embargo, el realizar estas estimaciones con la muestra agregada reduce el tiempo computacional necesario para la convergencia de las cadenas MCMC.  Con esto en mente se se realiza la identificación de las variables por las cuales se agregará la encuesta.
+
+
+```{r}
+byAgrega <- c("dam", "dam2",  "area", 
+              "sexo",   "anoest", "edad",   "etnia" )
+ 
+```
+
+
+### Creando base con la encuesta agregada
+
+El resultado de agregar la base de dato se muestra a continuación:
+
+
+```{r}
+encuesta_df_agg <-
+  encuesta_mrp %>%                    # Encuesta  
+  group_by_at(all_of(byAgrega)) %>%   # Agrupar por el listado de variables
+  summarise(n = n(),                  # Número de observaciones
+  # Ingreso medio de las personas con características similares.           
+             logingreso = mean(logingreso), 
+            .groups = "drop") %>%     
+  arrange(desc(n))                    # Ordenar la base.
+```
+
+
+La tabla obtenida es la siguiente: 
+
+
+```{r, echo=FALSE}
+tba(encuesta_df_agg %>% head(10))
+```
+
+El paso a seguir es unificar las tablas creadas. 
+
+
+```{r}
+encuesta_df_agg <- inner_join(encuesta_df_agg, statelevel_predictors_df)
+```
+
+
+### Definiendo el modelo multinivel.
+
+Después de haber ordenado la encuesta, podemos pasar a la definición del modelo.
+
+
+```{r, eval = FALSE}
+options(MC.cores=parallel::detectCores()) # Permite procesar en paralelo. 
+fit <- stan_lmer(
+  logingreso ~                               # Ingreso medio (Y)
+    (1 | dam2) +                          # Efecto aleatorio (ud)
+    edad +                               # Efecto fijo (Variables X)
+    sexo  + 
+    tasa_desocupacion +
+    luces_nocturnas + 
+    suelo_cultivos +
+    suelo_urbanos ,
+                  weights = n,            # Número de observaciones. 
+                  data = encuesta_df_agg, # Encuesta agregada 
+                  verbose = TRUE,         # Muestre el avance del proceso
+                  chains = 4,             # Número de cadenas.
+                 iter = 1000              # Número de realizaciones de la cadena
+                )
+saveRDS(fit, file = "Data/fit_ingresos.rds")
+```
+
+
+Después de esperar un tiempo prudente se obtiene el siguiente modelo.
+
+
+```{r}
+fit <- readRDS("Data/fit_ingresos.rds")
+tba(coef(fit)$dam2 %>% head(10))
+```
+
+
+Validación del modelo 
+
+
+```{r}
+library(posterior)
+library(bayesplot)
+(mcmc_dens_chains(fit,pars = "sigma") +
+    mcmc_areas(fit,pars = "sigma"))/
+  mcmc_trace(fit,pars = "sigma")
+```
+
+```{r}
+var_names <- c("edad2",  "edad3",  "edad4", "edad5", "sexo2",
+               "luces_nocturnas", "suelo_cultivos","suelo_urbanos")
+mcmc_areas(fit,pars = var_names)
+```
+
+```{r}
+mcmc_trace(fit,pars = var_names)
+```
+
+```{r}
+encuesta_mrp2 <- inner_join(encuesta_mrp, statelevel_predictors_df)
+y_pred_B <- posterior_epred(fit, newdata = encuesta_mrp2)
+y_pred_B <- exp(y_pred_B) - 1
+rowsrandom <- sample(nrow(y_pred_B), 100)
+y_pred2 <- y_pred_B[rowsrandom, ]
+ppc_dens_overlay(y = as.numeric(encuesta_mrp2$ingreso), y_pred2) +
+  xlim(0,10000)
+  
+```
+
+
+
+
+# Proceso de estimación y predicción
+
+Obtener el modelo es solo un paso más, ahora se debe realizar la predicción en el censo, el cual a sido previamente estandarizado y homologado con la encuesta. 
+
+
+```{r}
+poststrat_df <- readRDS("Data/censo_dam2.rds") %>% 
+     left_join(statelevel_predictors_df) 
+tba( poststrat_df %>% arrange(desc(n)) %>% head(10))
+```
+
+Note que la información del censo esta agregada.
+
+### Distribución posterior.
+
+Para obtener una distribución posterior de cada observación se hace uso de la función *posterior_epred* de la siguiente forma.
+
+
+```{r}
+epred_mat <- posterior_epred(fit, newdata = poststrat_df, type = "response")
+epred_mat <- (exp(epred_mat)-1)
+dim(epred_mat)
+dim(poststrat_df)
+```
+
+
+Por ser una predicción en dominios no observados, es posible obtener valores por fuera del domino de la variable (valores negativos), los cuales deben ser ajustados de forma manual.
+
+
+```{r, eval=TRUE}
+## validación de los valores posteriores
+ggplot(data = data.frame(
+  ingreso = colMeans(epred_mat),
+  n = poststrat_df$n
+  )) + 
+  geom_histogram(aes(x=ingreso, weights = n)) +
+  theme_bw(10)
+
+```
+
+```{r, echo=FALSE, eval=TRUE}
+num <- length(epred_mat[which(epred_mat < 0)])
+den <- length(epred_mat)
+#(num/den)*100
+```
+
+En esta ocasión tenemos que el `r (num/den)*100`% es menor que cero, por tanto los igualamos a cero.
+
+
+```{r}
+epred_mat[(epred_mat < 0)]<-0
+```
+
+
+Como el interés es realizar comparaciones entre los países de la región se presenta la estimación del ingreso medio en términos de lineas de pobreza. Para esto procedemos así:
+
+-   Obteniendo las lineas de pobreza por cada post-estrato
+
+
+```{r}
+(lp <- encuesta_mrp %>% distinct(area,lp,li)) %>% 
+  tba()
+```
+
+
+-   Ingreso en términos de lineas de pobreza.
+
+
+```{r}
+lp <- inner_join(poststrat_df,lp,by = "area") %>% select(lp)
+epred_mat <- t(t(epred_mat)/lp$lp)
+
+```
+
+
+## Estimación del ingreso medio
+
+
+```{r}
+n_filtered <- poststrat_df$n
+mrp_estimates <- epred_mat %*% n_filtered / sum(n_filtered)
+
+(temp_ing <- data.frame(
+  mrp_estimate = mean(mrp_estimates),
+  mrp_estimate_se = sd(mrp_estimates)
+) )
+```
+
+
+El resultado nos indica que el ingreso medio nacional es `r round(temp_ing$mrp_estimate,2)` lineas de pobreza
+
+### Estimación para el dam == "01".
+
+Es importante siempre conservar el orden de la base, dado que relación entre la predicción y el censo en uno a uno.
+
+
+```{r}
+temp <- poststrat_df %>%  mutate(Posi = 1:n())
+temp <- filter(temp, dam == "01") %>% select(n, Posi)
+n_filtered <- temp$n
+temp_epred_mat <- epred_mat[, temp$Posi]
+
+## Estimando el CME
+mrp_estimates <- temp_epred_mat %*% n_filtered / sum(n_filtered)
+
+(temp_ing <- data.frame(
+  mrp_estimate = mean(mrp_estimates),
+  mrp_estimate_se = sd(mrp_estimates)
+) )
+```
+
+
+El resultado nos indica que el ingreso medio en el dam 01 es `r round(temp_ing$mrp_estimate,2)` lineas de pobreza
+
+### Estimación para la dam2 == "01001"
+
+
+```{r}
+temp <- poststrat_df %>%  mutate(Posi = 1:n())
+temp <-
+  filter(temp, dam2 == "01001") %>% select(n, Posi)
+n_filtered <- temp$n
+temp_epred_mat <- epred_mat[, temp$Posi]
+## Estimando el CME
+mrp_estimates <- temp_epred_mat %*% n_filtered / sum(n_filtered)
+
+(temp_ing <- data.frame(
+  mrp_estimate = mean(mrp_estimates),
+  mrp_estimate_se = sd(mrp_estimates)
+) )
+```
+
+
+El resultado nos indica que el ingreso medio en la dam2 01001 es `r round(temp_ing$mrp_estimate,2)` lineas de pobreza
+
+Después de comprender la forma en que se realiza la estimación de los dominios no observados procedemos el uso de la función *Aux_Agregado* que es desarrollada para este fin.
+
+
+```{r, eval=TRUE}
+(mrp_estimate_Ingresolp <-
+  Aux_Agregado(poststrat = poststrat_df,
+             epredmat = epred_mat,
+             byMap = NULL)
+)
+```
+
+
+El resultado nos indica que el ingreso medio nacional es `r round(mrp_estimate_Ingresolp$mrp_estimate)` lineas de pobreza
+
+De forma similar es posible obtener los resultados para las divisiones administrativas. 
+
+
+```{r, eval=TRUE}
+mrp_estimate_dam <-
+  Aux_Agregado(poststrat = poststrat_df,
+             epredmat = epred_mat,
+             byMap = "dam")
+tba(mrp_estimate_dam)
+```
+
+```{r, eval=TRUE}
+mrp_estimate_dam2 <-
+  Aux_Agregado(poststrat = poststrat_df,
+             epredmat = epred_mat,
+             byMap = "dam2")
+
+tba(mrp_estimate_dam2 %>% head(10) )
+```
+
+
+
+El mapa resultante es el siguiente
+
+
+
+```{r, echo=FALSE, fig.cap = "Ingreso medio por dam2"}
+library(sp)
+library(sf)
+library(tmap)
+
+## Leer Shapefile del país
+ShapeSAE <- read_sf("Shape/Guatemala_adm2_uscb_2020.shp") %>% 
+  mutate(temp = gsub(pattern = "\\D", replacement = "",x = GEO_MATCH),
+         dam = substr(temp, 1,2),
+         dam2 = paste0(dam,str_pad(str_sub(temp,3,4), width = 3,pad = "0"))
+         )
+
+mapa <- tm_shape(ShapeSAE %>%
+                left_join(mrp_estimate_dam2,  by = "dam2"))
+
+brks_lp <- c(0,0.5, 1, 1.5, 2, 4, 5)
+tmap_options(check.and.fix = TRUE)
+Mapa_lp <-
+  mapa + tm_polygons(
+    c( "mrp_estimate"),
+    breaks = brks_lp,
+    title = "Ingreso medio",
+    palette = "-YlOrRd",
+    colorNA = "white"
+  ) + tm_layout(asp = 0)
+
+Mapa_lp
+```
+
