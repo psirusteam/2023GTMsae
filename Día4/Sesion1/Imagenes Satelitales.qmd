@@ -24,9 +24,9 @@ library(knitr)
 # Paquete que trae varios paquetes comunes en el tidyverse
 library(tidyverse)   
 library(magrittr)
-# Paquete que GTMmite compilar python desde R
+# Paquete que permite compilar python desde R
 library(reticulate)
-# Paquete que nos GTMmite conectar con Google Earth Engine desde R
+# Paquete que nos permite conectar con Google Earth Engine desde R
 library(rgee)
 # Paquete para la lectura de Shapefile
 library(geojsonio)
@@ -64,11 +64,11 @@ Algunas de las principales fuentes de imágenes satelitales son:
 
   * https://search.earthdata.nasa.gov/search
 
-  * https://scihub.coGTMnicus.eu/
+  * https://scihub.copernicus.eu/
 
   * https://aws.amazon.com/public-data-sets/landsat/
 
-Sin embargo la mayor parte de estas fuentes están centralizadas en **Google Earth Engine** que GTMmite buscar fuentes de datos provenientes de imágenes satelitales. GEE se puede manejar porm medio de APIS en diferentes lenguajes de programación: Javascript (por defecto), Python y R (paquete rgee).
+Sin embargo la mayor parte de estas fuentes están centralizadas en **Google Earth Engine** que permite buscar fuentes de datos provenientes de imágenes satelitales. GEE se puede manejar porm medio de APIS en diferentes lenguajes de programación: Javascript (por defecto), Python y R (paquete rgee).
 
 
 
@@ -84,7 +84,7 @@ knitr::include_graphics("0Recursos/lights.png")
 
 * Una vez se busque el conjunto de datos se puede abrir un editor de código brindado por google en  Javascript. 
 
-*  Copiar y pegar la sintaxis que brinda el buscador de conjunto de datos para visualizar la imagen raster y disponer de sentencias que GTMmitan la obtención  del conjunto de datos de interés posteriormente en R
+*  Copiar y pegar la sintaxis que brinda el buscador de conjunto de datos para visualizar la imagen raster y disponer de sentencias que permitan la obtención  del conjunto de datos de interés posteriormente en R
 
 ```{r echo=FALSE, out.width = "500px", out.height="250px",fig.align='center'}
 knitr::include_graphics("0Recursos/query.png")
@@ -165,11 +165,9 @@ plot(GTM["geometry"])
 *   **Paso 2**: Seleccionar el archivo de imágenes  que desea procesar, para nuestro ejemplo **luces nocturnas**.  
 
 ```{r, eval = FALSE}
-luces <- ee$ImageCollection("NOAA/DMSP-OLS/NIGHTTIME_LIGHTS") %>%
-  ee$ImageCollection$filterDate("2013-01-01", "2014-01-01") %>%
-  ee$ImageCollection$map(function(x) x$select("stable_lights")) %>%
-  ee$ImageCollection$toBands()
-#ee_print(luces)
+luces <- ee$ImageCollection("COPERNICUS/Landcover/100m/Proba-V-C3/Global") %>%
+  ee$ImageCollection$map(function(x) x$select("crops-coverfraction")) 
+ee_print(luces)
 ```
 
 * **Paso 3**: Descargar la información
@@ -180,23 +178,22 @@ GTM_luces <- map(unique(GTM$dam2),
                  ~tryCatch(ee_extract(
                    x = luces,
                    y = GTM["dam2"] %>% filter(dam2 == .x),
-                   ee$Reducer$sum(),
+                   ee$Reducer$mean(),
                    sf = FALSE
                  ) %>% mutate(dam2 = .x),
                  error = function(e)data.frame(dam2 = .x)))
 
 GTM_luces %<>% bind_rows()
-
 ```
 
 ## Repetir la rutina para: 
 
--   Tipo de suelo: **crops-coverfraction** (Porcentaje de cobertura vegetal para tierras de cultivo clase de cobertura terrestre) y **urban-coverfraction** (Porcentaje de cobertura del suelo para la clase de cobertura del suelo edificada) disponibles en <https://develoGTMs.google.com/earth-engine/datasets/catalog/COGTMNICUS_Landcover_100m_Proba-V-C3_Global#description> 
+-   Tipo de suelo: **crops-coverfraction** (Porcentaje de cobertura vegetal para tierras de cultivo clase de cobertura terrestre) y **urban-coverfraction** (Porcentaje de cobertura del suelo para la clase de cobertura del suelo edificada) disponibles en <https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_Landcover_100m_Proba-V-C3_Global#description> 
 
 
-- Tiempo de viaje al hospital o clínica más cercana (**accessibility**) y tiempo de viaje al hospital o clínica más cercana utilizando transporte no motorizado (**accessibility_walking_only**) información disponible en <https://develoGTMs.google.com/earth-engine/datasets/catalog/Oxford_MAP_accessibility_to_healthcare_2019> 
+- Tiempo de viaje al hospital o clínica más cercana (**accessibility**) y tiempo de viaje al hospital o clínica más cercana utilizando transporte no motorizado (**accessibility_walking_only**) información disponible en <https://developers.google.com/earth-engine/datasets/catalog/Oxford_MAP_accessibility_to_healthcare_2019> 
 
-- Modificación humana, donde se consideran los asentamiento humano, la agricultura, el transporte, la minería y producción de energía e infraestructura eléctrica. En el siguiente link encuentra la información satelital  <https://develoGTMs.google.com/earth-engine/datasets/catalog/CSP_HM_GlobalHumanModification#description>
+- Modificación humana, donde se consideran los asentamiento humano, la agricultura, el transporte, la minería y producción de energía e infraestructura eléctrica. En el siguiente link encuentra la información satelital  <https://developers.google.com/earth-engine/datasets/catalog/CSP_HM_GlobalHumanModification#description>
 
 
 * **Paso 4**  consolidar la información. 
@@ -223,6 +220,12 @@ plot(
     temp["luces_nocturnas"], 
        key.pos = 4, 
        breaks = quantile(temp$luces_nocturnas))
+
+oe <- GTM %>% full_join(GTM_luces)
+
+plot(
+    oe["X2019_crops.coverfraction"], 
+       key.pos = 4)
 ```
 
 ## Suelos cultivos 

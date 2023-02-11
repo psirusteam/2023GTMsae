@@ -92,41 +92,16 @@ $$
 
 donde $\hat{\gamma_d}=\frac{\hat{\sigma}^2_u}{\hat{\sigma}^2_u + \psi_d}$.
 
--   Un estimador insesgado de segundo orden del ECM (llamado el estimador Prasad-Rao) viene dado por
-
-$$
-    \begin{eqnarray*}
-    mse_{PR}\left(\tilde{\delta}_{d}^{FH}\right) & = & g_{1d}\left(\hat{\sigma}_{u}^{2}\right)+g_{2d}\left(\hat{\sigma}_{u}^{2}\right)+2g_{3d}\left(\hat{\sigma}_{u}^{2}\right)
-    \end{eqnarray*}
-     con 
-$$ con
-
-$$
-\begin{eqnarray*} g_{1d}\left(\hat{\sigma}_{u}^{2}\right) & = & \gamma_{d}\psi_{d}\\
-g_{2d}\left(\hat{\sigma}_{u}^{2}\right) & = & \left(1-\gamma_{d}\right)^{2}\boldsymbol{x}^{T}\left(\sum_{d=1}^{D}\left(\sigma_{u}^{2}+\psi_{d}\right)\boldsymbol{x}_{d}\boldsymbol{x}_{d}^{T}\right)^{-1}\boldsymbol{x}_{d},\\
-g_{3d}\left(\hat{\sigma}_{u}^{2}\right) & = & \left(1-\gamma_{d}\right)^{2}\left(\sigma_{u}^{2}+\psi_{d}\right)^{-1}\overline{var}\left(\hat{\sigma}_{u}^{2}\right),
-\end{eqnarray*}
-$$
-
-donde $$
-\begin{eqnarray*}
-\overline{var}\left(\hat{\sigma}_{u}^{2}\right) & = & \mathit{I}^{-1 }\left(\sigma_{u}^{2}\right)=2\left\{ \sum_{d=1}^{D}\left(\sigma_{u}^{2}+\psi_{d}\right)^{-2}\right\} ^{-1}
-\end{eqnarray*}
-$$ para un estimador REML y $\mathit{I}$ es la información Fisher
-
--   El estimador directo no es el único insumo del modelo de áreas de Fay-Herriot; también lo es su varianza. El estimador puntual da un indicio de la localización del parámetro, y su varianza presenta el nivel de certeza o confianza sobre esta localización.
-
--   Al tratar con cifras provenientes de procesamientos con encuestas de hogares, es indispensable siempre tener en cuenta que el sustento inferencial recae en la estrategia de muestreo, definida como la dupla compuesta por el diseño de muestreo y el estimador escogido.
 
 
 $$
 \begin{eqnarray*}
 Y\mid\mu,\sigma_{e} & \sim & N\left(\mu,\sigma_{e}\right)\\
-\mu & = & \boldsymbol{X\beta}+V
+\mu & = & \boldsymbol{X\beta}+u_d
 \end{eqnarray*}
 $$
 
-donde $V \sim N(0 , \sigma_v)$.
+donde $u_d \sim N(0 , \sigma_v)$.
 
 Las distribuciones previas para $\boldsymbol{\beta}$ y $\sigma^2_v$
 

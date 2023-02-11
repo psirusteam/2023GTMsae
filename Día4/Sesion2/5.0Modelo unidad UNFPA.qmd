@@ -233,6 +233,7 @@ Se debe cargar el archivo `encuesta_mrp.rds` y el archivo `statelevel_predictors
 byAgrega <- c( "depto", "area", "edad", "etnia",  
                "anoest", "unida" )  
 
+
 encuesta_df_agg <-
   encuesta_mrp %>%
   group_by_at(all_of(byAgrega)) %>%
@@ -351,7 +352,7 @@ poststrat_df$epred_mat <- colMeans(epred_mat)
 1.  Validarse los nombres de las covariables disponibles en censo y encuesta, que deben ser las mismas con las que se han venido trabajando, para este caso resultaron 
 
 ```{r}
-names_cov <- c("depto" , "area" ,  "etnia" , "edad" ,  "anoest", "unida" )
+names_cov <- c("depto" , "area" ,  "edad" ,  "anoest", "unida" )
 ```
 
 2. Calcular las estimaciones para cada una de las variables de la base de datos de `encuesta_mrp` utilizando el indicador de interés. 
@@ -538,6 +539,34 @@ Mapa_lp
 ```
 
 
+```{r}
+mrp_cme2 <-
+  Aux_Agregado(poststrat = poststrat_df,
+             epredmat = epred_mat,
+             byMap = c("depto","anoest", "etnia" )) %>% 
+  select(-mrp_estimate)
+
+dat_depto2 <- poststrat_df2 %>% group_by(depto,anoest,etnia) %>%
+    summarise(
+      Benchmarking_estimate = sum(n * pobreza2) / sum(n),
+      .groups = "drop"
+    )
+
+dat_depto2 <- dat_depto2 %>% left_join(mrp_cme2) %>% 
+  mutate(mrp_cv = mrp_estimate_se/Benchmarking_estimate*100) %>% 
+  arrange(desc(mrp_cv))
+
+Aux_Maps(Shape = ShapeSAE, 
+         dat_df = dat_depto2,
+         fnames = "etnia",
+         cnames = "anoest",
+         brks = brks_lp)
+
+```
+
+
+
+
 # Estimación del indicador D6m (Uso de métodos anticonceptivos) 
 
 El procedimiento descrito previamente se repite para los indicadores *D6m* y *NI*. 
@@ -625,7 +654,7 @@ poststrat_df$epred_mat <- colMeans(epred_mat)
 1.  Validarse los nombres de las covariables disponibles en censo y encuesta, que deben ser las mismas con las que se han venido trabajando, para este caso resultaron 
 
 ```{r}
-names_cov <- c("depto" , "area" ,  "etnia" , "edad" ,  "anoest", "unida" )
+names_cov <- c("area" )
 ```
 
 2. Calcular las estimaciones para cada una de las variables de la base de datos de `encuesta_mrp` utilizando el indicador de interés. 
@@ -651,6 +680,7 @@ data.frame( Categoría = unlist(paso["depto",]),
 3.    Crear variables dummys en `poststrat_df` y multiplicar cada variable por la predicción `epred_mat`
 
 ```{r}
+
 poststrat_df %<>%
   fastDummies::dummy_cols(select_columns = names_cov,
                           remove_selected_columns = FALSE)
